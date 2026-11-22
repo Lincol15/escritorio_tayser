@@ -9,7 +9,7 @@ import { cylinderGeometry, geometryKey, panelGeometry, planeQuaternion, tenonBox
 import { getMeshMaterial, type MatState } from '../three/materials3d';
 import { DEG, fmtLen, normDeg, round } from '../core/units';
 
-const BG = { dark: '#0f131a', gray: '#3a3f47', light: '#e8eaee' };
+const BG = { dark: '#17181b', gray: '#3a3f47', light: '#dfe3de' };
 
 export default function Viewer3D({ presentation = false }: { presentation?: boolean }) {
   const items = useStore((s) => s.project.items);
@@ -39,8 +39,8 @@ export default function Viewer3D({ presentation = false }: { presentation?: bool
           infiniteGrid
           cellSize={0.1}
           sectionSize={1}
-          cellColor={sceneBg === 'light' ? '#c8ccd3' : '#253041'}
-          sectionColor={sceneBg === 'light' ? '#9aa1ad' : '#3b4a63'}
+          cellColor={sceneBg === 'light' ? '#c7cdc6' : '#2c2f34'}
+          sectionColor={sceneBg === 'light' ? '#a3aba3' : '#43474e'}
           fadeDistance={35}
           fadeStrength={1.5}
         />
@@ -51,7 +51,7 @@ export default function Viewer3D({ presentation = false }: { presentation?: bool
       {!presentation && <Gizmo />}
       {!presentation && (
         <GizmoHelper alignment="bottom-right" margin={[64, 64]}>
-          <GizmoViewport axisColors={['#ef4444', '#22c55e', '#3b82f6']} labelColor="white" />
+          <GizmoViewport axisColors={['#ef4444', '#22c55e', '#5b8fd4']} labelColor="white" />
         </GizmoHelper>
       )}
     </Canvas>
@@ -102,7 +102,7 @@ function ItemNode({ item, presentation }: { item: SceneItem; presentation: boole
               key={p.key}
               piece={p}
               state={state}
-              edgeColor={isSel ? '#60a5fa' : presentation ? '#3b3b3b' : '#0b1220'}
+              edgeColor={isSel ? '#3f8f66' : presentation ? '#3b3b3b' : '#101113'}
               animate={stepped && p.step === step}
               onClick={(e) => {
                 if (presentation) return;

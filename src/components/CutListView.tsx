@@ -9,7 +9,7 @@ import { Btn, NumberField, Select, Stat, Toggle, cx } from './ui';
 import SheetSvg from './SheetSvg';
 import type { PackAlgorithm } from '../core/types';
 
-const edgeCell = (v: number) => (v > 0 ? <span className={cx('rounded px-1 font-mono text-[11px]', v >= 2 ? 'bg-amber-500/20 text-amber-300' : v >= 1 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-sky-500/20 text-sky-300')}>{trimNum(v, 2)}</span> : <span className="text-slate-600">—</span>);
+const edgeCell = (v: number) => (v > 0 ? <span className={cx('rounded px-1 font-mono text-[11px]', v >= 2 ? 'bg-amber-500/20 text-amber-700' : v >= 1 ? 'bg-emerald-500/20 text-emerald-700' : 'bg-accent/15 text-accent')}>{trimNum(v, 2)}</span> : <span className="text-zinc-400">—</span>);
 
 export default function CutListView() {
   const project = useStore((s) => s.project);
@@ -37,23 +37,23 @@ export default function CutListView() {
     <>
       {rows.map((r) => (
         <tr key={r.code}>
-          <td className="font-mono font-semibold text-sky-300">{r.code}</td>
+          <td className="font-mono font-semibold text-accent">{r.code}</td>
           <td>
             {r.name}
-            <div className="text-[10px] text-slate-500">{r.modules.join(', ')}</div>
+            <div className="text-[10px] text-zinc-500">{r.modules.join(', ')}</div>
           </td>
           <td className="text-center font-mono">{r.qty}</td>
           <td className="font-mono">{L(r.length)}</td>
           <td className="font-mono">{L(r.width)}</td>
           <td className="font-mono">{L(r.thickness)}</td>
-          <td className="font-mono text-emerald-300">{L(r.cutLength)}</td>
-          <td className="font-mono text-emerald-300">{L(r.cutWidth)}</td>
+          <td className="font-mono text-emerald-700">{L(r.cutLength)}</td>
+          <td className="font-mono text-emerald-700">{L(r.cutWidth)}</td>
           <td>{edgeCell(r.edges.l1)}</td>
           <td>{edgeCell(r.edges.l2)}</td>
           <td>{edgeCell(r.edges.w1)}</td>
           <td>{edgeCell(r.edges.w2)}</td>
           <td className="text-center">{r.grain ? '⟷' : '—'}</td>
-          <td className="max-w-72 text-[11px] text-amber-200/90">{r.notes}</td>
+          <td className="max-w-72 text-[11px] text-amber-700/90">{r.notes}</td>
         </tr>
       ))}
     </>
@@ -70,7 +70,7 @@ export default function CutListView() {
             <Layers size={14} /> Planos de tableros
           </Btn>
         </div>
-        <div className="ml-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+        <div className="ml-2 flex flex-wrap items-center gap-2 text-xs text-zinc-600">
           <Settings2 size={14} />
           Tablero
           <NumberField className="w-24" value={project.sheet.length} min={300} onChange={(v) => st.setSheet({ length: v })} />×
@@ -119,7 +119,7 @@ export default function CutListView() {
                     <span className="mr-2 rounded bg-accent px-1.5 font-mono text-xs">{g.letter}</span>
                     {g.materialName} · {fmtLen(g.thickness, unit)}
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-zinc-600">
                     {g.totalQty} piezas · {g.areaM2.toFixed(2)} m² {g.optimize ? '' : '· no optimizable'}
                   </span>
                 </div>
@@ -167,7 +167,7 @@ export default function CutListView() {
                   <tbody>
                     {[...cut.turned, ...cut.hardware].map((r) => (
                       <tr key={r.code}>
-                        <td className="font-mono font-semibold text-sky-300">{r.code}</td>
+                        <td className="font-mono font-semibold text-accent">{r.code}</td>
                         <td>{r.name}</td>
                         <td className="font-mono">{r.qty}</td>
                         <td>{r.materialName}</td>
@@ -176,7 +176,7 @@ export default function CutListView() {
                         <td className="font-mono">
                           {L(r.cutLength)} × {L(r.cutWidth)}
                         </td>
-                        <td className="text-[11px] text-amber-200/90">{r.notes}</td>
+                        <td className="text-[11px] text-amber-700/90">{r.notes}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -204,7 +204,7 @@ export default function CutListView() {
                 </tbody>
               </table>
             </div>
-            {!cut.groups.length && <div className="py-10 text-center text-slate-500">No hay piezas en el proyecto. Agrega módulos en Build 3D.</div>}
+            {!cut.groups.length && <div className="py-10 text-center text-zinc-500">No hay piezas en el proyecto. Agrega módulos en Build 3D.</div>}
           </div>
         ) : (
           <div className="space-y-6">
@@ -215,12 +215,12 @@ export default function CutListView() {
                     <span className="mr-2 rounded bg-accent px-1.5 font-mono text-xs">{o.letter}</span>
                     {o.materialName} {fmtLen(o.thickness, unit)}
                   </h3>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-zinc-600">
                     {o.sheets.length} tablero(s) · aprovechamiento {(o.utilization * 100).toFixed(1)} % · desperdicio {(o.wasteArea / 1e6).toFixed(2)} m² · {o.algorithm}
                   </span>
                 </div>
                 {o.unplaced.length > 0 && (
-                  <div className="mb-2 rounded border border-red-700/60 bg-red-500/10 p-2 text-xs text-red-200">
+                  <div className="mb-2 rounded border border-red-300 bg-red-500/10 p-2 text-xs text-red-700">
                     {o.unplaced.length} pieza(s) no caben en el tablero configurado: {o.unplaced.map((u) => `${u.code} (${L(u.w)}×${L(u.h)})`).join(', ')}
                   </div>
                 )}
@@ -231,7 +231,7 @@ export default function CutListView() {
                 </div>
               </div>
             ))}
-            {!opts.length && <div className="py-10 text-center text-slate-500">No hay tableros que optimizar.</div>}
+            {!opts.length && <div className="py-10 text-center text-zinc-500">No hay tableros que optimizar.</div>}
           </div>
         )}
       </div>

@@ -61,12 +61,12 @@ export default function TopBar() {
   };
 
   return (
-    <header className="flex h-12 shrink-0 items-center gap-2 border-b border-line bg-[#0d1117] px-3">
+    <header className="flex h-12 shrink-0 items-center gap-2 border-b border-line bg-panel px-3">
       <div className="flex items-center gap-2 pr-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-sky-500 to-blue-700 text-sm font-black text-white">T</div>
+        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-sm font-black text-white">T</div>
         <div className="leading-none">
           <div className="text-sm font-bold tracking-wide">TAYSER</div>
-          <div className="max-w-40 truncate text-[10px] text-slate-500">
+          <div className="max-w-40 truncate text-[10px] text-zinc-500">
             {name}
             {dirty ? ' •' : ''}
           </div>
@@ -77,7 +77,7 @@ export default function TopBar() {
           <button
             key={m.id}
             onClick={() => st.setMode(m.id)}
-            className={cx('flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium', mode === m.id ? 'bg-accent text-white' : 'text-slate-300 hover:bg-line/60')}
+            className={cx('flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium', mode === m.id ? 'bg-accent text-white' : 'text-zinc-700 hover:bg-line/60')}
           >
             <m.icon size={14} /> {m.label}
           </button>
@@ -85,7 +85,7 @@ export default function TopBar() {
       </nav>
       <div className="flex rounded-lg border border-line bg-panel p-0.5">
         {UNITS.map((u) => (
-          <button key={u} onClick={() => st.setUnit(u)} className={cx('rounded-md px-2.5 py-1 font-mono text-xs', unit === u ? 'bg-amber-500 text-slate-900' : 'text-slate-300 hover:bg-line/60')}>
+          <button key={u} onClick={() => st.setUnit(u)} className={cx('rounded-md px-2.5 py-1 font-mono text-xs', unit === u ? 'bg-zinc-800 text-white' : 'text-zinc-700 hover:bg-line/60')}>
             {u}
           </button>
         ))}

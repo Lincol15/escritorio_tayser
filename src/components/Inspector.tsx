@@ -63,7 +63,7 @@ function ItemInspector({ item }: { item: SceneItem }) {
         <Row label="Nombre">
           <TextField value={item.name} onChange={(v) => st.updateItem(item.id, { name: v }, false)} />
         </Row>
-        <div className="flex items-center justify-between text-[11px] text-slate-500">
+        <div className="flex items-center justify-between text-[11px] text-zinc-500">
           <span>
             Total: {fmtLen(built.size.w, unit)} × {fmtLen(built.size.h, unit)} × {fmtLen(built.size.d, unit)}
           </span>
@@ -167,7 +167,7 @@ function ItemInspector({ item }: { item: SceneItem }) {
       </Section>
 
       {!useStore.getState().selectedPiece && (
-        <div className="px-3 py-3 text-[11px] text-slate-500">Haz clic sobre una pieza en el visor 3D (o en la lista del proyecto) para editar sus cantos, veta y cortes especiales.</div>
+        <div className="px-3 py-3 text-[11px] text-zinc-500">Haz clic sobre una pieza en el visor 3D (o en la lista del proyecto) para editar sus cantos, veta y cortes especiales.</div>
       )}
     </>
   );
@@ -185,7 +185,7 @@ function ProjectInspector() {
         <Row label="Cliente">
           <TextField value={p.client} onChange={(v) => st.updateProject({ client: v })} />
         </Row>
-        <label className="block text-xs text-slate-400">
+        <label className="block text-xs text-zinc-600">
           Notas
           <textarea className="field mt-1 h-16! w-full py-1" value={p.notes} onChange={(e) => st.updateProject({ notes: e.target.value })} />
         </label>
@@ -207,9 +207,9 @@ function ProjectInspector() {
           <Toggle value={p.settings.discountEdges} onChange={(v) => st.setSettings({ discountEdges: v })} />
         </Row>
       </Section>
-      <div className="space-y-2 px-3 py-3 text-[11px] leading-relaxed text-slate-500">
+      <div className="space-y-2 px-3 py-3 text-[11px] leading-relaxed text-zinc-500">
         <p>
-          <b className="text-slate-300">Flujo sugerido:</b> 1) inserta paredes y módulos del catálogo · 2) ajusta medidas en este panel · 3) revisa <b>Despiece y cortes</b> · 4) exporta PDF/CSV · 5) muestra la <b>Vista cliente</b>.
+          <b className="text-zinc-700">Flujo sugerido:</b> 1) inserta paredes y módulos del catálogo · 2) ajusta medidas en este panel · 3) revisa <b>Despiece y cortes</b> · 4) exporta PDF/CSV · 5) muestra la <b>Vista cliente</b>.
         </p>
         <p>Los campos numéricos aceptan expresiones: <code>2440/3-4</code>, <code>23 1/2</code>, flechas ↑↓ (Shift ×10).</p>
       </div>

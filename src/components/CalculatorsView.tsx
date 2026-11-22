@@ -21,20 +21,20 @@ export default function CalculatorsView() {
   return (
     <div className="flex h-full">
       <nav className="w-64 shrink-0 space-y-1 border-r border-line bg-panel p-2">
-        <div className="px-2 py-2 text-[11px] font-semibold uppercase tracking-wider text-sky-300/90">Calculadoras de taller</div>
+        <div className="px-2 py-2 text-xs font-semibold text-zinc-800">Calculadoras de taller</div>
         {CALCS.map((c) => (
-          <button key={c.id} onClick={() => setId(c.id)} className={cx('flex w-full items-start gap-2 rounded-md px-2 py-2 text-left', id === c.id ? 'bg-accent/25 text-white' : 'text-slate-300 hover:bg-line/50')}>
-            <c.icon size={16} className="mt-0.5 shrink-0 text-sky-400" />
+          <button key={c.id} onClick={() => setId(c.id)} className={cx('flex w-full items-start gap-2 rounded-md px-2 py-2 text-left', id === c.id ? 'bg-accent/15 text-zinc-900' : 'text-zinc-700 hover:bg-line/50')}>
+            <c.icon size={16} className="mt-0.5 shrink-0 text-accent" />
             <span>
               <span className="block text-sm">{c.name}</span>
-              <span className="block text-[11px] leading-tight text-slate-500">{c.desc}</span>
+              <span className="block text-[11px] leading-tight text-zinc-500">{c.desc}</span>
             </span>
           </button>
         ))}
       </nav>
       <div className="scroll-thin flex-1 overflow-y-auto p-6">
         <h2 className="mb-1 text-lg font-semibold">{cur.name}</h2>
-        <p className="mb-5 text-sm text-slate-400">{cur.desc} Todas las medidas se muestran en la unidad activa de la barra superior.</p>
+        <p className="mb-5 text-sm text-zinc-600">{cur.desc} Todas las medidas se muestran en la unidad activa de la barra superior.</p>
         {id === 'drawer' && <DrawerCalc />}
         {id === 'shelves' && <ShelvesCalc />}
         {id === 'fronts' && <FrontsCalc />}
@@ -74,7 +74,7 @@ function Table({ head, rows }: { head: string[]; rows: (string | number)[][] }) 
 
 function Notes({ items }: { items: string[] }) {
   return (
-    <ul className="space-y-1 rounded-lg border border-line bg-panel2 p-3 text-xs text-slate-300">
+    <ul className="space-y-1 rounded-lg border border-line bg-panel2 p-3 text-xs text-zinc-700">
       {items.map((n, i) => (
         <li key={i}>• {n}</li>
       ))}
@@ -154,7 +154,7 @@ function ShelvesCalc() {
               rows={r.shelves.map((s) => [`Repisa ${s.index}`, L(s.bottom), L(s.center), L(s.top), ...(v.system32 ? [s.hole !== undefined ? L(s.hole) : '—'] : [])])}
             />
             <svg viewBox={`-20 -10 140 ${H / 8 + 20}`} className="max-h-96 w-full rounded border border-line bg-panel2">
-              <rect x={0} y={0} width={100} height={H / 8} fill="none" stroke="#94a3b8" />
+              <rect x={0} y={0} width={100} height={H / 8} fill="none" stroke="#7a807a" />
               {r.shelves.map((s) => (
                 <rect key={s.index} x={0} y={(H - s.top) / 8} width={100} height={Math.max(1, v.shelfThickness / 8)} fill="#f59e0b" />
               ))}
@@ -199,11 +199,11 @@ function FrontsCalc() {
           <div className="grid gap-4 md:grid-cols-[1fr_auto]">
             <Table head={['Frente (de abajo a arriba)', 'Alto', 'Ancho', 'Borde inferior']} rows={r.fronts.map((f) => [`Frente ${f.index}`, L(f.height), L(f.width), L(f.y)])} />
             <svg width={v.totalWidth * sc + 20} height={v.totalHeight * sc + 20} className="rounded border border-line bg-panel2">
-              <rect x={10} y={10} width={v.totalWidth * sc} height={v.totalHeight * sc} fill="none" stroke="#64748b" strokeDasharray="4 3" />
+              <rect x={10} y={10} width={v.totalWidth * sc} height={v.totalHeight * sc} fill="none" stroke="#71717a" strokeDasharray="4 3" />
               {r.fronts.map((f) => (
                 <g key={f.index}>
-                  <rect x={10 + v.sideGap * sc} y={10 + (v.totalHeight - f.y - f.height) * sc} width={f.width * sc} height={f.height * sc} fill="#c8a27a" stroke="#1e293b" />
-                  <text x={10 + (v.totalWidth * sc) / 2} y={10 + (v.totalHeight - f.y - f.height / 2) * sc + 4} fontSize="11" textAnchor="middle" fill="#1e293b">
+                  <rect x={10 + v.sideGap * sc} y={10 + (v.totalHeight - f.y - f.height) * sc} width={f.width * sc} height={f.height * sc} fill="#c8a27a" stroke="#27272a" />
+                  <text x={10 + (v.totalWidth * sc) / 2} y={10 + (v.totalHeight - f.y - f.height / 2) * sc + 4} fontSize="11" textAnchor="middle" fill="#27272a">
                     {trimNum(f.height)}
                   </text>
                 </g>
@@ -255,8 +255,8 @@ function HandleCalc() {
         <>
           <Table head={['Perforación', 'X (desde izquierda)', 'Y (desde abajo)']} rows={r.holes.map((h, i) => [`Agujero ${i + 1}`, L(h.x), L(h.y)])} />
           <svg width={W + 40} height={H + 40} className="rounded border border-line bg-panel2">
-            <rect x={20} y={20} width={W} height={H} fill="#c8a27a" stroke="#1e293b" />
-            {r.holes.length === 2 && <line x1={20 + r.holes[0].x * sc} y1={20 + H - r.holes[0].y * sc} x2={20 + r.holes[1].x * sc} y2={20 + H - r.holes[1].y * sc} stroke="#334155" strokeWidth={6} strokeLinecap="round" />}
+            <rect x={20} y={20} width={W} height={H} fill="#c8a27a" stroke="#27272a" />
+            {r.holes.length === 2 && <line x1={20 + r.holes[0].x * sc} y1={20 + H - r.holes[0].y * sc} x2={20 + r.holes[1].x * sc} y2={20 + H - r.holes[1].y * sc} stroke="#3f3f46" strokeWidth={6} strokeLinecap="round" />}
             {r.holes.map((h, i) => (
               <circle key={i} cx={20 + h.x * sc} cy={20 + H - h.y * sc} r={4} fill="#ef4444" stroke="white" />
             ))}
@@ -298,7 +298,7 @@ function HingeCalc() {
           <div className="grid gap-4 md:grid-cols-[1fr_auto]">
             <Table head={['Bisagra', 'Centro desde abajo', 'Centro desde arriba']} rows={r.positions.map((p, i) => [`Bisagra ${i + 1}`, L(p), L(v.doorHeight - p)])} />
             <svg width={v.doorWidth * sc + 40} height={v.doorHeight * sc + 20} className="rounded border border-line bg-panel2">
-              <rect x={20} y={10} width={v.doorWidth * sc} height={v.doorHeight * sc} fill="#c8a27a" stroke="#1e293b" />
+              <rect x={20} y={10} width={v.doorWidth * sc} height={v.doorHeight * sc} fill="#c8a27a" stroke="#27272a" />
               {r.positions.map((p, i) => (
                 <circle key={i} cx={20 + r.cupCenterX * sc} cy={10 + (v.doorHeight - p) * sc} r={Math.max(3, (v.cupDiameter / 2) * sc)} fill="#0ea5e9" stroke="white" />
               ))}
@@ -324,7 +324,7 @@ function UnitsCalc() {
           <Row label="Unidad de origen">
             <Select value={from} options={[{ value: 'mm', label: 'Milímetros' }, { value: 'cm', label: 'Centímetros' }, { value: 'in', label: 'Pulgadas' }]} onChange={(x) => setFrom(x as 'mm' | 'cm' | 'in')} />
           </Row>
-          <div className="text-[11px] text-slate-500">Puede escribir fracciones: 3/4, 1 1/2.</div>
+          <div className="text-[11px] text-zinc-500">Puede escribir fracciones: 3/4, 1 1/2.</div>
         </>
       }
       result={
@@ -346,8 +346,8 @@ function UnitsCalc() {
 function Big({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-line bg-panel2 px-3 py-2">
-      <div className="text-[10px] uppercase tracking-wider text-slate-500">{label}</div>
-      <div className="font-mono text-lg font-semibold text-sky-200">{value}</div>
+      <div className="text-[11px] font-medium text-zinc-500">{label}</div>
+      <div className="font-mono text-lg font-semibold text-accent">{value}</div>
     </div>
   );
 }

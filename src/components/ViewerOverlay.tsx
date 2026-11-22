@@ -98,8 +98,8 @@ export default function ViewerOverlay({ container }: { container: HTMLElement | 
             key={b}
             title={`Fondo ${b}`}
             onClick={() => s.setSceneBg(b)}
-            className={cx('h-5 w-5 rounded-full border', s.sceneBg === b ? 'border-sky-400' : 'border-line')}
-            style={{ background: b === 'dark' ? '#0f131a' : b === 'gray' ? '#3a3f47' : '#e8eaee' }}
+            className={cx('h-5 w-5 rounded-full border', s.sceneBg === b ? 'border-accent' : 'border-line')}
+            style={{ background: b === 'dark' ? '#17181b' : b === 'gray' ? '#3a3f47' : '#dfe3de' }}
           />
         ))}
         <span className="mx-1 h-5 w-px bg-line" />
@@ -129,10 +129,10 @@ export default function ViewerOverlay({ container }: { container: HTMLElement | 
             </Btn>
             <input type="range" min={0} max={Math.max(0, steps.length - 1)} value={Math.max(0, stepIdx)} onChange={(e) => goto(Number(e.target.value))} className="w-44 accent-amber-400" />
             <div className="w-64 truncate text-xs">
-              <span className="font-semibold text-amber-300">
+              <span className="font-semibold text-amber-700">
                 Paso {stepIdx + 1}/{steps.length}:
               </span>{' '}
-              <span className="text-slate-300">{steps[stepIdx]?.names.join(', ')}</span>
+              <span className="text-zinc-700">{steps[stepIdx]?.names.join(', ')}</span>
             </div>
             <Btn size="sm" variant="ghost" title="Ver todo" onClick={() => { setPlaying(false); s.setAssemblyStep(null); }}>
               <Eye size={14} />
@@ -146,8 +146,8 @@ export default function ViewerOverlay({ container }: { container: HTMLElement | 
 
       {!items.length && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="rounded-xl border border-line bg-panel/80 px-6 py-5 text-center text-sm text-slate-400">
-            <Box className="mx-auto mb-2 text-sky-400" />
+          <div className="rounded-xl border border-line bg-panel/80 px-6 py-5 text-center text-sm text-zinc-600">
+            <Box className="mx-auto mb-2 text-accent" />
             Agrega paredes y módulos desde el catálogo de la izquierda
             <br />o usa <b>Foto del ambiente</b> para que Tayser proponga la distribución.
           </div>

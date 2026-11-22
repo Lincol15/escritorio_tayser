@@ -148,15 +148,15 @@ export default function RoomPlanner() {
     <div className="flex h-full">
       <aside className="scroll-thin w-96 shrink-0 overflow-y-auto border-r border-line bg-panel">
         <div className="border-b border-line px-3 py-3">
-          <div className="flex items-center gap-2 text-sm font-semibold"><Sparkles size={16} className="text-emerald-400" /> Diseño desde una foto de tu cuarto</div>
-          <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
+          <div className="flex items-center gap-2 text-sm font-semibold"><Sparkles size={16} className="text-emerald-700" /> Diseño desde una foto de tu cuarto</div>
+          <p className="mt-1 text-[11px] leading-relaxed text-zinc-600">
             Todo se procesa en tu equipo, sin internet. Marcas la pared en la foto, ingresas sus medidas reales con una wincha, y Tayser calcula la perspectiva para medir sobre la foto y proponer dónde ubicar cada mueble respetando puertas, ventanas y zonas de paso.
           </p>
         </div>
 
         <Section title="1 · Foto">
           <Btn className="w-full" variant="primary" onClick={loadImage}><ImagePlus size={15} /> {r.image ? 'Cambiar foto' : 'Subir foto del cuarto'}</Btn>
-          <div className="text-[11px] text-slate-500">Toma la foto de frente a la pared principal, con las 4 esquinas visibles. La foto es opcional: también puedes ingresar todo a mano.</div>
+          <div className="text-[11px] text-zinc-500">Toma la foto de frente a la pared principal, con las 4 esquinas visibles. La foto es opcional: también puedes ingresar todo a mano.</div>
         </Section>
 
         <Section title="2 · Medidas reales de la habitación">
@@ -168,7 +168,7 @@ export default function RoomPlanner() {
               <Btn size="sm" variant={tool === 'corners' ? 'primary' : 'default'} onClick={() => { r.set({ corners: [], plan: null }); setTool('corners'); }}>
                 <Crosshair size={13} /> Marcar 4 esquinas
               </Btn>
-              {r.corners.length === 4 && <span className="self-center text-[11px] text-emerald-400">✓ Pared calibrada</span>}
+              {r.corners.length === 4 && <span className="self-center text-[11px] text-emerald-700">✓ Pared calibrada</span>}
             </div>
           )}
         </Section>
@@ -190,7 +190,7 @@ export default function RoomPlanner() {
                   <Select value={o.wall} options={WALLS.map((w) => ({ value: w, label: WALL_LABEL[w] }))} onChange={(v) => upd({ wall: v as WallId })} />
                   <Btn size="sm" variant="ghost" onClick={() => setObs(room.obstacles.filter((x) => x.id !== o.id))}><Trash2 size={12} /></Btn>
                 </div>
-                <div className="grid grid-cols-4 gap-1 text-[10px] text-slate-500">
+                <div className="grid grid-cols-4 gap-1 text-[10px] text-zinc-500">
                   <label>Desde esquina<NumberField value={o.x} min={0} onChange={(v) => upd({ x: v })} /></label>
                   <label>Ancho<NumberField value={o.w} min={10} onChange={(v) => upd({ w: v })} /></label>
                   <label>{o.type === 'ventana' ? 'Alféizar' : 'Desde piso'}<NumberField value={o.y} min={0} onChange={(v) => upd({ y: v })} /></label>
@@ -202,7 +202,7 @@ export default function RoomPlanner() {
           <Btn size="sm" variant="ghost" onClick={() => setObs([...room.obstacles, { id: uid('o'), type: 'puerta', wall: 'frente', x: 200, y: 0, w: 800, h: 2000 }])}>
             <Plus size={12} /> Agregar a mano (otras paredes)
           </Btn>
-          <div className="text-[10px] text-slate-500">En las paredes laterales la distancia se mide desde la esquina con la pared del fondo; en la frontal, desde la izquierda.</div>
+          <div className="text-[10px] text-zinc-500">En las paredes laterales la distancia se mide desde la esquina con la pared del fondo; en la frontal, desde la izquierda.</div>
         </Section>
 
         {r.image && (
@@ -210,7 +210,7 @@ export default function RoomPlanner() {
             <Btn size="sm" disabled={!H} variant={tool === 'measure' ? 'primary' : 'default'} onClick={() => { setPending(null); setTool('measure'); }}><Ruler size={13} /> Medir dos puntos de la pared</Btn>
             {r.measures.map((m, i) => (
               <div key={m.id} className="flex items-center justify-between text-xs">
-                <span>Medida {i + 1}: <b className="font-mono text-amber-300">{L(m.mm)}</b></span>
+                <span>Medida {i + 1}: <b className="font-mono text-amber-700">{L(m.mm)}</b></span>
                 <Btn size="sm" variant="ghost" onClick={() => r.set({ measures: r.measures.filter((x) => x.id !== m.id) })}><Trash2 size={12} /></Btn>
               </div>
             ))}
@@ -227,7 +227,7 @@ export default function RoomPlanner() {
                   {f.kind === 'velador' && <Select className="w-16!" value={String(f.qty)} options={[{ value: '1', label: '×1' }, { value: '2', label: '×2' }]} onChange={(v) => upd({ qty: Number(v) })} />}
                 </div>
                 {f.enabled && (
-                  <div className="mt-1 grid grid-cols-4 gap-1 text-[10px] text-slate-500">
+                  <div className="mt-1 grid grid-cols-4 gap-1 text-[10px] text-zinc-500">
                     <label>Ancho<NumberField value={f.w} min={300} onChange={(v) => upd({ w: v, minW: Math.min(f.minW, v) })} /></label>
                     <label>{f.kind === 'cama' ? 'Largo' : 'Fondo'}<NumberField value={f.d} min={200} onChange={(v) => upd({ d: v })} /></label>
                     <label>Alto<NumberField value={f.h} min={300} onChange={(v) => upd({ h: v })} /></label>
@@ -242,29 +242,29 @@ export default function RoomPlanner() {
 
         {r.plan && (
           <Section title="5 · Propuesta">
-            {r.plan.warnings.map((w) => <div key={w} className="text-xs text-amber-300">⚠ {w}</div>)}
+            {r.plan.warnings.map((w) => <div key={w} className="text-xs text-amber-700">⚠ {w}</div>)}
             {r.plan.placements.map((p) => (
               <div key={p.id} className="rounded border border-line bg-panel2 p-2 text-xs" style={{ borderLeft: `3px solid ${FURN_COLOR[p.kind]}` }}>
                 <div className="font-semibold">{p.label}</div>
-                <div className="font-mono text-sky-200">{L(p.w)} × {L(p.h)} alto × {L(p.d)} {p.kind === 'cama' ? 'largo' : 'fondo'}</div>
-                <div className="text-slate-400">
+                <div className="font-mono text-accent">{L(p.w)} × {L(p.h)} alto × {L(p.d)} {p.kind === 'cama' ? 'largo' : 'fondo'}</div>
+                <div className="text-zinc-600">
                   {WALL_LABEL[p.wall]} · desde {L(p.along)} hasta {L(p.along + p.w)}
                   {p.wall === 'izquierda' || p.wall === 'derecha' ? ' (medido desde la pared del fondo)' : ' (desde la esquina izquierda)'}
                 </div>
-                {p.notes.map((n) => <div key={n} className="text-[11px] text-emerald-300/90">✓ {n}</div>)}
+                {p.notes.map((n) => <div key={n} className="text-[11px] text-emerald-700/90">✓ {n}</div>)}
               </div>
             ))}
             {r.plan.failed.map((f) => (
-              <div key={f.label} className="rounded border border-red-800/60 bg-red-500/10 p-2 text-xs text-red-200"><b>{f.label}:</b> {f.reason}</div>
+              <div key={f.label} className="rounded border border-red-300 bg-red-500/10 p-2 text-xs text-red-700"><b>{f.label}:</b> {f.reason}</div>
             ))}
             <Btn className="w-full" variant="primary" disabled={!r.plan.placements.length} onClick={sendTo3D}><Send size={15} /> Enviar a Build 3D (paredes + muebles)</Btn>
-            <div className="text-[10px] text-slate-500">Reemplaza la escena actual por la habitación propuesta. Luego puedes ajustar cada mueble en el inspector y obtener su despiece.</div>
+            <div className="text-[10px] text-zinc-500">Reemplaza la escena actual por la habitación propuesta. Luego puedes ajustar cada mueble en el inspector y obtener su despiece.</div>
           </Section>
         )}
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="relative min-h-0 flex-1 bg-[#0a0d12]">
+        <div className="relative min-h-0 flex-1 bg-[#121315]">
           {r.image ? (
             <>
               <svg ref={svgRef} viewBox={`0 0 ${r.imgW} ${r.imgH}`} preserveAspectRatio="xMidYMid meet" className={cx('h-full w-full', tool !== 'none' && 'cursor-crosshair')} onClick={onPhotoClick}>
@@ -332,11 +332,11 @@ export default function RoomPlanner() {
               )}
             </>
           ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-3 text-slate-400">
-              <ImagePlus size={42} className="text-emerald-400" />
+            <div className="flex h-full flex-col items-center justify-center gap-3 text-zinc-600">
+              <ImagePlus size={42} className="text-emerald-700" />
               <div className="text-sm">Sube una foto de tu cuarto (frente a la pared principal)</div>
               <Btn variant="primary" onClick={loadImage}>Elegir foto</Btn>
-              <div className="text-xs text-slate-500">…o ingresa las medidas a la izquierda y pulsa «Proponer distribución».</div>
+              <div className="text-xs text-zinc-500">…o ingresa las medidas a la izquierda y pulsa «Proponer distribución».</div>
             </div>
           )}
         </div>
@@ -364,9 +364,9 @@ function FloorPlan({ room, plan, unit }: { room: RoomSpec; plan: PlanResult | nu
   };
   return (
     <svg viewBox={`${-pad} ${-pad} ${W + 2 * pad} ${D + 2 * pad}`} className="h-full w-full">
-      <text x={-pad + 40} y={-pad + fs * 1.4} fontSize={fs} fill="#94a3b8">Planta (vista superior) · la pared del fondo está arriba</text>
-      <rect x={-T} y={-T} width={W + 2 * T} height={D + 2 * T} fill="#475569" />
-      <rect x={0} y={0} width={W} height={D} fill="#1e293b" />
+      <text x={-pad + 40} y={-pad + fs * 1.4} fontSize={fs} fill="#a1a1aa">Planta (vista superior) · la pared del fondo está arriba</text>
+      <rect x={-T} y={-T} width={W + 2 * T} height={D + 2 * T} fill="#52525b" />
+      <rect x={0} y={0} width={W} height={D} fill="#27272a" />
       {room.obstacles.map((o) => {
         const s = seg(o);
         const swing = doorSwing(room, o);
@@ -382,14 +382,14 @@ function FloorPlan({ room, plan, unit }: { room: RoomSpec; plan: PlanResult | nu
           <rect x={p.clear.x} y={p.clear.z} width={p.clear.w} height={p.clear.d} fill="none" stroke={FURN_COLOR[p.kind]} strokeOpacity={0.4} strokeDasharray="25 18" strokeWidth={8} />
           <rect x={p.rect.x} y={p.rect.z} width={p.rect.w} height={p.rect.d} fill={`${FURN_COLOR[p.kind]}55`} stroke={FURN_COLOR[p.kind]} strokeWidth={14} />
           <text x={p.rect.x + p.rect.w / 2} y={p.rect.z + p.rect.d / 2} fontSize={fs * 0.9} fill="#fff" textAnchor="middle" fontWeight={700}>{p.label}</text>
-          <text x={p.rect.x + p.rect.w / 2} y={p.rect.z + p.rect.d / 2 + fs} fontSize={fs * 0.75} fill="#e2e8f0" textAnchor="middle">{fmtLen(p.w, unit, false)}×{fmtLen(p.d, unit, false)}</text>
+          <text x={p.rect.x + p.rect.w / 2} y={p.rect.z + p.rect.d / 2 + fs} fontSize={fs * 0.75} fill="#e4e4e7" textAnchor="middle">{fmtLen(p.w, unit, false)}×{fmtLen(p.d, unit, false)}</text>
         </g>
       ))}
       <line x1={0} y1={D + T + pad / 2.5} x2={W} y2={D + T + pad / 2.5} stroke="#fbbf24" strokeWidth={8} />
       <text x={W / 2} y={D + T + pad / 2.5 - fs * 0.4} fontSize={fs} fill="#fbbf24" textAnchor="middle">{fmtLen(W, unit)}</text>
       <line x1={W + T + pad / 2.5} y1={0} x2={W + T + pad / 2.5} y2={D} stroke="#fbbf24" strokeWidth={8} />
       <text x={W + T + pad / 2.5 + fs * 0.4} y={D / 2} fontSize={fs} fill="#fbbf24" transform={`rotate(90 ${W + T + pad / 2.5 + fs * 0.4} ${D / 2})`} textAnchor="middle">{fmtLen(D, unit)}</text>
-      {!plan && <text x={W / 2} y={D / 2} fontSize={fs} fill="#64748b" textAnchor="middle">Pulsa «Proponer distribución» para ver la propuesta</text>}
+      {!plan && <text x={W / 2} y={D / 2} fontSize={fs} fill="#71717a" textAnchor="middle">Pulsa «Proponer distribución» para ver la propuesta</text>}
     </svg>
   );
 }

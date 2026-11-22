@@ -12,9 +12,9 @@ import { captureViewer, toggleFullscreen } from './ViewerOverlay';
 function Swatch({ m, active, onClick }: { m: Material; active: boolean; onClick: () => void }) {
   const url = useMemo(() => swatchDataUrl(m), [m]);
   return (
-    <button title={m.name} onClick={onClick} className={cx('flex w-16 flex-col items-center gap-1 rounded-md p-1 text-[10px] leading-tight', active ? 'bg-sky-500/20 ring-2 ring-sky-400' : 'hover:bg-white/5')}>
+    <button title={m.name} onClick={onClick} className={cx('flex w-16 flex-col items-center gap-1 rounded-md p-1 text-[10px] leading-tight', active ? 'bg-emerald-500/20 ring-2 ring-emerald-400' : 'hover:bg-white/5')}>
       <span className="h-10 w-10 rounded-full border border-white/20 shadow" style={{ background: url ? `url(${url}) center/cover` : m.color }} />
-      <span className="text-center text-slate-300">{m.name.replace('Melamina ', '')}</span>
+      <span className="text-center text-zinc-300">{m.name.replace('Melamina ', '')}</span>
     </button>
   );
 }
@@ -44,39 +44,39 @@ export default function ClientView() {
     <div ref={ref} className="relative h-full w-full bg-[#20242c]">
       <Viewer3D presentation />
       <div className="absolute left-5 top-5 rounded-xl border border-white/10 bg-black/40 px-5 py-4 backdrop-blur-md">
-        <div className="text-[11px] uppercase tracking-[0.2em] text-sky-300">Propuesta de diseño</div>
+        <div className="text-xs font-medium text-emerald-300">Propuesta de diseño</div>
         <div className="text-2xl font-semibold">{project.name}</div>
-        {project.client && <div className="text-sm text-slate-300">Cliente: {project.client}</div>}
+        {project.client && <div className="text-sm text-zinc-300">Cliente: {project.client}</div>}
       </div>
 
       <div className="absolute bottom-5 left-5 w-80 rounded-xl border border-white/10 bg-black/45 p-4 backdrop-blur-md">
-        <div className="mb-2 text-[11px] uppercase tracking-[0.2em] text-slate-400">Dimensiones totales</div>
+        <div className="mb-2 text-xs font-medium text-zinc-400">Dimensiones totales</div>
         {total ? (
           <div className="grid grid-cols-3 gap-2 text-center">
             {[['Ancho', total.w], ['Alto', total.h], ['Fondo', total.d]].map(([l, v]) => (
               <div key={l as string} className="rounded-lg bg-white/5 py-2">
-                <div className="text-[10px] text-slate-400">{l}</div>
+                <div className="text-[10px] text-zinc-400">{l}</div>
                 <div className="font-mono text-sm font-semibold">{fmtLen(v as number, unit)}</div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-sm text-slate-400">Sin muebles en la escena.</div>
+          <div className="text-sm text-zinc-400">Sin muebles en la escena.</div>
         )}
         <div className="scroll-thin mt-3 max-h-40 space-y-1 overflow-y-auto text-xs">
           {modules.map((m) => {
             const s = buildItem(m).size;
             return (
-              <div key={m.id} className="flex justify-between gap-2 text-slate-300">
+              <div key={m.id} className="flex justify-between gap-2 text-zinc-300">
                 <span className="truncate">{m.name}</span>
-                <span className="font-mono text-slate-400">
+                <span className="font-mono text-zinc-400">
                   {fmtLen(s.w, unit, false)}×{fmtLen(s.h, unit, false)}×{fmtLen(s.d, unit, false)}
                 </span>
               </div>
             );
           })}
         </div>
-        <div className="mt-2 text-[10px] text-slate-500">{modules.length} mueble(s) · medidas en {unit}</div>
+        <div className="mt-2 text-[10px] text-zinc-500">{modules.length} mueble(s) · medidas en {unit}</div>
       </div>
 
       <div className="absolute right-5 top-5 flex gap-1">
@@ -98,13 +98,13 @@ export default function ClientView() {
 
       {panel && (
         <div className="absolute bottom-5 right-5 w-[420px] rounded-xl border border-white/10 bg-black/45 p-4 backdrop-blur-md">
-          <div className="mb-2 text-[11px] uppercase tracking-[0.2em] text-slate-400">Acabado de estructura</div>
+          <div className="mb-2 text-xs font-medium text-zinc-400">Acabado de estructura</div>
           <div className="flex flex-wrap gap-1">
             {finishes.map((m) => (
               <Swatch key={m.id} m={m} active={carcass === m.id} onClick={() => st.setAllFinishes(m.id, undefined)} />
             ))}
           </div>
-          <div className="mb-2 mt-3 text-[11px] uppercase tracking-[0.2em] text-slate-400">Puertas y frentes</div>
+          <div className="mb-2 mt-3 text-xs font-medium text-zinc-400">Puertas y frentes</div>
           <div className="flex flex-wrap gap-1">
             {finishes.map((m) => (
               <Swatch key={m.id} m={m} active={front === m.id} onClick={() => st.setAllFinishes(undefined, m.id)} />

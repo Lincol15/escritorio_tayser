@@ -98,7 +98,7 @@ export const useStore = create<State>()((set, get) => {
     gizmo: 'translate',
     rotSnap: 15,
     viewRequest: { view: 'iso', n: 1 },
-    sceneBg: 'dark',
+    sceneBg: 'light',
     past: [],
     future: [],
     toast: null,

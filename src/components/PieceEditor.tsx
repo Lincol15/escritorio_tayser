@@ -36,19 +36,19 @@ export default function PieceEditor({ item, pieceKey }: { item: SceneItem; piece
       >
         <div className="grid grid-cols-3 gap-1 text-center font-mono text-[11px]">
           <div className="rounded bg-panel2 py-1">
-            <div className="text-[9px] text-slate-500">{isPanel ? 'LARGO' : 'ALTO'}</div>
+            <div className="text-[9px] text-zinc-500">{isPanel ? 'LARGO' : 'ALTO'}</div>
             {fmtLen(piece.length, unit)}
           </div>
           <div className="rounded bg-panel2 py-1">
-            <div className="text-[9px] text-slate-500">{isPanel ? 'ANCHO' : 'Ø MAYOR'}</div>
+            <div className="text-[9px] text-zinc-500">{isPanel ? 'ANCHO' : 'Ø MAYOR'}</div>
             {fmtLen(piece.width, unit)}
           </div>
           <div className="rounded bg-panel2 py-1">
-            <div className="text-[9px] text-slate-500">ESPESOR</div>
+            <div className="text-[9px] text-zinc-500">ESPESOR</div>
             {fmtLen(piece.thickness, unit)}
           </div>
         </div>
-        <div className="text-[10px] text-slate-500">Las medidas se controlan con los parámetros del mueble. Clave: {piece.key}</div>
+        <div className="text-[10px] text-zinc-500">Las medidas se controlan con los parámetros del mueble. Clave: {piece.key}</div>
         <Row label="Visible">
           <Toggle value={!hidden} onChange={() => st.togglePieceHidden(item.id, pieceKey)} />
         </Row>
@@ -82,9 +82,9 @@ export default function PieceEditor({ item, pieceKey }: { item: SceneItem; piece
 
       {isPanel && (
         <Section title="Cortes especiales">
-          {notes && <div className="rounded border border-amber-700/40 bg-amber-500/10 p-2 text-[11px] text-amber-200">{notes}</div>}
+          {notes && <div className="rounded border border-amber-300 bg-amber-500/10 p-2 text-[11px] text-amber-700">{notes}</div>}
 
-          <div className="text-[11px] font-semibold text-slate-300">Esquinas curvas (radio)</div>
+          <div className="text-[11px] font-semibold text-zinc-700">Esquinas curvas (radio)</div>
           <Row label="Radio">
             <NumberField value={f.cornerRadius} min={0} max={Math.min(piece.length, piece.width) / 2} onChange={(v) => setF({ cornerRadius: v })} />
           </Row>
@@ -93,7 +93,7 @@ export default function PieceEditor({ item, pieceKey }: { item: SceneItem; piece
               <button
                 key={c}
                 onClick={() => setF({ radiusCorners: f.radiusCorners.includes(c) ? f.radiusCorners.filter((x) => x !== c) : [...f.radiusCorners, c] })}
-                className={cx('rounded border px-1 py-1 text-[10px]', f.radiusCorners.includes(c) ? 'border-sky-500 bg-sky-500/20 text-sky-200' : 'border-line text-slate-500')}
+                className={cx('rounded border px-1 py-1 text-[10px]', f.radiusCorners.includes(c) ? 'border-accent bg-accent/15 text-accent' : 'border-line text-zinc-500')}
               >
                 {CORNER_LABEL[c]}
               </button>
@@ -139,7 +139,7 @@ export default function PieceEditor({ item, pieceKey }: { item: SceneItem; piece
                   />
                   <DelBtn onClick={() => setF({ holes: f.holes.filter((_, j) => j !== i) })} />
                 </div>
-                <div className="grid grid-cols-2 gap-1 text-[10px] text-slate-500">
+                <div className="grid grid-cols-2 gap-1 text-[10px] text-zinc-500">
                   <label>Centro X<NumberField value={h.x} onChange={(v) => upd({ x: v })} /></label>
                   <label>Centro Y<NumberField value={h.y} onChange={(v) => upd({ y: v })} /></label>
                   {h.shape === 'rect' ? (
@@ -165,7 +165,7 @@ export default function PieceEditor({ item, pieceKey }: { item: SceneItem; piece
                   <Select value={t.edge} options={edgeKeyOpts} onChange={(v) => upd({ edge: v as EdgeKey })} />
                   <DelBtn onClick={() => setF({ tenons: f.tenons.filter((_, j) => j !== i) })} />
                 </div>
-                <div className="grid grid-cols-3 gap-1 text-[10px] text-slate-500">
+                <div className="grid grid-cols-3 gap-1 text-[10px] text-zinc-500">
                   <label>Saliente<NumberField value={t.length} min={1} onChange={(v) => upd({ length: v })} /></label>
                   <label>Ancho<NumberField value={t.size} min={1} onChange={(v) => upd({ size: v })} /></label>
                   <label>Grosor<NumberField value={t.thickness} min={1} onChange={(v) => upd({ thickness: v })} /></label>
@@ -173,7 +173,7 @@ export default function PieceEditor({ item, pieceKey }: { item: SceneItem; piece
               </div>
             );
           })}
-          <div className="text-[10px] text-slate-500">Las espigas se suman a la medida de corte. Los calados se miden desde la esquina inferior izquierda de la pieza.</div>
+          <div className="text-[10px] text-zinc-500">Las espigas se suman a la medida de corte. Los calados se miden desde la esquina inferior izquierda de la pieza.</div>
         </Section>
       )}
     </>
@@ -183,7 +183,7 @@ export default function PieceEditor({ item, pieceKey }: { item: SceneItem; piece
 function ListHeader({ title, onAdd }: { title: string; onAdd: () => void }) {
   return (
     <div className="flex items-center justify-between pt-1">
-      <span className="text-[11px] font-semibold text-slate-300">{title}</span>
+      <span className="text-[11px] font-semibold text-zinc-700">{title}</span>
       <Btn size="sm" variant="ghost" onClick={onAdd}>
         <Plus size={12} /> Agregar
       </Btn>
@@ -193,7 +193,7 @@ function ListHeader({ title, onAdd }: { title: string; onAdd: () => void }) {
 
 function DelBtn({ onClick }: { onClick: () => void }) {
   return (
-    <Btn size="sm" variant="ghost" onClick={onClick} className="text-red-300">
+    <Btn size="sm" variant="ghost" onClick={onClick} className="text-red-700">
       <Trash2 size={12} />
     </Btn>
   );
@@ -204,23 +204,23 @@ function EdgeDiagram({ piece }: { piece: { length: number; width: number; edges:
   const ratio = Math.min(3, Math.max(0.35, piece.length / piece.width));
   const W = 180;
   const H = Math.max(40, Math.min(110, W / ratio));
-  const col = (v: number) => (v >= 2 ? '#f59e0b' : v >= 1 ? '#22c55e' : v > 0 ? '#38bdf8' : '#334155');
+  const col = (v: number) => (v >= 2 ? '#f59e0b' : v >= 1 ? '#22c55e' : v > 0 ? '#38bdf8' : '#c4c9c3');
   const sw = (v: number) => (v > 0 ? 4 : 1.5);
   const x0 = 20;
   const y0 = 12;
   return (
     <svg viewBox={`0 0 ${W + 40} ${H + 28}`} className="w-full">
-      <rect x={x0} y={y0} width={W} height={H} fill="#1e293b" />
-      {piece.grain && Array.from({ length: 6 }, (_, i) => <line key={i} x1={x0 + 8} x2={x0 + W - 8} y1={y0 + ((i + 1) * H) / 7} y2={y0 + ((i + 1) * H) / 7} stroke="#475569" strokeDasharray="6 4" />)}
+      <rect x={x0} y={y0} width={W} height={H} fill="#e4e7e3" />
+      {piece.grain && Array.from({ length: 6 }, (_, i) => <line key={i} x1={x0 + 8} x2={x0 + W - 8} y1={y0 + ((i + 1) * H) / 7} y2={y0 + ((i + 1) * H) / 7} stroke="#52525b" strokeDasharray="6 4" />)}
       <line x1={x0} y1={y0} x2={x0 + W} y2={y0} stroke={col(piece.edges.l1)} strokeWidth={sw(piece.edges.l1)} />
       <line x1={x0} y1={y0 + H} x2={x0 + W} y2={y0 + H} stroke={col(piece.edges.l2)} strokeWidth={sw(piece.edges.l2)} />
       <line x1={x0 + W} y1={y0} x2={x0 + W} y2={y0 + H} stroke={col(piece.edges.w1)} strokeWidth={sw(piece.edges.w1)} />
       <line x1={x0} y1={y0} x2={x0} y2={y0 + H} stroke={col(piece.edges.w2)} strokeWidth={sw(piece.edges.w2)} />
-      <text x={x0 + W / 2} y={y0 - 3} fontSize="9" fill="#94a3b8" textAnchor="middle">L1 {piece.edges.l1 || ''}</text>
-      <text x={x0 + W / 2} y={y0 + H + 11} fontSize="9" fill="#94a3b8" textAnchor="middle">L2 {piece.edges.l2 || ''}</text>
-      <text x={x0 + W + 4} y={y0 + H / 2} fontSize="9" fill="#94a3b8">A1</text>
-      <text x={2} y={y0 + H / 2} fontSize="9" fill="#94a3b8">A2</text>
-      <text x={x0 + W / 2} y={y0 + H + 24} fontSize="8.5" fill="#64748b" textAnchor="middle">{piece.grain ? 'Veta ⟷ a lo largo' : 'Sin veta'}</text>
+      <text x={x0 + W / 2} y={y0 - 3} fontSize="9" fill="#5c635d" textAnchor="middle">L1 {piece.edges.l1 || ''}</text>
+      <text x={x0 + W / 2} y={y0 + H + 11} fontSize="9" fill="#5c635d" textAnchor="middle">L2 {piece.edges.l2 || ''}</text>
+      <text x={x0 + W + 4} y={y0 + H / 2} fontSize="9" fill="#5c635d">A1</text>
+      <text x={2} y={y0 + H / 2} fontSize="9" fill="#5c635d">A2</text>
+      <text x={x0 + W / 2} y={y0 + H + 24} fontSize="8.5" fill="#7a807a" textAnchor="middle">{piece.grain ? 'Veta ⟷ a lo largo' : 'Sin veta'}</text>
     </svg>
   );
 }

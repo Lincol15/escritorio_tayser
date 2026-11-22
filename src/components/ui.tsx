@@ -13,11 +13,11 @@ export function Btn({ className, variant = 'default', size = 'md', ...p }: Butto
       className={cx(
         'inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed select-none',
         size === 'sm' ? 'h-7 px-2 text-xs' : 'h-8 px-3 text-sm',
-        variant === 'default' && 'bg-panel2 border border-line hover:bg-line/60 text-slate-200',
-        variant === 'primary' && 'bg-accent hover:bg-blue-500 text-white',
-        variant === 'accent' && 'bg-amber-500 hover:bg-amber-400 text-slate-900',
-        variant === 'ghost' && 'hover:bg-line/60 text-slate-300',
-        variant === 'danger' && 'bg-red-600/20 border border-red-700/60 hover:bg-red-600/40 text-red-200',
+        variant === 'default' && 'bg-panel2 border border-line hover:bg-line/60 text-zinc-800',
+        variant === 'primary' && 'bg-accent hover:bg-accent-hover text-white',
+        variant === 'accent' && 'bg-amber-500 hover:bg-amber-400 text-zinc-900',
+        variant === 'ghost' && 'hover:bg-line/60 text-zinc-700',
+        variant === 'danger' && 'bg-red-600/20 border border-red-300 hover:bg-red-600/40 text-red-700',
         className,
       )}
     />
@@ -29,10 +29,10 @@ export function Section({ title, children, right, defaultOpen = true }: { title:
   return (
     <div className="border-b border-line">
       <div className="flex items-center justify-between px-3 py-2 cursor-pointer select-none" onClick={() => setOpen(!open)}>
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-sky-300/90">{title}</span>
+        <span className="text-xs font-semibold text-zinc-800">{title}</span>
         <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
           {right}
-          <span className="text-slate-500 text-xs w-3 cursor-pointer" onClick={() => setOpen(!open)}>{open ? '▾' : '▸'}</span>
+          <span className="text-zinc-500 text-xs w-3 cursor-pointer" onClick={() => setOpen(!open)}>{open ? '▾' : '▸'}</span>
         </div>
       </div>
       {open && <div className="px-3 pb-3 space-y-2">{children}</div>}
@@ -43,7 +43,7 @@ export function Section({ title, children, right, defaultOpen = true }: { title:
 export function Row({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
     <label className="grid grid-cols-[1fr_1.15fr] items-center gap-2 text-xs" title={hint}>
-      <span className="text-slate-400 truncate">{label}</span>
+      <span className="text-zinc-600 truncate">{label}</span>
       <div className="min-w-0">{children}</div>
     </label>
   );
@@ -63,7 +63,7 @@ export function Select({ value, onChange, options, className }: { value: string;
 
 export function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label?: string }) {
   return (
-    <button type="button" onClick={() => onChange(!value)} className="inline-flex items-center gap-2 text-xs text-slate-300">
+    <button type="button" onClick={() => onChange(!value)} className="inline-flex items-center gap-2 text-xs text-zinc-700">
       <span className={cx('relative h-4 w-7 rounded-full transition-colors', value ? 'bg-accent' : 'bg-line')}>
         <span className={cx('absolute top-0.5 h-3 w-3 rounded-full bg-white transition-all', value ? 'left-3.5' : 'left-0.5')} />
       </span>
@@ -135,7 +135,7 @@ export function NumberField({
           }
         }}
       />
-      <span className="pointer-events-none absolute right-2 text-[10px] text-slate-500">{suffix ?? (length ? unit : '')}</span>
+      <span className="pointer-events-none absolute right-2 text-[10px] text-zinc-500">{suffix ?? (length ? unit : '')}</span>
     </div>
   );
 }
@@ -143,9 +143,9 @@ export function NumberField({
 export function Stat({ label, value, sub, tone = 'default' }: { label: string; value: string; sub?: string; tone?: 'default' | 'good' | 'warn' }) {
   return (
     <div className="rounded-lg border border-line bg-panel2 px-3 py-2">
-      <div className="text-[10px] uppercase tracking-wider text-slate-500">{label}</div>
-      <div className={cx('text-xl font-semibold font-mono', tone === 'good' && 'text-emerald-400', tone === 'warn' && 'text-amber-400', tone === 'default' && 'text-slate-100')}>{value}</div>
-      {sub && <div className="text-[11px] text-slate-500">{sub}</div>}
+      <div className="text-[11px] font-medium text-zinc-500">{label}</div>
+      <div className={cx('text-xl font-semibold font-mono', tone === 'good' && 'text-emerald-700', tone === 'warn' && 'text-amber-700', tone === 'default' && 'text-zinc-900')}>{value}</div>
+      {sub && <div className="text-[11px] text-zinc-500">{sub}</div>}
     </div>
   );
 }
