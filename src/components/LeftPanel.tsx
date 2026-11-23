@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/components/LeftPanel.tsx
- * Descripción: Panel izquierdo: catálogo y lista del proyecto.
- * ==================================================
- */
 import { useState } from 'react';
 import {
   Archive, BedDouble, Box, BrickWall, ChefHat, ChevronDown, ChevronRight, DoorClosed, Eye, EyeOff, Footprints, Grid2x2, Lamp, LayoutGrid, LibraryBig, PanelTop, Rows3, Rows4, Square, Table2, Tv, type LucideIcon,
@@ -20,10 +11,6 @@ import { fmtLen } from '../core/units';
 export const ICONS: Record<string, LucideIcon> = { Archive, PanelTop, Rows3, Rows4, DoorClosed, Table2, LibraryBig, Square, BrickWall, Grid2x2, Box, BedDouble, Lamp, Footprints, Tv, LayoutGrid };
 const GROUPS = ['Cocina', 'Dormitorio', 'Oficina y sala', 'A medida', 'Ambiente', 'Piezas'];
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Panel izquierdo: catálogo paramétrico y lista del proyecto
-// ==================================================
 export default function LeftPanel() {
   const items = useStore((s) => s.project.items);
   const selectedId = useStore((s) => s.selectedId);

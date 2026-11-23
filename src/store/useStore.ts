@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/store/useStore.ts
- * Descripción: Estado global de la aplicación (Zustand).
- * ==================================================
- */
 import { create } from 'zustand';
 import type { AppMode, ParamValue, PieceOverride, Project, SceneItem, SheetConfig, ProjectSettings, Unit, Vec3 } from '../core/types';
 import { buildItem, createItem, itemAABB, itemAxes, type CreateOpts } from '../core/items';
@@ -76,21 +67,10 @@ interface State {
   redo(): void;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Actualizar los ítems del proyecto y su fecha de modificación
-// ==================================================
 const touch = (p: Project, items: SceneItem[]): Project => ({ ...p, items, updatedAt: new Date().toISOString() });
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Sección: Estado global: escena, selección, historial y acciones
-// ==================================================
 export const useStore = create<State>()((set, get) => {
-  /**
-   * Aplica una modificación a la lista de ítems guardando historial (deshacer).
-   * @author 4BYTES - Equipo de desarrollo
-   */
+  /** Aplica una modificación a la lista de ítems guardando historial (deshacer). */
   const commit = (fn: (items: SceneItem[]) => SceneItem[], history = true) =>
     set((s) => {
       const items = fn(s.project.items);
@@ -123,10 +103,6 @@ export const useStore = create<State>()((set, get) => {
     future: [],
     toast: null,
 
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Configuración de vista: unidad, modo, selección, cotas, gizmo y avisos
-    // ==================================================
     setUnit: (unit) => set({ unit }),
     setMode: (mode) => set({ mode, assemblyStep: null }),
     select: (selectedId, piece = null) => set({ selectedId, selectedPiece: selectedId ? piece : null }),
@@ -139,10 +115,6 @@ export const useStore = create<State>()((set, get) => {
     setSceneBg: (sceneBg) => set({ sceneBg }),
     notify: (text) => set((s) => ({ toast: { text, n: (s.toast?.n ?? 0) + 1 } })),
 
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Agregar un mueble del catálogo a la escena
-    // ==================================================
     addItem: (templateId, o = {}) => {
       const t = TEMPLATE_MAP[templateId];
       const item = createItem(templateId, o);
@@ -159,10 +131,6 @@ export const useStore = create<State>()((set, get) => {
       set({ selectedId: item.id, selectedPiece: null });
       return item.id;
     },
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Modificar un mueble y sus parámetros
-    // ==================================================
     updateItem: (id, patch, history = true) => mapItem(id, (it) => ({ ...it, ...patch }), history),
     updateParam: (id, key, value) =>
       mapItem(id, (it) => {
@@ -170,18 +138,10 @@ export const useStore = create<State>()((set, get) => {
         if (it.templateId === 'reference' && key === 'tipo') next.materialId = REF_MATERIAL[String(value)] ?? it.materialId;
         return next;
       }),
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Eliminar un mueble de la escena
-    // ==================================================
     removeItem: (id) => {
       commit((items) => items.filter((i) => i.id !== id));
       if (get().selectedId === id) set({ selectedId: null, selectedPiece: null });
     },
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Duplicar un mueble junto al original
-    // ==================================================
     duplicateItem: (id) => {
       const src = get().project.items.find((i) => i.id === id);
       if (!src) return;
@@ -196,18 +156,10 @@ export const useStore = create<State>()((set, get) => {
       commit((items) => [...items, copy]);
       set({ selectedId: copy.id, selectedPiece: null });
     },
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Mostrar u ocultar muebles y piezas
-    // ==================================================
     toggleItemHidden: (id) => mapItem(id, (it) => ({ ...it, hidden: !it.hidden }), false),
     togglePieceHidden: (id, key) =>
       mapItem(id, (it) => ({ ...it, hiddenPieces: it.hiddenPieces.includes(key) ? it.hiddenPieces.filter((k) => k !== key) : [...it.hiddenPieces, key] }), false),
     showAllPieces: (id) => mapItem(id, (it) => ({ ...it, hiddenPieces: [] }), false),
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Guardar o restablecer los ajustes de una pieza
-    // ==================================================
     setPieceOverride: (id, key, ov) =>
       mapItem(id, (it) => {
         const cur = it.overrides[key] ?? {};
@@ -225,15 +177,7 @@ export const useStore = create<State>()((set, get) => {
         delete o[key];
         return { ...it, overrides: o };
       }),
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Rotar un mueble en el eje vertical
-    // ==================================================
     rotateItem: (id, delta) => mapItem(id, (it) => ({ ...it, rotationY: normDeg(it.rotationY + delta) })),
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Alinear un mueble contra la pared más cercana
-    // ==================================================
     alignToWall: (id) => {
       const items = get().project.items;
       const it = items.find((i) => i.id === id);
@@ -263,10 +207,6 @@ export const useStore = create<State>()((set, get) => {
         get().notify('Alineado contra la pared más cercana.');
       }
     },
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Pegar un mueble a la izquierda o derecha de otro
-    // ==================================================
     placeNextTo: (id, targetId, side) => {
       const items = get().project.items;
       const it = items.find((i) => i.id === id);
@@ -284,27 +224,15 @@ export const useStore = create<State>()((set, get) => {
         position: [round(tg.position[0] + u[0] * along + n[0] * back), x.position[1], round(tg.position[2] + u[1] * along + n[1] * back)],
       }));
     },
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Cambiar los acabados de estructura y frentes de todos los muebles
-    // ==================================================
     setAllFinishes: (carcass, front) =>
       commit((items) =>
         items.map((it) =>
           it.category === 'module' ? { ...it, materialId: carcass ?? it.materialId, frontMaterialId: front ?? it.frontMaterialId } : it,
         ),
       ),
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Modificar datos, tablero y ajustes del proyecto
-    // ==================================================
     updateProject: (patch) => set((s) => ({ project: { ...s.project, ...patch }, dirty: true })),
     setSheet: (patch) => set((s) => ({ project: { ...s.project, sheet: { ...s.project.sheet, ...patch } }, dirty: true })),
     setSettings: (patch) => set((s) => ({ project: { ...s.project, settings: { ...s.project.settings, ...patch } }, dirty: true })),
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Crear, cargar y marcar como guardado un proyecto
-    // ==================================================
     newProject: (withKitchen = false) =>
       set({
         project: emptyProject(withKitchen ? 'Cocina de ejemplo' : 'Proyecto sin título', withKitchen ? kitchenPreset() : []),
@@ -314,10 +242,6 @@ export const useStore = create<State>()((set, get) => {
     loadProject: (project, filePath) =>
       set({ project, filePath, dirty: false, selectedId: null, selectedPiece: null, past: [], future: [], assemblyStep: null, viewRequest: { view: 'iso', n: get().viewRequest.n + 1 } }),
     markSaved: (filePath) => set({ filePath, dirty: false }),
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Insertar la plantilla de cocina lineal
-    // ==================================================
     insertKitchenPreset: () => {
       const kit = kitchenPreset();
       const items = get().project.items;
@@ -327,18 +251,10 @@ export const useStore = create<State>()((set, get) => {
       commit((cur) => [...cur, ...kit.map((k) => ({ ...k, position: [k.position[0] + shift, k.position[1], k.position[2]] as Vec3 }))]);
       set((s) => ({ viewRequest: { view: 'iso', n: s.viewRequest.n + 1 } }));
     },
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Reemplazar todos los muebles de la escena
-    // ==================================================
     replaceItems: (items) => {
       commit(() => items);
       set((s) => ({ selectedId: null, selectedPiece: null, viewRequest: { view: 'iso', n: s.viewRequest.n + 1 } }));
     },
-    // ==================================================
-    // 4BYTES - Equipo de desarrollo
-    // Método: Deshacer y rehacer cambios
-    // ==================================================
     undo: () =>
       set((s) => {
         if (!s.past.length) return {};

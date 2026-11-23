@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/core/calculators.ts
- * Descripción: Calculadoras de taller (funciones puras).
- * ==================================================
- */
 // ===================== Suite de calculadoras de taller (funciones puras, mm) =====================
 import { toFraction } from './units';
 
@@ -44,10 +35,6 @@ export interface DrawerResult {
 
 export const SLIDE_LENGTHS = [250, 300, 350, 400, 450, 500, 550, 600, 650, 700];
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular las piezas de una gaveta descontando la corredera
-// ==================================================
 export function calcDrawer(i: DrawerInput): DrawerResult {
   const usable = i.depth - i.rearClearance;
   const fit = SLIDE_LENGTHS.filter((l) => l <= usable);
@@ -102,10 +89,6 @@ export interface ShelfPos {
   hole?: number;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular la distribución de repisas y perforaciones sistema 32
-// ==================================================
 export function calcShelves(i: ShelvesInput): { gap: number; shelves: ShelfPos[]; holes: number[] } {
   const spaces = Math.max(1, Math.round(i.spaces));
   const t = i.shelfThickness;
@@ -148,10 +131,6 @@ export interface FrontPiece {
   y: number;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular las medidas de varios frentes de cajón
-// ==================================================
 export function calcDrawerFronts(i: FrontsInput): { fronts: FrontPiece[]; available: number } {
   const count = Math.max(1, Math.round(i.count));
   const available = i.totalHeight - i.topGap - i.bottomGap - i.gap * (count - 1);
@@ -180,10 +159,6 @@ export interface HandleInput {
   edgeOffset: number;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular las perforaciones para manijas o tiradores
-// ==================================================
 export function calcHandle(i: HandleInput): { holes: { x: number; y: number }[]; warnings: string[] } {
   const c = Math.max(0, i.centers);
   const W = i.frontWidth;
@@ -227,10 +202,6 @@ export interface HingeResult {
   reasons: string[];
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular cantidad y posición de bisagras de cazoleta
-// ==================================================
 export function calcHinges(i: HingeInput): HingeResult {
   const H = i.doorHeight;
   const byHeight = H <= 900 ? 2 : H <= 1600 ? 3 : H <= 2000 ? 4 : H <= 2400 ? 5 : 6;
@@ -254,10 +225,6 @@ export function calcHinges(i: HingeInput): HingeResult {
   return { count, positions, cupCenterX, reasons };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Convertir una longitud entre mm, cm y pulgadas
-// ==================================================
 // ---------- 6. Conversor de unidades ----------
 export function convertLength(value: number, from: 'mm' | 'cm' | 'in') {
   const mm = from === 'mm' ? value : from === 'cm' ? value * 10 : value * 25.4;

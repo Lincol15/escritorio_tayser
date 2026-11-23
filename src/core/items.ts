@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/core/items.ts
- * Descripción: Motor paramétrico: de ítem de escena a piezas resueltas.
- * ==================================================
- */
 // Motor paramétrico: ítem de escena -> piezas resueltas (con overrides y materiales).
 import type { Params, PieceOverride, ResolvedPiece, SceneItem, Size3, Vec3 } from './types';
 import { TEMPLATE_MAP, defaultParams, REF_MATERIAL } from './templates';
@@ -21,19 +12,11 @@ export interface BuiltItem {
 
 const cache = new WeakMap<SceneItem, BuiltItem>();
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Combinar los parámetros por defecto con los del mueble
-// ==================================================
 export function itemParams(item: SceneItem): Params {
   const t = TEMPLATE_MAP[item.templateId];
   return t ? { ...defaultParams(t), ...item.params } : item.params;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Resolver un mueble en piezas con ajustes y materiales
-// ==================================================
 export function buildItem(item: SceneItem): BuiltItem {
   const hit = cache.get(item);
   if (hit) return hit;
@@ -72,10 +55,6 @@ export interface CreateOpts {
   overrides?: Record<string, PieceOverride>;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Crear un nuevo mueble a partir de una plantilla
-// ==================================================
 export function createItem(templateId: string, o: CreateOpts = {}): SceneItem {
   const t = TEMPLATE_MAP[templateId];
   if (!t) throw new Error(`Plantilla desconocida: ${templateId}`);
@@ -99,14 +78,7 @@ export function createItem(templateId: string, o: CreateOpts = {}): SceneItem {
   };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular la caja envolvente de un mueble en la escena
-// ==================================================
-/**
- * Caja envolvente (en planta y altura) del ítem en coordenadas de mundo (mm).
- * @author 4BYTES - Equipo de desarrollo
- */
+/** Caja envolvente (en planta y altura) del ítem en coordenadas de mundo (mm). */
 export function itemAABB(item: SceneItem) {
   const { size } = buildItem(item);
   const r = item.rotationY * DEG;
@@ -125,14 +97,7 @@ export function itemAABB(item: SceneItem) {
   };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Obtener los ejes locales de un mueble según su rotación
-// ==================================================
-/**
- * Vectores unitarios del ítem rotado: u = eje del ancho, n = normal frontal.
- * @author 4BYTES - Equipo de desarrollo
- */
+/** Vectores unitarios del ítem rotado: u = eje del ancho, n = normal frontal. */
 export function itemAxes(rotDeg: number) {
   const r = rotDeg * DEG;
   return { u: [Math.cos(r), -Math.sin(r)] as [number, number], n: [Math.sin(r), Math.cos(r)] as [number, number] };

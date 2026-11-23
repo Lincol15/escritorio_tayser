@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/App.tsx
- * Descripción: Componente raíz: modos de trabajo, atajos y respaldo automático.
- * ==================================================
- */
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from './store/useStore';
 import TopBar, { saveProject } from './components/TopBar';
@@ -24,10 +15,6 @@ import type { Project } from './core/types';
 
 const AUTOSAVE_KEY = 'current-project';
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Aplicación principal: modos, atajos de teclado y respaldo
-// ==================================================
 export default function App() {
   const mode = useStore((s) => s.mode);
   const toast = useStore((s) => s.toast);
@@ -134,7 +121,7 @@ export default function App() {
         {mode === 'room' && <div className="min-w-0 flex-1"><RoomPlanner /></div>}
       </main>
       {toast && toastVisible && (
-        <div className="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-line bg-panel2 px-4 py-2 text-sm text-zinc-100 shadow-xl">{toast.text}</div>
+        <div className="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-line bg-panel2 px-4 py-2 text-sm text-zinc-900 shadow-xl">{toast.text}</div>
       )}
     </div>
   );

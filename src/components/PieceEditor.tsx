@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/components/PieceEditor.tsx
- * Descripción: Editor de pieza: tapacantos, veta y cortes especiales.
- * ==================================================
- */
 import { Plus, Trash2, Undo2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { buildItem } from '../core/items';
@@ -22,10 +13,6 @@ const CORNERS: Corner[] = ['tl', 'tr', 'bl', 'br'];
 const edgeOpts = EDGE_OPTIONS.map((v) => ({ value: String(v), label: v === 0 ? 'Sin canto' : `${v} mm` }));
 const edgeKeyOpts = (['l1', 'l2', 'w1', 'w2'] as EdgeKey[]).map((k) => ({ value: k, label: `${EDGE_LABEL[k]} · ${EDGE_HINT[k]}` }));
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Editor de pieza: material, veta, tapacantos y cortes especiales
-// ==================================================
 export default function PieceEditor({ item, pieceKey }: { item: SceneItem; pieceKey: string }) {
   const unit = useStore((s) => s.unit);
   const st = useStore.getState();
@@ -193,10 +180,6 @@ export default function PieceEditor({ item, pieceKey }: { item: SceneItem; piece
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Encabezado de lista con botón Agregar
-// ==================================================
 function ListHeader({ title, onAdd }: { title: string; onAdd: () => void }) {
   return (
     <div className="flex items-center justify-between pt-1">
@@ -208,10 +191,6 @@ function ListHeader({ title, onAdd }: { title: string; onAdd: () => void }) {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Botón para eliminar un corte especial
-// ==================================================
 function DelBtn({ onClick }: { onClick: () => void }) {
   return (
     <Btn size="sm" variant="ghost" onClick={onClick} className="text-red-700">
@@ -220,14 +199,7 @@ function DelBtn({ onClick }: { onClick: () => void }) {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Diagrama de tapacantos de la pieza
-// ==================================================
-/**
- * Esquema de la pieza con sus 4 cantos coloreados según grosor
- * @author 4BYTES - Equipo de desarrollo
- */
+/** Esquema de la pieza con sus 4 cantos coloreados según grosor */
 function EdgeDiagram({ piece }: { piece: { length: number; width: number; edges: Record<EdgeKey, number>; grain: boolean } }) {
   const ratio = Math.min(3, Math.max(0.35, piece.length / piece.width));
   const W = 180;

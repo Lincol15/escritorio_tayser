@@ -1,19 +1,6 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/core/types.ts
- * Descripción: Modelos de dominio de Tayser (medidas en milímetros).
- * ==================================================
- */
 // ===================== Modelos de dominio Tayser =====================
 // Todas las medidas internas están en MILÍMETROS (precisión decimal).
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Sección: Tipos básicos: unidades, modos, vectores y planos
-// ==================================================
 export type Unit = 'mm' | 'cm' | 'in';
 export type AppMode = 'build' | 'cutlist' | 'optimize' | 'calc' | 'client' | 'room';
 export type Vec3 = [number, number, number];
@@ -31,10 +18,6 @@ export type PieceRole =
   | 'zocalo' | 'travesano' | 'cajon' | 'tapa' | 'faldon' | 'pata' | 'barra'
   | 'pared' | 'piso' | 'referencia' | 'pieza';
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Sección: Cortes especiales de pieza: calados, espigas, biseles y diagonales
-// ==================================================
 export interface Hole {
   id: string;
   shape: 'rect' | 'circle';
@@ -81,10 +64,6 @@ export interface PieceFeatures {
 
 export type EdgeBanding = Record<EdgeKey, number>;
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Modelo: Pieza de tablero o cilindro con medidas, tapacantos y cortes
-// ==================================================
 export interface Piece {
   key: string;
   name: string;
@@ -118,10 +97,6 @@ export interface ResolvedPiece extends Piece {
 export type ParamValue = number | string | boolean;
 export type Params = Record<string, ParamValue>;
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Modelo: Definición de un parámetro editable de plantilla
-// ==================================================
 export interface ParamDef {
   key: string;
   label: string;
@@ -148,10 +123,6 @@ export interface GenerateResult {
   size: Size3;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Modelo: Plantilla paramétrica de mueble
-// ==================================================
 export interface Template {
   id: string;
   name: string;
@@ -173,10 +144,6 @@ export interface PieceOverride {
   step?: number;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Modelo: Mueble o elemento colocado en la escena
-// ==================================================
 export interface SceneItem {
   id: string;
   templateId: string;
@@ -196,10 +163,6 @@ export interface SceneItem {
 
 export type PackAlgorithm = 'auto' | 'maxrects' | 'guillotine';
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Modelo: Configuración del tablero, sierra y refilado
-// ==================================================
 export interface SheetConfig {
   length: number;
   width: number;
@@ -208,10 +171,6 @@ export interface SheetConfig {
   algorithm: PackAlgorithm;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Modelo: Proyecto completo de Tayser
-// ==================================================
 export interface ProjectSettings {
   discountEdges: boolean;
   edgeWastePct: number;

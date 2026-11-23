@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/core/roomPlanner.ts
- * Descripción: Planificador automático de distribución de ambientes.
- * ==================================================
- */
 // ===================== Planificador de ambientes (offline, basado en reglas de ergonomía) =====================
 // Planta: x = ancho de la habitación (pared del fondo, izquierda→derecha), z = profundidad (fondo→frente).
 // "along" en paredes laterales se mide desde la esquina con la pared del fondo.
@@ -65,10 +56,6 @@ export const FURNITURE_INFO: Record<FurnitureKind, { label: string; clearance: n
 
 export const FURNITURE_ORDER: FurnitureKind[] = ['ropero', 'cama', 'escritorio', 'comoda', 'estante', 'velador'];
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Lista inicial de muebles a distribuir
-// ==================================================
 export function defaultFurniture(): FurnitureReq[] {
   return FURNITURE_ORDER.map((kind) => ({ kind, enabled: kind === 'ropero' || kind === 'escritorio' || kind === 'cama', ...FURNITURE_INFO[kind].defaults }));
 }
@@ -101,17 +88,9 @@ export interface PlanResult {
   warnings: string[];
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Obtener el largo de una pared de la habitación
-// ==================================================
 export const wallLength = (room: RoomSpec, wall: WallId) => (wall === 'fondo' || wall === 'frente' ? room.width : room.depth);
 const OPPOSITE: Record<WallId, WallId> = { fondo: 'frente', frente: 'fondo', izquierda: 'derecha', derecha: 'izquierda' };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular la huella en planta de un mueble contra una pared
-// ==================================================
 export function floorRect(room: RoomSpec, wall: WallId, along: number, w: number, d: number): FloorRect {
   switch (wall) {
     case 'fondo':
@@ -125,10 +104,6 @@ export function floorRect(room: RoomSpec, wall: WallId, along: number, w: number
   }
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular el espacio libre de uso delante de un mueble
-// ==================================================
 export function clearRect(room: RoomSpec, wall: WallId, along: number, w: number, d: number, c: number): FloorRect {
   switch (wall) {
     case 'fondo':
@@ -142,34 +117,14 @@ export function clearRect(room: RoomSpec, wall: WallId, along: number, w: number
   }
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular el área de giro de una puerta
-// ==================================================
 export function doorSwing(room: RoomSpec, o: Obstacle): FloorRect {
   return floorRect(room, o.wall, o.x, o.w, Math.min(o.w, 950));
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Verificar si dos rectángulos en planta se superponen
-// ==================================================
 const overlap = (a: FloorRect, b: FloorRect, eps = 1) =>
   a.x < b.x + b.w - eps && a.x + a.w > b.x + eps && a.z < b.z + b.d - eps && a.z + a.d > b.z + eps;
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Verificar si un rectángulo queda dentro de la habitación
-// ==================================================
 const inside = (room: RoomSpec, r: FloorRect) => r.x >= -0.5 && r.z >= -0.5 && r.x + r.w <= room.width + 0.5 && r.z + r.d <= room.depth + 0.5;
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular el tramo común entre dos intervalos
-// ==================================================
 const span = (a0: number, a1: number, b0: number, b1: number) => Math.max(0, Math.min(a1, b1) - Math.max(a0, b0));
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Obtener el centro de un rectángulo en planta
-// ==================================================
 const center = (r: FloorRect) => ({ x: r.x + r.w / 2, z: r.z + r.d / 2 });
 
 interface Inst {
@@ -181,10 +136,6 @@ interface Inst {
   minW: number;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Evaluar una posición candidata para un mueble
-// ==================================================
 function evaluate(room: RoomSpec, inst: Inst, placed: Placement[], wall: WallId, along: number, width: number): Placement | null {
   const Lw = wallLength(room, wall);
   if (along < -0.5 || along + width > Lw + 0.5) return null;
@@ -283,10 +234,6 @@ function evaluate(room: RoomSpec, inst: Inst, placed: Placement[], wall: WallId,
   return { id: uid('pl'), kind: inst.kind, label: inst.label, wall, along, w: width, d: inst.d, h: inst.h, rect, clear, score: s, notes };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Buscar la mejor posición para un mueble
-// ==================================================
 function placeOne(room: RoomSpec, inst: Inst, placed: Placement[]): Placement | null {
   let best: Placement | null = null;
   const widths: number[] = [];
@@ -316,19 +263,11 @@ function placeOne(room: RoomSpec, inst: Inst, placed: Placement[]): Placement | 
   return best;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar las permutaciones de una lista
-// ==================================================
 function permutations<T>(arr: T[]): T[][] {
   if (arr.length <= 1) return [arr];
   return arr.flatMap((x, i) => permutations([...arr.slice(0, i), ...arr.slice(i + 1)]).map((p) => [x, ...p]));
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Proponer la distribución completa de la habitación
-// ==================================================
 export function planRoom(room: RoomSpec, reqs: FurnitureReq[]): PlanResult {
   const warnings: string[] = [];
   if (room.width < 1500 || room.depth < 1500) warnings.push('La habitación es muy pequeña; revise las medidas.');
@@ -365,14 +304,7 @@ export function planRoom(room: RoomSpec, reqs: FurnitureReq[]): PlanResult {
 const WALL_T = 150;
 const ROT: Record<WallId, number> = { fondo: 0, izquierda: 90, derecha: -90, frente: 180 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Convertir una posición sobre la pared a coordenadas de planta
-// ==================================================
-/**
- * Centro (x,z) del ítem en el plano de pared y su posición local x dentro del muro.
- * @author 4BYTES - Equipo de desarrollo
- */
+/** Centro (x,z) del ítem en el plano de pared y su posición local x dentro del muro. */
 function wallPoint(room: RoomSpec, wall: WallId, alongCenter: number): [number, number] {
   switch (wall) {
     case 'fondo':
@@ -386,10 +318,6 @@ function wallPoint(room: RoomSpec, wall: WallId, alongCenter: number): [number, 
   }
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Calcular la posición local de un vano en la pared
-// ==================================================
 function holeLocalX(room: RoomSpec, wall: WallId, alongCenter: number): number {
   switch (wall) {
     case 'fondo':
@@ -403,10 +331,6 @@ function holeLocalX(room: RoomSpec, wall: WallId, alongCenter: number): number {
   }
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Convertir la distribución propuesta en muebles de la escena 3D
-// ==================================================
 export function roomToScene(room: RoomSpec, placements: Placement[]): SceneItem[] {
   const W = room.width;
   const D = room.depth;

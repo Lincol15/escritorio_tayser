@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/core/export.ts
- * Descripción: Exportación del despiece a PDF y CSV.
- * ==================================================
- */
 // ===================== Exportación local: PDF (jsPDF + autotable) y CSV =====================
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -21,31 +12,15 @@ const PALETTE: [number, number, number][] = [
   [253, 230, 138], [251, 207, 232], [204, 251, 241], [226, 232, 240], [254, 215, 170], [217, 249, 157],
 ];
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Asignar un color a cada código de pieza en los planos
-// ==================================================
 export function colorForCode(code: string): [number, number, number] {
   let h = 0;
   for (let i = 0; i < code.length; i++) h = (h * 31 + code.charCodeAt(i)) >>> 0;
   return PALETTE[h % PALETTE.length];
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Formatear el grosor de tapacanto para la tabla
-// ==================================================
 const edgeTxt = (v: number) => (v > 0 ? trimNum(v, 2) : '—');
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Limpiar el nombre del proyecto para usarlo como nombre de archivo
-// ==================================================
 const safe = (s: string) => s.replace(/[^\w\-áéíóúñÁÉÍÓÚÑ ]+/g, '').trim().replace(/\s+/g, '_') || 'proyecto';
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Construir el PDF con resumen, despiece y planos de corte
-// ==================================================
 export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization[], unit: Unit): ArrayBuffer {
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
   const PW = doc.internal.pageSize.getWidth();
@@ -203,10 +178,6 @@ export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization
   return doc.output('arraybuffer');
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Construir el CSV del despiece
-// ==================================================
 export function buildCsv(project: Project, cut: CutList, unit: Unit): string {
   const q = (v: string | number) => {
     const s = String(v);
@@ -231,19 +202,11 @@ export function buildCsv(project: Project, cut: CutList, unit: Unit): string {
   return '﻿' + lines.join('\r\n');
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Exportar el despiece a un archivo PDF
-// ==================================================
 export async function exportPdf(project: Project, cut: CutList, opts: GroupOptimization[], unit: Unit) {
   const data = buildPdf(project, cut, opts, unit);
   return saveBinaryFile(`${safe(project.name)}_despiece.pdf`, new Uint8Array(data), 'application/pdf', [{ name: 'PDF', extensions: ['pdf'] }]);
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Exportar el despiece a un archivo CSV
-// ==================================================
 export async function exportCsv(project: Project, cut: CutList, unit: Unit) {
   const csv = buildCsv(project, cut, unit);
   return saveBinaryFile(`${safe(project.name)}_despiece.csv`, csv, 'text/csv', [{ name: 'CSV', extensions: ['csv'] }]);

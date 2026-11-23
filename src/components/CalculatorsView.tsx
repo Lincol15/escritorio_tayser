@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/components/CalculatorsView.tsx
- * Descripción: Modo Calculadoras de taller.
- * ==================================================
- */
 import { useState, type ReactNode } from 'react';
 import { ArrowLeftRight, Grip, Hand, Layers3, PanelsTopLeft, Rows3 } from 'lucide-react';
 import { useStore } from '../store/useStore';
@@ -24,10 +15,6 @@ const CALCS: { id: CalcId; name: string; icon: typeof Grip; desc: string }[] = [
   { id: 'units', name: 'Conversor de unidades', icon: ArrowLeftRight, desc: 'mm ↔ cm ↔ pulgadas (decimal y fracción).' },
 ];
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Modo Calculadoras de taller
-// ==================================================
 export default function CalculatorsView() {
   const [id, setId] = useState<CalcId>('drawer');
   const cur = CALCS.find((c) => c.id === id)!;
@@ -59,10 +46,6 @@ export default function CalculatorsView() {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Distribución de formulario y resultado
-// ==================================================
 function Layout({ form, result }: { form: ReactNode; result: ReactNode }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
@@ -72,10 +55,6 @@ function Layout({ form, result }: { form: ReactNode; result: ReactNode }) {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Tabla de resultados
-// ==================================================
 function Table({ head, rows }: { head: string[]; rows: (string | number)[][] }) {
   return (
     <div className="overflow-hidden rounded-lg border border-line">
@@ -93,10 +72,6 @@ function Table({ head, rows }: { head: string[]; rows: (string | number)[][] }) 
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Notas y recomendaciones de la calculadora
-// ==================================================
 function Notes({ items }: { items: string[] }) {
   return (
     <ul className="space-y-1 rounded-lg border border-line bg-panel2 p-3 text-xs text-zinc-700">
@@ -107,19 +82,11 @@ function Notes({ items }: { items: string[] }) {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Hook: Formatear longitudes en la unidad activa
-// ==================================================
 function useL() {
   const unit = useStore((s) => s.unit);
   return (v: number) => fmtLen(v, unit);
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Calculadora de gavetas y cajones
-// ==================================================
 // ---------- Gavetas ----------
 function DrawerCalc() {
   const L = useL();
@@ -158,10 +125,6 @@ function DrawerCalc() {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Calculadora de distribución de repisas
-// ==================================================
 // ---------- Repisas ----------
 function ShelvesCalc() {
   const L = useL();
@@ -207,10 +170,6 @@ function ShelvesCalc() {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Calculadora de frentes de cajones
-// ==================================================
 // ---------- Frentes ----------
 function FrontsCalc() {
   const L = useL();
@@ -258,10 +217,6 @@ function FrontsCalc() {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Calculadora de manijas y tiradores
-// ==================================================
 // ---------- Manijas ----------
 function HandleCalc() {
   const L = useL();
@@ -313,10 +268,6 @@ function HandleCalc() {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Calculadora de bisagras de cazoleta
-// ==================================================
 // ---------- Bisagras ----------
 function HingeCalc() {
   const L = useL();
@@ -360,10 +311,6 @@ function HingeCalc() {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Conversor de unidades
-// ==================================================
 // ---------- Conversor ----------
 function UnitsCalc() {
   const [val, setVal] = useState(18);
@@ -396,10 +343,6 @@ function UnitsCalc() {
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Resultado destacado
-// ==================================================
 function Big({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-line bg-panel2 px-3 py-2">

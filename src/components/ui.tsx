@@ -1,28 +1,11 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/components/ui.tsx
- * Descripción: Componentes de interfaz reutilizables.
- * ==================================================
- */
 import { useEffect, useState, type ReactNode, type ButtonHTMLAttributes } from 'react';
 import { useStore } from '../store/useStore';
 import { fromUnit, parseExpression, toUnit, trimNum, UNIT_DECIMALS } from '../core/units';
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Unir nombres de clases CSS
-// ==================================================
 export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(' ');
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Botón con variantes y tamaños
-// ==================================================
 export function Btn({ className, variant = 'default', size = 'md', ...p }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'default' | 'primary' | 'ghost' | 'danger' | 'accent'; size?: 'sm' | 'md' }) {
   return (
     <button
@@ -41,10 +24,6 @@ export function Btn({ className, variant = 'default', size = 'md', ...p }: Butto
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Sección plegable con título
-// ==================================================
 export function Section({ title, children, right, defaultOpen = true }: { title: string; children: ReactNode; right?: ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
@@ -61,10 +40,6 @@ export function Section({ title, children, right, defaultOpen = true }: { title:
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Fila de formulario con etiqueta
-// ==================================================
 export function Row({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
     <label className="grid grid-cols-[1fr_1.15fr] items-center gap-2 text-xs" title={hint}>
@@ -74,10 +49,6 @@ export function Row({ label, children, hint }: { label: string; children: ReactN
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Lista desplegable
-// ==================================================
 export function Select({ value, onChange, options, className }: { value: string; onChange: (v: string) => void; options: { value: string; label: string }[]; className?: string }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)} className={cx('field w-full', className)}>
@@ -90,10 +61,6 @@ export function Select({ value, onChange, options, className }: { value: string;
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Interruptor sí/no
-// ==================================================
 export function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label?: string }) {
   return (
     <button type="button" onClick={() => onChange(!value)} className="inline-flex items-center gap-2 text-xs text-zinc-700">
@@ -105,22 +72,13 @@ export function Toggle({ value, onChange, label }: { value: boolean; onChange: (
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Campo de texto
-// ==================================================
 export function TextField({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
   return <input className="field w-full" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Campo numérico con unidades y expresiones
-// ==================================================
 /**
  * Campo numérico. Si `length` es true el valor es mm y se muestra/edita en la unidad activa.
  * Acepta expresiones: 1220/2-18, 23 1/2, 3/4.
- * @author 4BYTES - Equipo de desarrollo
  */
 export function NumberField({
   value, onChange, length = true, min, max, step, suffix, className, disabled,
@@ -182,10 +140,6 @@ export function NumberField({
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Tarjeta de indicador del resumen
-// ==================================================
 export function Stat({ label, value, sub, tone = 'default' }: { label: string; value: string; sub?: string; tone?: 'default' | 'good' | 'warn' }) {
   return (
     <div className="rounded-lg border border-line bg-panel2 px-3 py-2">

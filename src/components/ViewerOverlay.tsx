@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/components/ViewerOverlay.tsx
- * Descripción: Herramientas superpuestas al visor 3D.
- * ==================================================
- */
 import { useEffect, useMemo, useState } from 'react';
 import { Box, Camera, Eye, Footprints, Maximize, Move3d, MousePointer2, Pause, Play, Rotate3d, Ruler, SkipBack, SkipForward, X } from 'lucide-react';
 import { useStore, type ViewName } from '../store/useStore';
@@ -21,10 +12,6 @@ const VIEWS: { v: ViewName; label: string }[] = [
   { v: 'iso', label: 'Isométrica' },
 ];
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Guardar la vista 3D como imagen PNG
-// ==================================================
 export async function captureViewer(name: string) {
   const canvas = document.querySelector('canvas');
   if (!canvas) return;
@@ -32,19 +19,11 @@ export async function captureViewer(name: string) {
   await saveBinaryFile(`${name || 'tayser'}.png`, dataUrlToBytes(url), 'image/png', [{ name: 'Imagen PNG', extensions: ['png'] }]);
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Activar o desactivar la pantalla completa
-// ==================================================
 export function toggleFullscreen(el?: HTMLElement | null) {
   if (document.fullscreenElement) document.exitFullscreen();
   else (el ?? document.documentElement).requestFullscreen?.();
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Barra de herramientas del visor y pasos de armado
-// ==================================================
 export default function ViewerOverlay({ container }: { container: HTMLElement | null }) {
   const s = useStore();
   const items = s.project.items;

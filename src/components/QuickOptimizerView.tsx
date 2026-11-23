@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/components/QuickOptimizerView.tsx
- * Descripción: Optimizador rápido: medidas de plancha y piezas a mano, sin modelo 3D.
- * ==================================================
- */
 import { useEffect, useState } from 'react';
 import { Copy, Play, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
@@ -66,10 +57,6 @@ const DEFAULT_STATE: QuickState = {
   ],
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Leer el estado guardado del optimizador rápido
-// ==================================================
 function loadState(): QuickState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -83,10 +70,6 @@ function loadState(): QuickState {
   return DEFAULT_STATE;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Ejecutar la optimización con las piezas ingresadas
-// ==================================================
 function runOptimization(s: QuickState): GroupOptimization {
   const items: PackItem[] = [];
   s.pieces.forEach((p, i) => {
@@ -109,10 +92,6 @@ function runOptimization(s: QuickState): GroupOptimization {
   };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Componente: Optimizador rápido de planchas
-// ==================================================
 export default function QuickOptimizerView() {
   const unit = useStore((s) => s.unit);
   const [state, setState] = useState<QuickState>(loadState);

@@ -1,12 +1,3 @@
-/*
- * ==================================================
- * Proyecto desarrollado por: 4BYTES
- * Equipo de desarrollo de software
- * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
- * Archivo: src/core/templates.ts
- * Descripción: Catálogo paramétrico: generadores de muebles y ambiente.
- * ==================================================
- */
 // ===================== Catálogo paramétrico (generadores) =====================
 // Coordenadas locales del módulo: x 0..ancho (izq→der), y 0..alto (piso→arriba), z 0..prof (fondo→frente).
 import type {
@@ -14,10 +5,6 @@ import type {
 } from './types';
 import { calcDrawer, calcDrawerFronts, calcShelves } from './calculators';
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Crear el conjunto vacío de cortes especiales de una pieza
-// ==================================================
 export const emptyFeatures = (): PieceFeatures => ({
   cornerRadius: 0,
   radiusCorners: ['bl', 'br', 'tr', 'tl'],
@@ -27,10 +14,6 @@ export const emptyFeatures = (): PieceFeatures => ({
   tenons: [],
 });
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Definir los tapacantos de una pieza (L1, L2, A1, A2)
-// ==================================================
 export const edges = (l1 = 0, l2 = 0, w1 = 0, w2 = 0): EdgeBanding => ({ l1, l2, w1, w2 });
 
 interface PanelOpts {
@@ -44,10 +27,6 @@ interface PanelOpts {
   rotation?: Vec3;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Crear una pieza de tablero con medidas, posición y material
-// ==================================================
 export function panel(
   key: string, name: string, role: PieceRole, length: number, width: number, thickness: number, plane: Plane, position: Vec3, o: PanelOpts = {},
 ): Piece {
@@ -62,10 +41,6 @@ export function panel(
   };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Crear una pieza cilíndrica o cónica (patas torneadas)
-// ==================================================
 export function cylinder(
   key: string, name: string, role: PieceRole, height: number, rTop: number, rBottom: number, position: Vec3, o: PanelOpts = {},
 ): Piece {
@@ -78,46 +53,22 @@ export function cylinder(
   };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Leer un parámetro numérico del mueble
-// ==================================================
 const n = (p: Params, k: string): number => {
   const v = Number(p[k]);
   return Number.isFinite(v) ? v : 0;
 };
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Leer un parámetro booleano del mueble
-// ==================================================
 const b = (p: Params, k: string): boolean => p[k] === true || p[k] === 'si' || p[k] === 'true';
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Definir un parámetro de longitud para el inspector
-// ==================================================
 // ---------- definiciones de parámetros reutilizables ----------
 const L = (key: string, label: string, def: number, min = 0, max = 6000, group = 'Medidas', hint?: string): ParamDef => ({
   key, label, type: 'length', default: def, min, max, group, hint,
 });
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Definir un parámetro de cantidad para el inspector
-// ==================================================
 const N = (key: string, label: string, def: number, min = 0, max = 12, group = 'Construcción'): ParamDef => ({
   key, label, type: 'number', default: def, min, max, step: 1, group,
 });
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Definir un parámetro de selección para el inspector
-// ==================================================
 const S = (key: string, label: string, def: string, options: [string, string][], group = 'Construcción'): ParamDef => ({
   key, label, type: 'select', default: def, options: options.map(([value, label]) => ({ value, label })), group,
 });
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Definir un parámetro de sí/no para el inspector
-// ==================================================
 const BOOL = (key: string, label: string, def: boolean, group = 'Construcción'): ParamDef => ({ key, label, type: 'boolean', default: def, group });
 
 const THICK = S('espesor', 'Espesor de tablero', '18', [['12', '12 mm'], ['15', '15 mm'], ['18', '18 mm'], ['25', '25 mm']], 'Tableros');
@@ -127,10 +78,6 @@ const CANTO_CASCO = S('cantoCasco', 'Canto casco (frentes visibles)', '0.45', ED
 const CANTO_FRENTES = S('cantoFrentes', 'Canto puertas/frentes', '2', EDGE_OPTS, 'Tapacantos');
 const HOLGURA = L('holgura', 'Holgura entre frentes', 3, 0, 10, 'Holguras');
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar los laterales del casco de un mueble
-// ==================================================
 // ---------- piezas comunes de casco ----------
 function carcassSides(W: number, H: number, D: number, t: number, cc: number): Piece[] {
   return [
@@ -139,10 +86,6 @@ function carcassSides(W: number, H: number, D: number, t: number, cc: number): P
   ];
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar las puertas de un módulo con sus holguras
-// ==================================================
 function doors(prefix: string, count: number, W: number, y0: number, y1: number, zFront: number, t: number, g: number, cf: number, step: number): Piece[] {
   const out: Piece[] = [];
   if (count <= 0) return out;
@@ -159,10 +102,6 @@ function doors(prefix: string, count: number, W: number, y0: number, y1: number,
   return out;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar repisas repartidas entre dos alturas
-// ==================================================
 function shelvesBetween(prefix: string, count: number, x0: number, x1: number, yBottom: number, innerH: number, zBack: number, depth: number, t: number, cc: number, step: number): Piece[] {
   if (count <= 0) return [];
   const res = calcShelves({ innerHeight: innerH, spaces: count + 1, shelfThickness: t, system32: false, firstHole: 37 });
@@ -174,10 +113,6 @@ function shelvesBetween(prefix: string, count: number, x0: number, x1: number, y
   );
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Módulo bajo de cocina
-// ==================================================
 // ---------- 1. Módulo bajo de cocina ----------
 const baseCabinet: Template = {
   id: 'base-cabinet',
@@ -211,10 +146,6 @@ const baseCabinet: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Módulo alto / alacena
-// ==================================================
 // ---------- 2. Módulo alto / alacena ----------
 const wallCabinet: Template = {
   id: 'wall-cabinet',
@@ -246,10 +177,6 @@ const wallCabinet: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar las piezas de una cajonera (cajas y frentes)
-// ==================================================
 // ---------- 3. Cajonera de cocina ----------
 function drawerUnitGenerate(p: Params): GenerateResult {
   const W = n(p, 'ancho'), H = n(p, 'alto'), D = n(p, 'profundidad'), t = n(p, 'espesor'), tb = n(p, 'espesorFondo');
@@ -294,10 +221,6 @@ function drawerUnitGenerate(p: Params): GenerateResult {
   return { pieces, size: { w: W, h: H, d: D + t } };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Cajonera de cocina
-// ==================================================
 const drawerUnit: Template = {
   id: 'drawer-unit',
   name: 'Cajonera de cocina',
@@ -317,10 +240,6 @@ const drawerUnit: Template = {
   generate: drawerUnitGenerate,
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Clóset / ropero
-// ==================================================
 // ---------- 4. Clóset / ropero ----------
 const closet: Template = {
   id: 'closet',
@@ -372,10 +291,6 @@ const closet: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Escritorio / mesa
-// ==================================================
 // ---------- 5. Escritorio ----------
 const desk: Template = {
   id: 'desk',
@@ -443,10 +358,6 @@ const desk: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Estante / librero
-// ==================================================
 // ---------- 6. Estante / librero ----------
 const shelf: Template = {
   id: 'shelf',
@@ -479,10 +390,6 @@ const shelf: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Pieza suelta (tablero, cilindro o cono)
-// ==================================================
 // ---------- 7. Pieza suelta (tablero / cilindro / cono) ----------
 const freePiece: Template = {
   id: 'free-piece',
@@ -519,10 +426,6 @@ const freePiece: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Pared / muro con vano
-// ==================================================
 // ---------- 8. Pared / muro ----------
 const wall: Template = {
   id: 'wall',
@@ -556,10 +459,6 @@ const wall: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Piso
-// ==================================================
 // ---------- 9. Piso ----------
 const floor: Template = {
   id: 'floor',
@@ -576,10 +475,6 @@ const floor: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar una columna de gavetas (frentes y cajas) dentro de un hueco
-// ==================================================
 interface DrawerColumnOpts {
   prefix: string;
   /** hueco interior entre paneles (para las cajas) */
@@ -638,10 +533,6 @@ function drawerColumn(o: DrawerColumnOpts): Piece[] {
   return out;
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar puertas dentro de un tramo horizontal (fx0..fx1)
-// ==================================================
 function doorsIn(prefix: string, count: number, fx0: number, fx1: number, lg: number, rg: number, y0: number, y1: number, zFront: number, t: number, g: number, cf: number, step: number): Piece[] {
   const out: Piece[] = [];
   if (count <= 0) return out;
@@ -658,10 +549,6 @@ const ESPESOR_CAJA = S('espesorCaja', 'Espesor caja de gaveta', '15', [['12', '1
 const DESC_CORREDERA = L('descuentoCorredera', 'Descuento corredera (por lado)', 12.7, 0, 30, 'Holguras');
 const DISTRIBUCION = S('distribucion', 'Distribución de frentes', 'iguales', [['iguales', 'Iguales'], ['progresivo', 'Progresiva (abajo más altas)']]);
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar una cómoda / velador con tapa, gavetas y nicho opcional
-// ==================================================
 function chestGenerate(p: Params): GenerateResult {
   const W = n(p, 'ancho'), H = n(p, 'alto'), D = n(p, 'profundidad'), t = n(p, 'espesor'), tb = n(p, 'espesorFondo');
   const z = Math.max(0, n(p, 'zocalo')), g = n(p, 'holgura'), count = Math.max(1, Math.round(n(p, 'gavetas')));
@@ -697,10 +584,6 @@ function chestGenerate(p: Params): GenerateResult {
   return { pieces, size: { w: W, h: H, d: D + t } };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Cómoda
-// ==================================================
 const chest: Template = {
   id: 'chest',
   name: 'Cómoda',
@@ -719,10 +602,6 @@ const chest: Template = {
   generate: chestGenerate,
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Velador / mesa de noche
-// ==================================================
 const nightstand: Template = {
   id: 'nightstand',
   name: 'Velador / mesa de noche',
@@ -741,10 +620,6 @@ const nightstand: Template = {
   generate: chestGenerate,
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Cama (cabecera, piecera, largueros y tarima)
-// ==================================================
 const MATTRESS: Record<string, [number, number]> = {
   '1': [900, 1900], '1.5': [1050, 1900], '2': [1350, 1900], queen: [1500, 2000], king: [2000, 2000],
 };
@@ -809,10 +684,6 @@ const bed: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Generar un mueble a medida por columnas (repisas, puertas o gavetas)
-// ==================================================
 function customGenerate(p: Params): GenerateResult {
   const W = n(p, 'ancho'), H = n(p, 'alto'), D = n(p, 'profundidad'), t = n(p, 'espesor'), tb = n(p, 'espesorFondo');
   const z = Math.max(0, n(p, 'zocalo')), g = n(p, 'holgura'), cc = n(p, 'cantoCasco'), cf = n(p, 'cantoFrentes');
@@ -859,10 +730,6 @@ function customGenerate(p: Params): GenerateResult {
   return { pieces, size: { w: W, h: H, d: D + (frente === 'ninguno' ? 0 : t) } };
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Parámetros del mueble a medida con valores por defecto
-// ==================================================
 function customParams(d: { ancho: number; alto: number; prof: number; cols: number; repisas: number; frente: string; zocalo: number; tapa: boolean }): ParamDef[] {
   return [
     L('ancho', 'Ancho', d.ancho, 200, 4000), L('alto', 'Alto', d.alto, 150, 2700), L('profundidad', 'Profundidad', d.prof, 150, 900),
@@ -878,10 +745,6 @@ function customParams(d: { ancho: number; alto: number; prof: number; cols: numb
   ];
 }
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Mueble a medida (configurable por columnas)
-// ==================================================
 const customFurniture: Template = {
   id: 'custom-furniture',
   name: 'Mueble a medida',
@@ -894,10 +757,6 @@ const customFurniture: Template = {
   generate: customGenerate,
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Mueble de TV / rack
-// ==================================================
 const tvUnit: Template = {
   id: 'tv-unit',
   name: 'Mueble de TV / rack',
@@ -910,10 +769,6 @@ const tvUnit: Template = {
   generate: customGenerate,
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Zapatero
-// ==================================================
 const shoeCabinet: Template = {
   id: 'shoe-cabinet',
   name: 'Zapatero',
@@ -932,10 +787,6 @@ export const REF_MATERIAL: Record<string, string> = {
   sofa: 'tela', ventana: 'vidrio', puerta: 'madera-puerta', generico: 'mdf-crudo',
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Plantilla: Bloque de referencia (electrodomésticos, camas, puertas)
-// ==================================================
 const reference: Template = {
   id: 'reference',
   name: 'Bloque de referencia',
@@ -969,19 +820,11 @@ const reference: Template = {
   },
 };
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Sección: Lista de plantillas disponibles en el catálogo
-// ==================================================
 export const TEMPLATES: Template[] = [
   baseCabinet, wallCabinet, drawerUnit, closet, bed, chest, nightstand, shoeCabinet, desk, shelf, tvUnit, customFurniture, freePiece, wall, floor, reference,
 ];
 export const TEMPLATE_MAP: Record<string, Template> = Object.fromEntries(TEMPLATES.map((t) => [t.id, t]));
 
-// ==================================================
-// 4BYTES - Equipo de desarrollo
-// Función: Obtener los parámetros por defecto de una plantilla
-// ==================================================
 export function defaultParams(t: Template): Params {
   return Object.fromEntries(t.params.map((p) => [p.key, p.default]));
 }
