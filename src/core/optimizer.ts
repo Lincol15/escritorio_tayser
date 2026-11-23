@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/core/optimizer.ts
+ * Descripción: Optimizador de corte 2D (MaxRects y Guillotina).
+ * ==================================================
+ */
 // ===================== Optimizador de corte 2D (MaxRects + Guillotina) =====================
 // Convención: el LARGO del tablero (sheet.length) es el eje X y la veta del tablero corre a lo largo de X.
 // Una pieza con veta activa coloca su largo sobre X y NO se rota 90°.
@@ -76,8 +85,16 @@ interface Bin {
 }
 
 const EPS = 1e-6;
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Verificar si un rectángulo contiene a otro
+// ==================================================
 const contains = (a: Rect, b: Rect) => b.x >= a.x - EPS && b.y >= a.y - EPS && b.x + b.w <= a.x + a.w + EPS && b.y + b.h <= a.y + a.h + EPS;
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Puntuar la colocación de una pieza en un espacio libre
+// ==================================================
 function score(f: Rect, rw: number, rh: number, heur: Heuristic): [number, number] {
   const lh = f.w - rw;
   const lv = f.h - rh;
@@ -166,6 +183,10 @@ interface PackResult {
   label: string;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Acomodar las piezas en tableros con el algoritmo indicado
+// ==================================================
 function pack(items: PackItem[], cfg: SheetConfig, algo: 'maxrects' | 'guillotine', heur: Heuristic, mode: 'global' | 'sorted'): PackResult {
   const k = cfg.kerf;
   const BW = cfg.length - 2 * cfg.trim + k;
@@ -215,6 +236,10 @@ function pack(items: PackItem[], cfg: SheetConfig, algo: 'maxrects' | 'guillotin
   return { sheets, unplaced, label: `${algo === 'maxrects' ? 'MaxRects' : 'Guillotina'} ${heur.toUpperCase()} ${mode === 'global' ? 'global' : 'ordenado'}` };
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Comparar dos resultados y elegir el de menos tableros y desperdicio
+// ==================================================
 function better(a: PackResult, b: PackResult): boolean {
   if (a.unplaced.length !== b.unplaced.length) return a.unplaced.length < b.unplaced.length;
   if (a.sheets.length !== b.sheets.length) return a.sheets.length < b.sheets.length;
@@ -223,6 +248,10 @@ function better(a: PackResult, b: PackResult): boolean {
   return la < lb;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Probar algoritmos y heurísticas y quedarse con el mejor
+// ==================================================
 export function packItems(items: PackItem[], cfg: SheetConfig): PackResult {
   const algos: ('maxrects' | 'guillotine')[] = cfg.algorithm === 'auto' ? ['guillotine', 'maxrects'] : [cfg.algorithm as Exclude<PackAlgorithm, 'auto'>];
   let best: PackResult | null = null;
@@ -238,6 +267,10 @@ export function packItems(items: PackItem[], cfg: SheetConfig): PackResult {
   return best ?? { sheets: [], unplaced: [], label: '' };
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Optimizar los cortes de un grupo de material
+// ==================================================
 export function optimizeGroup(g: MaterialGroup, cfg: SheetConfig): GroupOptimization {
   const items: PackItem[] = [];
   for (const r of g.rows) {
@@ -256,6 +289,10 @@ export function optimizeGroup(g: MaterialGroup, cfg: SheetConfig): GroupOptimiza
   };
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Optimizar los cortes de todo el despiece
+// ==================================================
 export function optimizeAll(cut: CutList, cfg: SheetConfig): GroupOptimization[] {
   return cut.groups.filter((g) => g.optimize).map((g) => optimizeGroup(g, cfg));
 }

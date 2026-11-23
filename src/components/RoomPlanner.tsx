@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/components/RoomPlanner.tsx
+ * Descripción: Modo Foto del ambiente (planificador).
+ * ==================================================
+ */
 import { useMemo, useRef, useState } from 'react';
 import { create } from 'zustand';
 import { Crosshair, DoorOpen, ImagePlus, MousePointerClick, Ruler, Send, Sparkles, SquareDashed, Trash2, AppWindow, RotateCcw, Plus } from 'lucide-react';
@@ -48,6 +57,10 @@ const OBS_COLOR: Record<ObstacleType, string> = { puerta: '#f97316', ventana: '#
 const FURN_COLOR: Record<string, string> = { ropero: '#22c55e', cama: '#e879f9', escritorio: '#facc15', comoda: '#fb7185', estante: '#2dd4bf', velador: '#a3e635' };
 const CORNER_NAMES = ['superior izquierda', 'superior derecha', 'inferior derecha', 'inferior izquierda'];
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Modo Foto del ambiente: foto, medidas, muebles y propuesta
+// ==================================================
 export default function RoomPlanner() {
   const r = useRoom();
   const unit = useStore((s) => s.unit);
@@ -348,6 +361,10 @@ export default function RoomPlanner() {
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Vista en planta de la distribución propuesta
+// ==================================================
 function FloorPlan({ room, plan, unit }: { room: RoomSpec; plan: PlanResult | null; unit: 'mm' | 'cm' | 'in' }) {
   const W = room.width;
   const D = room.depth;

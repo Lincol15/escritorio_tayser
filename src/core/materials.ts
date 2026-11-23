@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/core/materials.ts
+ * Descripción: Catálogo de materiales y tapacantos.
+ * ==================================================
+ */
 export type TextureKind = 'solid' | 'wood' | 'pine' | 'concrete' | 'brick' | 'metal' | 'glass' | 'granite' | 'tiles' | 'paint';
 export type MaterialKind = 'board' | 'solid-wood' | 'hardware' | 'wall' | 'reference';
 
@@ -15,6 +24,10 @@ export interface Material {
   optimize: boolean;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Construir la definición de un material del catálogo
+// ==================================================
 const m = (
   id: string,
   name: string,
@@ -34,6 +47,10 @@ const m = (
   ...extra,
 });
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Sección: Catálogo de materiales: tableros, maderas, paredes y referencias
+// ==================================================
 export const MATERIALS: Material[] = [
   m('mel-blanco', 'Melamina Blanco', 'board', 'solid', '#f1f1ee', { roughness: 0.5 }),
   m('mel-gris', 'Melamina Gris Humo', 'board', 'solid', '#8b8f94', { roughness: 0.5 }),
@@ -62,6 +79,10 @@ export const MATERIALS: Material[] = [
 
 export const MATERIAL_MAP: Record<string, Material> = Object.fromEntries(MATERIALS.map((x) => [x.id, x]));
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Obtener un material por su identificador
+// ==================================================
 export function getMaterial(id: string | undefined): Material {
   return (id && MATERIAL_MAP[id]) || MATERIALS[0];
 }

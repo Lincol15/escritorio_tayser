@@ -1,4 +1,13 @@
-import { Box, Calculator, FileDown, FilePlus2, FileSpreadsheet, FolderOpen, Image as ImageIcon, Maximize, Presentation, Redo2, Save, SaveAll, Scissors, Undo2 } from 'lucide-react';
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/components/TopBar.tsx
+ * Descripción: Barra superior de la aplicación.
+ * ==================================================
+ */
+import { Box, Calculator, Grid3x3, FileDown, FilePlus2, FileSpreadsheet, FolderOpen, Image as ImageIcon, Maximize, Presentation, Redo2, Save, SaveAll, Scissors, Undo2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import type { AppMode } from '../core/types';
 import { UNITS } from '../core/units';
@@ -13,10 +22,15 @@ const MODES: { id: AppMode; label: string; icon: typeof Box }[] = [
   { id: 'build', label: 'Build 3D', icon: Box },
   { id: 'room', label: 'Foto del ambiente', icon: ImageIcon },
   { id: 'cutlist', label: 'Despiece y cortes', icon: Scissors },
+  { id: 'optimize', label: 'Optimizar plancha', icon: Grid3x3 },
   { id: 'calc', label: 'Calculadoras', icon: Calculator },
   { id: 'client', label: 'Vista cliente', icon: Presentation },
 ];
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Guardar el proyecto actual
+// ==================================================
 export async function saveProject(saveAs = false) {
   const st = useStore.getState();
   try {
@@ -30,6 +44,10 @@ export async function saveProject(saveAs = false) {
   }
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Abrir un proyecto desde archivo
+// ==================================================
 export async function openProject() {
   const st = useStore.getState();
   if (st.dirty && !window.confirm('Hay cambios sin guardar. ¿Abrir otro proyecto de todos modos?')) return;
@@ -44,6 +62,10 @@ export async function openProject() {
   }
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Barra superior: modos, unidades, archivo y exportación
+// ==================================================
 export default function TopBar() {
   const mode = useStore((s) => s.mode);
   const unit = useStore((s) => s.unit);

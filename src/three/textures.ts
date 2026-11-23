@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/three/textures.ts
+ * Descripción: Texturas procedurales para el visor 3D.
+ * ==================================================
+ */
 // Texturas 100% procedurales (CanvasTexture): sin archivos ni red.
 import * as THREE from 'three';
 import type { Material } from '../core/materials';
@@ -5,11 +14,19 @@ import type { Material } from '../core/materials';
 const SIZE = 512;
 const cache = new Map<string, THREE.Texture | null>();
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Generador de números pseudoaleatorios con semilla
+// ==================================================
 function rng(seed: number) {
   let s = seed % 2147483647;
   if (s <= 0) s += 2147483646;
   return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Obtener una semilla numérica a partir de un texto
+// ==================================================
 function hash(str: string) {
   let h = 2166136261;
   for (let i = 0; i < str.length; i++) {
@@ -19,6 +36,10 @@ function hash(str: string) {
   return Math.abs(h) || 1;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Aclarar u oscurecer un color hexadecimal
+// ==================================================
 function shade(hex: string, amt: number): string {
   const c = new THREE.Color(hex);
   const hsl = { h: 0, s: 0, l: 0 };
@@ -27,6 +48,10 @@ function shade(hex: string, amt: number): string {
   return `#${c.getHexString()}`;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Dibujar una textura de veta de madera
+// ==================================================
 function drawWood(ctx: CanvasRenderingContext2D, base: string, dark: string, r: () => number, knots: boolean) {
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, SIZE, SIZE);
@@ -86,6 +111,10 @@ function drawWood(ctx: CanvasRenderingContext2D, base: string, dark: string, r: 
   ctx.globalAlpha = 1;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Dibujar un moteado (granito, concreto)
+// ==================================================
 function drawSpeckle(ctx: CanvasRenderingContext2D, base: string, r: () => number, count: number, alpha: number, colors: string[]) {
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, SIZE, SIZE);
@@ -98,6 +127,10 @@ function drawSpeckle(ctx: CanvasRenderingContext2D, base: string, r: () => numbe
   ctx.globalAlpha = 1;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Dibujar una textura de concreto
+// ==================================================
 function drawConcrete(ctx: CanvasRenderingContext2D, base: string, r: () => number) {
   drawSpeckle(ctx, base, r, 14000, 0.16, [shade(base, -0.2), shade(base, 0.15), shade(base, -0.08)]);
   for (let i = 0; i < 14; i++) {
@@ -114,6 +147,10 @@ function drawConcrete(ctx: CanvasRenderingContext2D, base: string, r: () => numb
   ctx.globalAlpha = 1;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Dibujar una textura de ladrillo caravista
+// ==================================================
 function drawBrick(ctx: CanvasRenderingContext2D, base: string, mortar: string, r: () => number) {
   ctx.fillStyle = mortar;
   ctx.fillRect(0, 0, SIZE, SIZE);
@@ -129,6 +166,10 @@ function drawBrick(ctx: CanvasRenderingContext2D, base: string, mortar: string, 
   }
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Dibujar una textura de piso cerámico
+// ==================================================
 function drawTiles(ctx: CanvasRenderingContext2D, base: string, grout: string, r: () => number) {
   ctx.fillStyle = grout;
   ctx.fillRect(0, 0, SIZE, SIZE);
@@ -149,7 +190,14 @@ function drawTiles(ctx: CanvasRenderingContext2D, base: string, grout: string, r
 
 const TILE_MM: Record<string, number> = { wood: 1000, pine: 800, concrete: 2000, paint: 2000, brick: 1000, tiles: 1200, granite: 1000 };
 
-/** Devuelve la textura de un material. variant 'panel' usa UV en mm (repeat = 1/tamaño), 'cyl' usa UV 0..1. */
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Obtener (o generar) la textura de un material
+// ==================================================
+/**
+ * Devuelve la textura de un material. variant 'panel' usa UV en mm (repeat = 1/tamaño), 'cyl' usa UV 0..1.
+ * @author 4BYTES - Equipo de desarrollo
+ */
 export function getTexture(mat: Material, variant: 'panel' | 'cyl'): THREE.Texture | null {
   const key = `${mat.id}|${variant}`;
   if (cache.has(key)) return cache.get(key) ?? null;
@@ -205,7 +253,14 @@ export function getTexture(mat: Material, variant: 'panel' | 'cyl'): THREE.Textu
   return tex;
 }
 
-/** Miniatura para selectores de acabado */
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Generar la muestra de color de un material como imagen
+// ==================================================
+/**
+ * Miniatura para selectores de acabado
+ * @author 4BYTES - Equipo de desarrollo
+ */
 export function swatchDataUrl(mat: Material): string {
   const tex = getTexture(mat, 'cyl');
   const img = tex?.image as HTMLCanvasElement | undefined;

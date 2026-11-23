@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/core/cutlist.ts
+ * Descripción: Despiece (lista de corte) con tapacantos.
+ * ==================================================
+ */
 // ===================== Despiece (lista de corte) con tapacantos =====================
 import type { Corner, EdgeBanding, EdgeKey, Piece, Project } from './types';
 import { buildItem } from './items';
@@ -51,6 +60,10 @@ export interface CutList {
 export const CORNER_LABEL: Record<Corner, string> = { bl: 'inf-izq', br: 'inf-der', tr: 'sup-der', tl: 'sup-izq' };
 export const EDGE_LABEL: Record<EdgeKey, string> = { l1: 'L1', l2: 'L2', w1: 'A1', w2: 'A2' };
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Describir los cortes especiales de una pieza para el despiece
+// ==================================================
 export function featureNotes(p: Piece): string {
   const f = p.features;
   const out: string[] = [];
@@ -66,6 +79,10 @@ export function featureNotes(p: Piece): string {
   return out.join('; ');
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Calcular el largo y ancho extra que suman las espigas
+// ==================================================
 function tenonExtra(p: Piece) {
   let l = 0;
   let w = 0;
@@ -76,6 +93,10 @@ function tenonExtra(p: Piece) {
   return { l, w };
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Generar el despiece del proyecto agrupado por material
+// ==================================================
 export function buildCutList(project: Project): CutList {
   const panelMap = new Map<string, CutRow>();
   const turnedMap = new Map<string, CutRow>();

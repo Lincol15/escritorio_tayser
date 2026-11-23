@@ -1,8 +1,21 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/components/SheetSvg.tsx
+ * Descripción: Dibujo SVG de un tablero optimizado.
+ * ==================================================
+ */
 import type { GroupOptimization, PackedSheet } from '../core/optimizer';
 import { colorForCode } from '../core/export';
 import { fmtLen } from '../core/units';
 import type { Unit } from '../core/types';
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Plano de un tablero con sus piezas
+// ==================================================
 export default function SheetSvg({ opt, sheet, index, unit }: { opt: GroupOptimization; sheet: PackedSheet; index: number; unit: Unit }) {
   const L = opt.sheetLength;
   const W = opt.sheetWidth;

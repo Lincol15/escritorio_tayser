@@ -1,5 +1,18 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/index.css
+ * Descripción: Tema de colores y estilos globales de la aplicación.
+ * ==================================================
+ */
 @import "tailwindcss";
 
+/* ==================================================
+   4BYTES - Equipo de desarrollo
+   Sección: Variables de color del tema claro de taller
+   ================================================== */
 @theme {
   --color-app: #dfe2de;
   --color-panel: #f5f6f4;

@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/components/Inspector.tsx
+ * Descripción: Panel derecho: propiedades del mueble o proyecto.
+ * ==================================================
+ */
 import { useMemo } from 'react';
 import { AlignVerticalJustifyStart, Copy, Eye, EyeOff, RotateCcw, RotateCw, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
@@ -9,6 +18,10 @@ import { Btn, NumberField, Row, Section, Select, TextField, Toggle } from './ui'
 import PieceEditor from './PieceEditor';
 import { fmtLen } from '../core/units';
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Panel derecho de propiedades
+// ==================================================
 export default function Inspector() {
   const items = useStore((s) => s.project.items);
   const selectedId = useStore((s) => s.selectedId);
@@ -28,6 +41,10 @@ export default function Inspector() {
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Campo de un parámetro del mueble
+// ==================================================
 function ParamField({ def, value, onChange }: { def: ParamDef; value: unknown; onChange: (v: number | string | boolean) => void }) {
   if (def.type === 'length') return <NumberField value={Number(value)} min={def.min} max={def.max} onChange={onChange} />;
   if (def.type === 'number' || def.type === 'angle')
@@ -36,6 +53,10 @@ function ParamField({ def, value, onChange }: { def: ParamDef; value: unknown; o
   return <Select value={String(value)} options={def.options ?? []} onChange={onChange} />;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Propiedades del mueble seleccionado
+// ==================================================
 function ItemInspector({ item }: { item: SceneItem }) {
   const st = useStore.getState();
   const items = useStore((s) => s.project.items);
@@ -173,6 +194,10 @@ function ItemInspector({ item }: { item: SceneItem }) {
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Datos del proyecto y configuración del tablero
+// ==================================================
 function ProjectInspector() {
   const p = useStore((s) => s.project);
   const st = useStore.getState();

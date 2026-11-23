@@ -1,8 +1,21 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/core/presets.ts
+ * Descripción: Proyectos y escenas predefinidas.
+ * ==================================================
+ */
 // Escenas prearmadas (offline)
 import type { Project, SceneItem } from './types';
 import { createItem } from './items';
 import { uid } from './ids';
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Crear la cocina lineal de ejemplo
+// ==================================================
 export function kitchenPreset(): SceneItem[] {
   const T = 150;
   const items: SceneItem[] = [
@@ -25,6 +38,10 @@ export function kitchenPreset(): SceneItem[] {
   return items;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Crear un proyecto nuevo con valores por defecto
+// ==================================================
 export function emptyProject(name = 'Proyecto sin título', items: SceneItem[] = []): Project {
   const now = new Date().toISOString();
   return {

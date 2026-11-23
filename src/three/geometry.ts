@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/three/geometry.ts
+ * Descripción: Geometría 3D de piezas con cortes especiales.
+ * ==================================================
+ */
 // Geometría de piezas: contorno con radios y diagonales, calados, biseles por canto, espigas y cilindros/conos.
 // Marco de la pieza: x = largo (u), y = ancho (v), z = espesor, centrado en el origen.
 import * as THREE from 'three';
@@ -6,11 +15,19 @@ import { DEG } from '../core/units';
 
 const geoCache = new Map<string, THREE.BufferGeometry>();
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Generar la clave de caché de la geometría de una pieza
+// ==================================================
 export function geometryKey(p: Piece): string {
   const f = p.features;
   return JSON.stringify([p.kind, p.length, p.width, p.thickness, p.radiusTop, p.radiusBottom, f.cornerRadius, f.radiusCorners, f.diagonals, f.holes, f.bevels]);
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Dibujar el contorno de la pieza con radios y diagonales
+// ==================================================
 function outline(L: number, W: number, p: Piece): THREE.Shape {
   const f = p.features;
   const hx = L / 2;
@@ -88,6 +105,10 @@ function outline(L: number, W: number, p: Piece): THREE.Shape {
   return shape;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Construir la geometría 3D de un tablero con calados y biseles
+// ==================================================
 export function panelGeometry(p: Piece): THREE.BufferGeometry {
   const key = geometryKey(p);
   const hit = geoCache.get(key);
@@ -124,6 +145,10 @@ export function panelGeometry(p: Piece): THREE.BufferGeometry {
   return geo;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Construir la geometría 3D de un cilindro o cono
+// ==================================================
 export function cylinderGeometry(p: Piece): THREE.BufferGeometry {
   const key = geometryKey(p);
   const hit = geoCache.get(key);
@@ -136,6 +161,10 @@ export function cylinderGeometry(p: Piece): THREE.BufferGeometry {
 const AX: Record<string, THREE.Vector3> = { X: new THREE.Vector3(1, 0, 0), Y: new THREE.Vector3(0, 1, 0), Z: new THREE.Vector3(0, 0, 1) };
 const quatCache = new Map<Plane, THREE.Quaternion>();
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Obtener la rotación de una pieza según su plano
+// ==================================================
 export function planeQuaternion(plane: Plane): THREE.Quaternion {
   const hit = quatCache.get(plane);
   if (hit) return hit;
@@ -148,7 +177,14 @@ export function planeQuaternion(plane: Plane): THREE.Quaternion {
   return q;
 }
 
-/** Posición y tamaño de una espiga en el marco de la pieza */
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Construir la geometría de una espiga
+// ==================================================
+/**
+ * Posición y tamaño de una espiga en el marco de la pieza
+ * @author 4BYTES - Equipo de desarrollo
+ */
 export function tenonBox(p: Piece, t: Piece['features']['tenons'][number]) {
   const hx = p.length / 2;
   const hy = p.width / 2;

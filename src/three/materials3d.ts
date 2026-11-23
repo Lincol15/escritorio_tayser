@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/three/materials3d.ts
+ * Descripción: Materiales 3D de Three.js.
+ * ==================================================
+ */
 import * as THREE from 'three';
 import { getMaterial } from '../core/materials';
 import { getTexture } from './textures';
@@ -5,6 +14,10 @@ import { getTexture } from './textures';
 export type MatState = 'normal' | 'selected' | 'step';
 const cache = new Map<string, THREE.MeshStandardMaterial>();
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Obtener el material 3D de una pieza según su estado
+// ==================================================
 export function getMeshMaterial(materialId: string, variant: 'panel' | 'cyl', state: MatState): THREE.MeshStandardMaterial {
   const key = `${materialId}|${variant}|${state}`;
   const hit = cache.get(key);

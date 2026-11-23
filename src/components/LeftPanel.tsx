@@ -1,6 +1,15 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/components/LeftPanel.tsx
+ * Descripción: Panel izquierdo: catálogo y lista del proyecto.
+ * ==================================================
+ */
 import { useState } from 'react';
 import {
-  Archive, Box, BrickWall, ChefHat, ChevronDown, ChevronRight, DoorClosed, Eye, EyeOff, Grid2x2, LibraryBig, PanelTop, Rows3, Square, Table2, type LucideIcon,
+  Archive, BedDouble, Box, BrickWall, ChefHat, ChevronDown, ChevronRight, DoorClosed, Eye, EyeOff, Footprints, Grid2x2, Lamp, LayoutGrid, LibraryBig, PanelTop, Rows3, Rows4, Square, Table2, Tv, type LucideIcon,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { TEMPLATES } from '../core/templates';
@@ -8,9 +17,13 @@ import { buildItem } from '../core/items';
 import { Section, cx } from './ui';
 import { fmtLen } from '../core/units';
 
-export const ICONS: Record<string, LucideIcon> = { Archive, PanelTop, Rows3, DoorClosed, Table2, LibraryBig, Square, BrickWall, Grid2x2, Box };
-const GROUPS = ['Cocina', 'Dormitorio', 'Oficina y sala', 'Ambiente', 'Piezas'];
+export const ICONS: Record<string, LucideIcon> = { Archive, PanelTop, Rows3, Rows4, DoorClosed, Table2, LibraryBig, Square, BrickWall, Grid2x2, Box, BedDouble, Lamp, Footprints, Tv, LayoutGrid };
+const GROUPS = ['Cocina', 'Dormitorio', 'Oficina y sala', 'A medida', 'Ambiente', 'Piezas'];
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Panel izquierdo: catálogo paramétrico y lista del proyecto
+// ==================================================
 export default function LeftPanel() {
   const items = useStore((s) => s.project.items);
   const selectedId = useStore((s) => s.selectedId);

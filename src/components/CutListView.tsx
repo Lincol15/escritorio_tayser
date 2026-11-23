@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/components/CutListView.tsx
+ * Descripción: Modo Despiece y cortes.
+ * ==================================================
+ */
 import { useMemo, useState } from 'react';
 import { FileDown, FileSpreadsheet, Layers, ListOrdered, Settings2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
@@ -9,8 +18,16 @@ import { Btn, NumberField, Select, Stat, Toggle, cx } from './ui';
 import SheetSvg from './SheetSvg';
 import type { PackAlgorithm } from '../core/types';
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Función: Celda de tapacanto en la tabla de despiece
+// ==================================================
 const edgeCell = (v: number) => (v > 0 ? <span className={cx('rounded px-1 font-mono text-[11px]', v >= 2 ? 'bg-amber-500/20 text-amber-700' : v >= 1 ? 'bg-emerald-500/20 text-emerald-700' : 'bg-accent/15 text-accent')}>{trimNum(v, 2)}</span> : <span className="text-zinc-400">—</span>);
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Modo Despiece y cortes: lista de piezas y planos de tableros
+// ==================================================
 export default function CutListView() {
   const project = useStore((s) => s.project);
   const unit = useStore((s) => s.unit);

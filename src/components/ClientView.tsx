@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/components/ClientView.tsx
+ * Descripción: Modo Vista cliente.
+ * ==================================================
+ */
 import { useMemo, useRef, useState } from 'react';
 import { Camera, Maximize, Palette } from 'lucide-react';
 import { useStore, type ViewName } from '../store/useStore';
@@ -9,6 +18,10 @@ import { fmtLen } from '../core/units';
 import { Btn, cx } from './ui';
 import { captureViewer, toggleFullscreen } from './ViewerOverlay';
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Muestra de acabado seleccionable
+// ==================================================
 function Swatch({ m, active, onClick }: { m: Material; active: boolean; onClick: () => void }) {
   const url = useMemo(() => swatchDataUrl(m), [m]);
   return (
@@ -19,6 +32,10 @@ function Swatch({ m, active, onClick }: { m: Material; active: boolean; onClick:
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Modo Vista cliente con acabados intercambiables
+// ==================================================
 export default function ClientView() {
   const project = useStore((s) => s.project);
   const unit = useStore((s) => s.unit);

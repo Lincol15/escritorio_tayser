@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/App.tsx
+ * Descripción: Componente raíz: modos de trabajo, atajos y respaldo automático.
+ * ==================================================
+ */
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from './store/useStore';
 import TopBar, { saveProject } from './components/TopBar';
@@ -7,6 +16,7 @@ import Viewer3D from './components/Viewer3D';
 import ViewerOverlay from './components/ViewerOverlay';
 import CutListView from './components/CutListView';
 import CalculatorsView from './components/CalculatorsView';
+import QuickOptimizerView from './components/QuickOptimizerView';
 import ClientView from './components/ClientView';
 import RoomPlanner from './components/RoomPlanner';
 import { idbLoad, idbSave, parseProject } from './core/persistence';
@@ -14,6 +24,10 @@ import type { Project } from './core/types';
 
 const AUTOSAVE_KEY = 'current-project';
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Aplicación principal: modos, atajos de teclado y respaldo
+// ==================================================
 export default function App() {
   const mode = useStore((s) => s.mode);
   const toast = useStore((s) => s.toast);
@@ -114,6 +128,7 @@ export default function App() {
           </>
         )}
         {mode === 'cutlist' && <div className="min-w-0 flex-1"><CutListView /></div>}
+        {mode === 'optimize' && <div className="min-w-0 flex-1"><QuickOptimizerView /></div>}
         {mode === 'calc' && <div className="min-w-0 flex-1"><CalculatorsView /></div>}
         {mode === 'client' && <div className="min-w-0 flex-1"><ClientView /></div>}
         {mode === 'room' && <div className="min-w-0 flex-1"><RoomPlanner /></div>}

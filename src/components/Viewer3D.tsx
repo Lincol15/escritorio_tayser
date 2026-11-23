@@ -1,3 +1,12 @@
+/*
+ * ==================================================
+ * Proyecto desarrollado por: 4BYTES
+ * Equipo de desarrollo de software
+ * Proyecto: Tayser - Diseño paramétrico 3D y optimización de cortes
+ * Archivo: src/components/Viewer3D.tsx
+ * Descripción: Visor 3D de la escena.
+ * ==================================================
+ */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
@@ -11,6 +20,10 @@ import { DEG, fmtLen, normDeg, round } from '../core/units';
 
 const BG = { dark: '#17181b', gray: '#3a3f47', light: '#dfe3de' };
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Visor 3D de la escena
+// ==================================================
 export default function Viewer3D({ presentation = false }: { presentation?: boolean }) {
   const items = useStore((s) => s.project.items);
   const sceneBg = useStore((s) => s.sceneBg);
@@ -58,6 +71,10 @@ export default function Viewer3D({ presentation = false }: { presentation?: bool
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Iluminación de la escena
+// ==================================================
 function Lights({ presentation }: { presentation: boolean }) {
   return (
     <>
@@ -78,6 +95,10 @@ function Lights({ presentation }: { presentation: boolean }) {
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Representación 3D de un mueble
+// ==================================================
 function ItemNode({ item, presentation }: { item: SceneItem; presentation: boolean }) {
   const built = useMemo(() => buildItem(item), [item]);
   const selectedId = useStore((s) => s.selectedId);
@@ -118,6 +139,10 @@ function ItemNode({ item, presentation }: { item: SceneItem; presentation: boole
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Malla 3D de una pieza
+// ==================================================
 function PieceMesh({ piece, state, edgeColor, animate, onClick }: { piece: ResolvedPiece; state: MatState; edgeColor: string; animate: boolean; onClick: (e: ThreeEvent<MouseEvent>) => void }) {
   const gkey = geometryKey(piece);
   const geom = useMemo(() => (piece.kind === 'cylinder' ? cylinderGeometry(piece) : panelGeometry(piece)), [gkey]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -167,6 +192,10 @@ function PieceMesh({ piece, state, edgeColor, animate, onClick }: { piece: Resol
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Línea de cota con su medida
+// ==================================================
 function DimLine({ a, b, label }: { a: Vec3; b: Vec3; label: string }) {
   const mid: Vec3 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
   const vertical = Math.abs(b[1] - a[1]) > Math.abs(b[0] - a[0]) + Math.abs(b[2] - a[2]);
@@ -184,6 +213,10 @@ function DimLine({ a, b, label }: { a: Vec3; b: Vec3; label: string }) {
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Cotas de ancho, alto y profundidad
+// ==================================================
 function Dimensions({ size }: { size: Size3 }) {
   const unit = useStore((s) => s.unit);
   const { w, h, d } = size;
@@ -197,6 +230,10 @@ function Dimensions({ size }: { size: Size3 }) {
   );
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Control de cámara para las vistas predefinidas
+// ==================================================
 function CameraRig() {
   const req = useStore((s) => s.viewRequest);
   const camera = useThree((s) => s.camera);
@@ -222,6 +259,10 @@ function CameraRig() {
   return null;
 }
 
+// ==================================================
+// 4BYTES - Equipo de desarrollo
+// Componente: Herramienta para mover y rotar muebles
+// ==================================================
 function Gizmo() {
   const id = useStore((s) => s.selectedId);
   const mode = useStore((s) => s.gizmo);
