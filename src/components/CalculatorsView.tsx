@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/components/CalculatorsView.tsx
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Modo Calculadoras.
  */
 import { useState, type ReactNode } from 'react';

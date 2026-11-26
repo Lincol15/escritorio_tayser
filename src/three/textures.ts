@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/three/textures.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Texturas generadas por código.
  */
 // Texturas procedurales (CanvasTexture), generadas sin archivos de imagen.

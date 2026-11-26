@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/components/QuickOptimizerView.tsx
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Modo Optimizar plancha.
  */
 import { useEffect, useState } from 'react';

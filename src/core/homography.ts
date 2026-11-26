@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/core/homography.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Homografía entre la foto y las medidas reales de la pared.
  */
 // Homografía 2D (DLT de 4 puntos) para pasar de la foto (px) al plano real de la pared (mm) y viceversa.

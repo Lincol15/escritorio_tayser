@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     electron/main.cjs
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Proceso principal de Electron: ventana, bloqueo de red y diálogos para guardar y abrir archivos.
  */
 // Proceso principal de Electron. La aplicación trabaja sin conexión y bloquea las peticiones de red externas.

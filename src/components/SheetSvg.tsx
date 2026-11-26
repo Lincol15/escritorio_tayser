@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/components/SheetSvg.tsx
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Dibujo de cada tablero con sus piezas.
  */
 import type { GroupOptimization, PackedSheet } from '../core/optimizer';

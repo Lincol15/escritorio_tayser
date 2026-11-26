@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/core/templates.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Plantillas paramétricas de muebles y elementos del ambiente.
  */
 // Catálogo paramétrico (generadores)

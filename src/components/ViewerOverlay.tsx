@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/components/ViewerOverlay.tsx
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Herramientas del visor: vistas, cotas, mover, rotar y pasos de armado.
  */
 import { useEffect, useMemo, useState } from 'react';

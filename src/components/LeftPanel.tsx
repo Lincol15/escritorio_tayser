@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/components/LeftPanel.tsx
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Panel izquierdo: catálogo y lista del proyecto.
  */
 import { useState } from 'react';

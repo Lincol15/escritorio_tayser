@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/three/geometry.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Geometría de las piezas con cortes especiales.
  */
 // Geometría de piezas: contorno con radios y diagonales, calados, biseles por canto, espigas y cilindros/conos.

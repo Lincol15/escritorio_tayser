@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/core/persistence.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Guardado de archivos .tayser y respaldo en IndexedDB.
  */
 // Persistencia local: archivos .tayser (IPC) + IndexedDB (respaldo)

@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/core/cutlist.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Despiece agrupado por material, con tapacantos.
  */
 // Despiece (lista de corte) con tapacantos

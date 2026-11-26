@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/core/materials.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Catálogo de materiales, tableros y tapacantos.
  */
 export type TextureKind = 'solid' | 'wood' | 'pine' | 'concrete' | 'brick' | 'metal' | 'glass' | 'granite' | 'tiles' | 'paint';

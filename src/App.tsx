@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/App.tsx
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Componente raíz: cambio de modo, atajos de teclado y respaldo automático.
  */
 import { useEffect, useRef, useState } from 'react';

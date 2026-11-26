@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/core/optimizer.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Optimizador de cortes MaxRects y Guillotina.
  */
 // Optimizador de corte 2D (MaxRects + Guillotina)

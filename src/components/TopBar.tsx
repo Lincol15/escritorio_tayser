@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/components/TopBar.tsx
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Barra superior.
  */
 import { Box, Calculator, Grid3x3, FileDown, FilePlus2, FileSpreadsheet, FolderOpen, Image as ImageIcon, Maximize, Presentation, Redo2, Save, SaveAll, Scissors, Undo2 } from 'lucide-react';

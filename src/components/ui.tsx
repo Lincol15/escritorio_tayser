@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/components/ui.tsx
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Componentes reutilizables: botones, campos y secciones.
  */
 import { useEffect, useState, type ReactNode, type ButtonHTMLAttributes } from 'react';

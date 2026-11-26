@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/core/units.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Conversión entre mm, cm y pulgadas, fracciones y evaluador de expresiones.
  */
 import type { Unit } from './types';

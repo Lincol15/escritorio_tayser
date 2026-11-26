@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     electron/preload.cjs
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Puente window.tayser entre la interfaz y el sistema de archivos.
  */
 // Puente seguro (contextIsolation) entre el renderer y el sistema de archivos local.

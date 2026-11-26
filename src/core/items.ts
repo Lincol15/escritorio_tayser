@@ -1,7 +1,7 @@
 /*
  * Proyecto:    Tayser 1.0.0
  * Archivo:     src/core/items.ts
- * Autor:       LRGJ
+ * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Motor paramétrico: convierte cada mueble en sus piezas.
  */
 // Motor paramétrico: ítem de escena -> piezas resueltas (con overrides y materiales).
