@@ -9,7 +9,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('tayser', {
   isElectron: true,
-  saveProject: (args) => ipcRenderer.invoke('tayser:save-project', args),
+  saveProject: (wrgjArgs) => ipcRenderer.invoke('tayser:save-project', wrgjArgs),
   openProject: () => ipcRenderer.invoke('tayser:open-project'),
-  saveFile: (args) => ipcRenderer.invoke('tayser:save-file', args),
+  saveFile: (wrgjArgs) => ipcRenderer.invoke('tayser:save-file', wrgjArgs),
 });

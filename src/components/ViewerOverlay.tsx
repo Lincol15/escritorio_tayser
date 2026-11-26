@@ -6,38 +6,38 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Box, Camera, Eye, Footprints, Maximize, Move3d, MousePointer2, Pause, Play, Rotate3d, Ruler, SkipBack, SkipForward, X } from 'lucide-react';
-import { useStore, type ViewName } from '../store/useStore';
-import { buildItem } from '../core/items';
-import { Btn, cx } from './ui';
-import { dataUrlToBytes, saveBinaryFile } from '../core/persistence';
+import { useStore, type WRGJViewName } from '../store/useStore';
+import { wrgjBuildItem } from '../core/items';
+import { WRGJBtn, wrgjCx } from './ui';
+import { wrgjDataUrlToBytes, wrgjSaveBinaryFile } from '../core/persistence';
 
-const VIEWS: { v: ViewName; label: string }[] = [
+const WRGJ_VIEWS: { v: WRGJViewName; label: string }[] = [
   { v: 'front', label: 'Frontal' },
   { v: 'top', label: 'Superior' },
   { v: 'side', label: 'Lateral' },
   { v: 'iso', label: 'Isométrica' },
 ];
 
-export async function captureViewer(name: string) {
+export async function wrgjCaptureViewer(name: string) {
   const canvas = document.querySelector('canvas');
   if (!canvas) return;
   const url = canvas.toDataURL('image/png');
-  await saveBinaryFile(`${name || 'tayser'}.png`, dataUrlToBytes(url), 'image/png', [{ name: 'Imagen PNG', extensions: ['png'] }]);
+  await wrgjSaveBinaryFile(`${name || 'tayser'}.png`, wrgjDataUrlToBytes(url), 'image/png', [{ name: 'Imagen PNG', extensions: ['png'] }]);
 }
 
-export function toggleFullscreen(el?: HTMLElement | null) {
+export function wrgjToggleFullscreen(el?: HTMLElement | null) {
   if (document.fullscreenElement) document.exitFullscreen();
   else (el ?? document.documentElement).requestFullscreen?.();
 }
 
-export default function ViewerOverlay({ container }: { container: HTMLElement | null }) {
+export default function WRGJViewerOverlay({ container }: { container: HTMLElement | null }) {
   const s = useStore();
   const items = s.project.items;
   const steps = useMemo(() => {
     const map = new Map<number, Set<string>>();
     for (const it of items) {
       if (it.hidden || (it.category !== 'module' && it.category !== 'piece')) continue;
-      for (const p of buildItem(it).pieces) {
+      for (const p of wrgjBuildItem(it).pieces) {
         if (!map.has(p.step)) map.set(p.step, new Set());
         map.get(p.step)!.add(p.name);
       }
@@ -67,28 +67,28 @@ export default function ViewerOverlay({ container }: { container: HTMLElement | 
   return (
     <>
       <div className="absolute left-3 top-3 flex flex-wrap items-center gap-1 rounded-lg border border-line bg-panel/90 p-1 backdrop-blur">
-        {VIEWS.map((v) => (
-          <Btn key={v.v} size="sm" variant="ghost" onClick={() => s.requestView(v.v)}>
+        {WRGJ_VIEWS.map((v) => (
+          <WRGJBtn key={v.v} size="sm" variant="ghost" onClick={() => s.requestView(v.v)}>
             {v.label}
-          </Btn>
+          </WRGJBtn>
         ))}
         <span className="mx-1 h-5 w-px bg-line" />
-        <Btn size="sm" variant={s.showDims ? 'primary' : 'ghost'} title="Acotaciones 3D" onClick={() => s.setShowDims(!s.showDims)}>
+        <WRGJBtn size="sm" variant={s.showDims ? 'primary' : 'ghost'} title="Acotaciones 3D" onClick={() => s.setShowDims(!s.showDims)}>
           <Ruler size={14} /> Cotas
-        </Btn>
-        <Btn size="sm" variant={s.dimsAll ? 'primary' : 'ghost'} disabled={!s.showDims} title="Cotas en todos los elementos (si no, solo en el seleccionado)" onClick={() => s.setDimsAll(!s.dimsAll)}>
+        </WRGJBtn>
+        <WRGJBtn size="sm" variant={s.dimsAll ? 'primary' : 'ghost'} disabled={!s.showDims} title="Cotas en todos los elementos (si no, solo en el seleccionado)" onClick={() => s.setDimsAll(!s.dimsAll)}>
           Todas
-        </Btn>
+        </WRGJBtn>
         <span className="mx-1 h-5 w-px bg-line" />
-        <Btn size="sm" variant={s.gizmo === 'none' ? 'primary' : 'ghost'} title="Solo seleccionar" onClick={() => s.setGizmo('none')}>
+        <WRGJBtn size="sm" variant={s.gizmo === 'none' ? 'primary' : 'ghost'} title="Solo seleccionar" onClick={() => s.setGizmo('none')}>
           <MousePointer2 size={14} />
-        </Btn>
-        <Btn size="sm" variant={s.gizmo === 'translate' ? 'primary' : 'ghost'} title="Mover (X/Y/Z, imán 10 mm)" onClick={() => s.setGizmo('translate')}>
+        </WRGJBtn>
+        <WRGJBtn size="sm" variant={s.gizmo === 'translate' ? 'primary' : 'ghost'} title="Mover (X/Y/Z, imán 10 mm)" onClick={() => s.setGizmo('translate')}>
           <Move3d size={14} />
-        </Btn>
-        <Btn size="sm" variant={s.gizmo === 'rotate' ? 'primary' : 'ghost'} title="Rotar en Y con imán" onClick={() => s.setGizmo('rotate')}>
+        </WRGJBtn>
+        <WRGJBtn size="sm" variant={s.gizmo === 'rotate' ? 'primary' : 'ghost'} title="Rotar en Y con imán" onClick={() => s.setGizmo('rotate')}>
           <Rotate3d size={14} />
-        </Btn>
+        </WRGJBtn>
         <select className="field h-7! w-16" value={s.rotSnap} onChange={(e) => s.setRotSnap(Number(e.target.value))} title="Imán de rotación">
           {[5, 15, 45, 90].map((v) => (
             <option key={v} value={v}>
@@ -104,35 +104,35 @@ export default function ViewerOverlay({ container }: { container: HTMLElement | 
             key={b}
             title={`Fondo ${b}`}
             onClick={() => s.setSceneBg(b)}
-            className={cx('h-5 w-5 rounded-full border', s.sceneBg === b ? 'border-accent' : 'border-line')}
+            className={wrgjCx('h-5 w-5 rounded-full border', s.sceneBg === b ? 'border-accent' : 'border-line')}
             style={{ background: b === 'dark' ? '#17181b' : b === 'gray' ? '#3a3f47' : '#dfe3de' }}
           />
         ))}
         <span className="mx-1 h-5 w-px bg-line" />
-        <Btn size="sm" variant="ghost" title="Guardar imagen PNG" onClick={() => captureViewer(s.project.name)}>
+        <WRGJBtn size="sm" variant="ghost" title="Guardar imagen PNG" onClick={() => wrgjCaptureViewer(s.project.name)}>
           <Camera size={14} />
-        </Btn>
-        <Btn size="sm" variant="ghost" title="Pantalla completa del visor" onClick={() => toggleFullscreen(container)}>
+        </WRGJBtn>
+        <WRGJBtn size="sm" variant="ghost" title="Pantalla completa del visor" onClick={() => wrgjToggleFullscreen(container)}>
           <Maximize size={14} />
-        </Btn>
+        </WRGJBtn>
       </div>
 
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-lg border border-line bg-panel/90 px-2 py-1.5 backdrop-blur">
         {s.assemblyStep === null ? (
-          <Btn size="sm" variant="ghost" onClick={() => goto(0)} disabled={!steps.length}>
+          <WRGJBtn size="sm" variant="ghost" onClick={() => goto(0)} disabled={!steps.length}>
             <Footprints size={14} /> Pasos de armado
-          </Btn>
+          </WRGJBtn>
         ) : (
           <div className="flex items-center gap-2">
-            <Btn size="sm" variant="ghost" onClick={() => goto(stepIdx - 1)}>
+            <WRGJBtn size="sm" variant="ghost" onClick={() => goto(stepIdx - 1)}>
               <SkipBack size={14} />
-            </Btn>
-            <Btn size="sm" variant="primary" onClick={() => setPlaying(!playing)}>
+            </WRGJBtn>
+            <WRGJBtn size="sm" variant="primary" onClick={() => setPlaying(!playing)}>
               {playing ? <Pause size={14} /> : <Play size={14} />}
-            </Btn>
-            <Btn size="sm" variant="ghost" onClick={() => goto(stepIdx + 1)}>
+            </WRGJBtn>
+            <WRGJBtn size="sm" variant="ghost" onClick={() => goto(stepIdx + 1)}>
               <SkipForward size={14} />
-            </Btn>
+            </WRGJBtn>
             <input type="range" min={0} max={Math.max(0, steps.length - 1)} value={Math.max(0, stepIdx)} onChange={(e) => goto(Number(e.target.value))} className="w-44 accent-amber-400" />
             <div className="w-64 truncate text-xs">
               <span className="font-semibold text-amber-700">
@@ -140,12 +140,12 @@ export default function ViewerOverlay({ container }: { container: HTMLElement | 
               </span>{' '}
               <span className="text-zinc-700">{steps[stepIdx]?.names.join(', ')}</span>
             </div>
-            <Btn size="sm" variant="ghost" title="Ver todo" onClick={() => { setPlaying(false); s.setAssemblyStep(null); }}>
+            <WRGJBtn size="sm" variant="ghost" title="Ver todo" onClick={() => { setPlaying(false); s.setAssemblyStep(null); }}>
               <Eye size={14} />
-            </Btn>
-            <Btn size="sm" variant="ghost" onClick={() => { setPlaying(false); s.setAssemblyStep(null); }}>
+            </WRGJBtn>
+            <WRGJBtn size="sm" variant="ghost" onClick={() => { setPlaying(false); s.setAssemblyStep(null); }}>
               <X size={14} />
-            </Btn>
+            </WRGJBtn>
           </div>
         )}
       </div>

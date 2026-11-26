@@ -7,39 +7,39 @@
 import { useMemo, useState } from 'react';
 import { FileDown, FileSpreadsheet, Layers, ListOrdered, Settings2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { buildCutList, type CutRow } from '../core/cutlist';
-import { optimizeAll } from '../core/optimizer';
-import { exportCsv, exportPdf } from '../core/export';
-import { fmtLen, trimNum } from '../core/units';
-import { Btn, NumberField, Select, Stat, Toggle, cx } from './ui';
-import SheetSvg from './SheetSvg';
-import type { PackAlgorithm } from '../core/types';
+import { wrgjBuildCutList, type WRGJCutRow } from '../core/cutlist';
+import { wrgjOptimizeAll } from '../core/optimizer';
+import { wrgjExportCsv, wrgjExportPdf } from '../core/export';
+import { wrgjFmtLen, wrgjTrimNum } from '../core/units';
+import { WRGJBtn, WRGJNumberField, WRGJSelect, WRGJStat, WRGJToggle, wrgjCx } from './ui';
+import WRGJSheetSvg from './SheetSvg';
+import type { WRGJPackAlgorithm } from '../core/types';
 
-const edgeCell = (v: number) => (v > 0 ? <span className={cx('rounded px-1 font-mono text-[11px]', v >= 2 ? 'bg-amber-500/20 text-amber-700' : v >= 1 ? 'bg-emerald-500/20 text-emerald-700' : 'bg-accent/15 text-accent')}>{trimNum(v, 2)}</span> : <span className="text-zinc-400">—</span>);
+const wrgjEdgeCell = (v: number) => (v > 0 ? <span className={wrgjCx('rounded px-1 font-mono text-[11px]', v >= 2 ? 'bg-amber-500/20 text-amber-700' : v >= 1 ? 'bg-emerald-500/20 text-emerald-700' : 'bg-accent/15 text-accent')}>{wrgjTrimNum(v, 2)}</span> : <span className="text-zinc-400">—</span>);
 
-export default function CutListView() {
+export default function WRGJCutListView() {
   const project = useStore((s) => s.project);
   const unit = useStore((s) => s.unit);
   const st = useStore.getState();
   const [tab, setTab] = useState<'list' | 'sheets'>('list');
-  const cut = useMemo(() => buildCutList(project), [project.items, project.settings]); // eslint-disable-line react-hooks/exhaustive-deps
-  const opts = useMemo(() => optimizeAll(cut, project.sheet), [cut, project.sheet]);
+  const cut = useMemo(() => wrgjBuildCutList(project), [project.items, project.settings]); // eslint-disable-line react-hooks/exhaustive-deps
+  const opts = useMemo(() => wrgjOptimizeAll(cut, project.sheet), [cut, project.sheet]);
   const totalSheets = opts.reduce((a, o) => a + o.sheets.length, 0);
   const used = opts.reduce((a, o) => a + o.usedArea, 0);
   const area = opts.reduce((a, o) => a + o.sheetArea, 0);
   const edgeM = cut.edgeTotals.reduce((a, e) => a + e.withWaste, 0);
-  const L = (v: number) => fmtLen(v, unit, false);
+  const L = (v: number) => wrgjFmtLen(v, unit, false);
 
   const doPdf = async () => {
-    const r = await exportPdf(project, cut, opts, unit);
+    const r = await wrgjExportPdf(project, cut, opts, unit);
     if (r) st.notify(`PDF guardado: ${r}`);
   };
   const doCsv = async () => {
-    const r = await exportCsv(project, cut, unit);
+    const r = await wrgjExportCsv(project, cut, unit);
     if (r) st.notify(`CSV guardado: ${r}`);
   };
 
-  const Rows = ({ rows }: { rows: CutRow[] }) => (
+  const WRGJRows = ({ rows }: { rows: WRGJCutRow[] }) => (
     <>
       {rows.map((r) => (
         <tr key={r.code}>
@@ -54,10 +54,10 @@ export default function CutListView() {
           <td className="font-mono">{L(r.thickness)}</td>
           <td className="font-mono text-emerald-700">{L(r.cutLength)}</td>
           <td className="font-mono text-emerald-700">{L(r.cutWidth)}</td>
-          <td>{edgeCell(r.edges.l1)}</td>
-          <td>{edgeCell(r.edges.l2)}</td>
-          <td>{edgeCell(r.edges.w1)}</td>
-          <td>{edgeCell(r.edges.w2)}</td>
+          <td>{wrgjEdgeCell(r.edges.l1)}</td>
+          <td>{wrgjEdgeCell(r.edges.l2)}</td>
+          <td>{wrgjEdgeCell(r.edges.w1)}</td>
+          <td>{wrgjEdgeCell(r.edges.w2)}</td>
           <td className="text-center">{r.grain ? '⟷' : '—'}</td>
           <td className="max-w-72 text-[11px] text-amber-700/90">{r.notes}</td>
         </tr>
@@ -69,23 +69,23 @@ export default function CutListView() {
     <div className="flex h-full flex-col">
       <div className="flex flex-wrap items-center gap-2 border-b border-line bg-panel px-4 py-2">
         <div className="flex rounded-md border border-line p-0.5">
-          <Btn size="sm" variant={tab === 'list' ? 'primary' : 'ghost'} onClick={() => setTab('list')}>
+          <WRGJBtn size="sm" variant={tab === 'list' ? 'primary' : 'ghost'} onClick={() => setTab('list')}>
             <ListOrdered size={14} /> Lista de despiece
-          </Btn>
-          <Btn size="sm" variant={tab === 'sheets' ? 'primary' : 'ghost'} onClick={() => setTab('sheets')}>
+          </WRGJBtn>
+          <WRGJBtn size="sm" variant={tab === 'sheets' ? 'primary' : 'ghost'} onClick={() => setTab('sheets')}>
             <Layers size={14} /> Planos de tableros
-          </Btn>
+          </WRGJBtn>
         </div>
         <div className="ml-2 flex flex-wrap items-center gap-2 text-xs text-zinc-600">
           <Settings2 size={14} />
           Tablero
-          <NumberField className="w-24" value={project.sheet.length} min={300} onChange={(v) => st.setSheet({ length: v })} />×
-          <NumberField className="w-24" value={project.sheet.width} min={300} onChange={(v) => st.setSheet({ width: v })} />
+          <WRGJNumberField className="w-24" value={project.sheet.length} min={300} onChange={(v) => st.setSheet({ length: v })} />×
+          <WRGJNumberField className="w-24" value={project.sheet.width} min={300} onChange={(v) => st.setSheet({ width: v })} />
           Sierra
-          <NumberField className="w-20" value={project.sheet.kerf} min={0} max={10} onChange={(v) => st.setSheet({ kerf: v })} />
+          <WRGJNumberField className="w-20" value={project.sheet.kerf} min={0} max={10} onChange={(v) => st.setSheet({ kerf: v })} />
           Refilado
-          <NumberField className="w-20" value={project.sheet.trim} min={0} max={50} onChange={(v) => st.setSheet({ trim: v })} />
-          <Select
+          <WRGJNumberField className="w-20" value={project.sheet.trim} min={0} max={50} onChange={(v) => st.setSheet({ trim: v })} />
+          <WRGJSelect
             className="w-40"
             value={project.sheet.algorithm}
             options={[
@@ -93,26 +93,26 @@ export default function CutListView() {
               { value: 'guillotine', label: 'Guillotina (sierra)' },
               { value: 'maxrects', label: 'MaxRects' },
             ]}
-            onChange={(v) => st.setSheet({ algorithm: v as PackAlgorithm })}
+            onChange={(v) => st.setSheet({ algorithm: v as WRGJPackAlgorithm })}
           />
-          <Toggle value={project.settings.discountEdges} onChange={(v) => st.setSettings({ discountEdges: v })} label="Descontar canto" />
+          <WRGJToggle value={project.settings.discountEdges} onChange={(v) => st.setSettings({ discountEdges: v })} label="Descontar canto" />
         </div>
         <div className="ml-auto flex gap-2">
-          <Btn variant="primary" onClick={doPdf}>
+          <WRGJBtn variant="primary" onClick={doPdf}>
             <FileDown size={15} /> PDF completo
-          </Btn>
-          <Btn onClick={doCsv}>
+          </WRGJBtn>
+          <WRGJBtn onClick={doCsv}>
             <FileSpreadsheet size={15} /> CSV
-          </Btn>
+          </WRGJBtn>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2 px-4 py-3 md:grid-cols-5">
-        <Stat label="Piezas" value={String(cut.totalPieces)} sub={`${cut.groups.length} grupos de material`} />
-        <Stat label="Tableros" value={String(totalSheets)} sub={`${fmtLen(project.sheet.length, unit)} × ${fmtLen(project.sheet.width, unit)}`} />
-        <Stat label="Aprovechamiento" value={area ? `${((used / area) * 100).toFixed(1)} %` : '—'} tone={used / area > 0.75 ? 'good' : 'warn'} sub={`Desperdicio ${((area - used) / 1e6).toFixed(2)} m²`} />
-        <Stat label="Tapacanto" value={`${edgeM.toFixed(1)} m`} sub={`incluye ${project.settings.edgeWastePct}% de merma`} />
-        <Stat label="Área de piezas" value={`${(used / 1e6).toFixed(2)} m²`} sub="neto a cortar" />
+        <WRGJStat label="Piezas" value={String(cut.totalPieces)} sub={`${cut.groups.length} grupos de material`} />
+        <WRGJStat label="Tableros" value={String(totalSheets)} sub={`${wrgjFmtLen(project.sheet.length, unit)} × ${wrgjFmtLen(project.sheet.width, unit)}`} />
+        <WRGJStat label="Aprovechamiento" value={area ? `${((used / area) * 100).toFixed(1)} %` : '—'} tone={used / area > 0.75 ? 'good' : 'warn'} sub={`Desperdicio ${((area - used) / 1e6).toFixed(2)} m²`} />
+        <WRGJStat label="Tapacanto" value={`${edgeM.toFixed(1)} m`} sub={`incluye ${project.settings.edgeWastePct}% de merma`} />
+        <WRGJStat label="Área de piezas" value={`${(used / 1e6).toFixed(2)} m²`} sub="neto a cortar" />
       </div>
 
       <div className="scroll-thin flex-1 overflow-auto px-4 pb-6">
@@ -123,7 +123,7 @@ export default function CutListView() {
                 <div className="flex items-center justify-between bg-panel2 px-3 py-2 text-sm">
                   <span className="font-semibold">
                     <span className="mr-2 rounded bg-accent px-1.5 font-mono text-xs">{g.letter}</span>
-                    {g.materialName} · {fmtLen(g.thickness, unit)}
+                    {g.materialName} · {wrgjFmtLen(g.thickness, unit)}
                   </span>
                   <span className="text-xs text-zinc-600">
                     {g.totalQty} piezas · {g.areaM2.toFixed(2)} m² {g.optimize ? '' : '· no optimizable'}
@@ -149,7 +149,7 @@ export default function CutListView() {
                     </tr>
                   </thead>
                   <tbody>
-                    <Rows rows={g.rows} />
+                    <WRGJRows rows={g.rows} />
                   </tbody>
                 </table>
               </div>
@@ -202,7 +202,7 @@ export default function CutListView() {
                 <tbody>
                   {cut.edgeTotals.map((e) => (
                     <tr key={e.thickness}>
-                      <td>{edgeCell(e.thickness)} mm</td>
+                      <td>{wrgjEdgeCell(e.thickness)} mm</td>
                       <td className="font-mono">{e.meters.toFixed(2)} m</td>
                       <td className="font-mono">{e.withWaste.toFixed(2)} m</td>
                     </tr>
@@ -219,7 +219,7 @@ export default function CutListView() {
                 <div className="mb-2 flex flex-wrap items-baseline gap-3">
                   <h3 className="text-sm font-semibold">
                     <span className="mr-2 rounded bg-accent px-1.5 font-mono text-xs">{o.letter}</span>
-                    {o.materialName} {fmtLen(o.thickness, unit)}
+                    {o.materialName} {wrgjFmtLen(o.thickness, unit)}
                   </h3>
                   <span className="text-xs text-zinc-600">
                     {o.sheets.length} tablero(s) · aprovechamiento {(o.utilization * 100).toFixed(1)} % · desperdicio {(o.wasteArea / 1e6).toFixed(2)} m² · {o.algorithm}
@@ -232,7 +232,7 @@ export default function CutListView() {
                 )}
                 <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                   {o.sheets.map((s, i) => (
-                    <SheetSvg key={i} opt={o} sheet={s} index={i} unit={unit} />
+                    <WRGJSheetSvg key={i} opt={o} sheet={s} index={i} unit={unit} />
                   ))}
                 </div>
               </div>

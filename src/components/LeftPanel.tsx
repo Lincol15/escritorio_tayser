@@ -9,15 +9,15 @@ import {
   Archive, BedDouble, Box, BrickWall, ChefHat, ChevronDown, ChevronRight, DoorClosed, Eye, EyeOff, Footprints, Grid2x2, Lamp, LayoutGrid, LibraryBig, PanelTop, Rows3, Rows4, Square, Table2, Tv, type LucideIcon,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { TEMPLATES } from '../core/templates';
-import { buildItem } from '../core/items';
-import { Section, cx } from './ui';
-import { fmtLen } from '../core/units';
+import { WRGJ_TEMPLATES } from '../core/templates';
+import { wrgjBuildItem } from '../core/items';
+import { WRGJSection, wrgjCx } from './ui';
+import { wrgjFmtLen } from '../core/units';
 
-export const ICONS: Record<string, LucideIcon> = { Archive, PanelTop, Rows3, Rows4, DoorClosed, Table2, LibraryBig, Square, BrickWall, Grid2x2, Box, BedDouble, Lamp, Footprints, Tv, LayoutGrid };
-const GROUPS = ['Cocina', 'Dormitorio', 'Oficina y sala', 'A medida', 'Ambiente', 'Piezas'];
+export const WRGJ_ICONS: Record<string, LucideIcon> = { Archive, PanelTop, Rows3, Rows4, DoorClosed, Table2, LibraryBig, Square, BrickWall, Grid2x2, Box, BedDouble, Lamp, Footprints, Tv, LayoutGrid };
+const WRGJ_GROUPS = ['Cocina', 'Dormitorio', 'Oficina y sala', 'A medida', 'Ambiente', 'Piezas'];
 
-export default function LeftPanel() {
+export default function WRGJLeftPanel() {
   const items = useStore((s) => s.project.items);
   const selectedId = useStore((s) => s.selectedId);
   const selectedPiece = useStore((s) => s.selectedPiece);
@@ -28,13 +28,13 @@ export default function LeftPanel() {
   return (
     <aside className="flex w-72 shrink-0 flex-col border-r border-line bg-panel">
       <div className="scroll-thin flex-1 overflow-y-auto">
-        <Section title="Catálogo paramétrico">
-          {GROUPS.map((g) => (
+        <WRGJSection title="Catálogo paramétrico">
+          {WRGJ_GROUPS.map((g) => (
             <div key={g}>
               <div className="mb-1 mt-1 text-[11px] font-medium text-zinc-500">{g}</div>
               <div className="grid grid-cols-2 gap-1.5">
-                {TEMPLATES.filter((t) => t.group === g).map((t) => {
-                  const Icon = ICONS[t.icon] ?? Box;
+                {WRGJ_TEMPLATES.filter((t) => t.group === g).map((t) => {
+                  const Icon = WRGJ_ICONS[t.icon] ?? Box;
                   return (
                     <button
                       key={t.id}
@@ -58,25 +58,25 @@ export default function LeftPanel() {
               <Grid2x2 size={16} /> Diseñar desde una foto de mi cuarto
             </button>
           </div>
-        </Section>
+        </WRGJSection>
 
-        <Section title={`Proyecto (${items.length})`}>
+        <WRGJSection title={`Proyecto (${items.length})`}>
           {!items.length && <div className="text-xs text-zinc-500">La escena está vacía.</div>}
           <div className="space-y-0.5">
             {items.map((it) => {
-              const built = buildItem(it);
+              const built = wrgjBuildItem(it);
               const isOpen = open[it.id];
               const isSel = selectedId === it.id;
               return (
                 <div key={it.id}>
-                  <div className={cx('group flex items-center gap-1 rounded px-1 py-1 text-xs', isSel && !selectedPiece ? 'bg-accent/25' : isSel ? 'bg-accent/10' : 'hover:bg-line/40')}>
+                  <div className={wrgjCx('group flex items-center gap-1 rounded px-1 py-1 text-xs', isSel && !selectedPiece ? 'bg-accent/25' : isSel ? 'bg-accent/10' : 'hover:bg-line/40')}>
                     <button className="text-zinc-500" onClick={() => setOpen({ ...open, [it.id]: !isOpen })}>
                       {isOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
                     </button>
-                    <button className={cx('flex-1 truncate text-left', it.hidden && 'text-zinc-500 line-through')} onClick={() => select(it.id)}>
+                    <button className={wrgjCx('flex-1 truncate text-left', it.hidden && 'text-zinc-500 line-through')} onClick={() => select(it.id)}>
                       {it.name}
                       <span className="ml-1 text-[10px] text-zinc-500">
-                        {fmtLen(built.size.w, unit, false)}×{fmtLen(built.size.h, unit, false)}×{fmtLen(built.size.d, unit, false)}
+                        {wrgjFmtLen(built.size.w, unit, false)}×{wrgjFmtLen(built.size.h, unit, false)}×{wrgjFmtLen(built.size.d, unit, false)}
                       </span>
                     </button>
                     <button title={it.hidden ? 'Mostrar' : 'Ocultar'} className="text-zinc-600 hover:text-zinc-900" onClick={() => toggleItemHidden(it.id)}>
@@ -88,8 +88,8 @@ export default function LeftPanel() {
                       {built.pieces.map((p) => {
                         const hidden = it.hiddenPieces.includes(p.key);
                         return (
-                          <div key={p.key} className={cx('flex items-center gap-1 rounded px-1 py-0.5 text-[11px]', isSel && selectedPiece === p.key ? 'bg-accent/30' : 'hover:bg-line/40')}>
-                            <button className={cx('flex-1 truncate text-left', hidden ? 'text-zinc-400 line-through' : 'text-zinc-700')} onClick={() => select(it.id, p.key)}>
+                          <div key={p.key} className={wrgjCx('flex items-center gap-1 rounded px-1 py-0.5 text-[11px]', isSel && selectedPiece === p.key ? 'bg-accent/30' : 'hover:bg-line/40')}>
+                            <button className={wrgjCx('flex-1 truncate text-left', hidden ? 'text-zinc-400 line-through' : 'text-zinc-700')} onClick={() => select(it.id, p.key)}>
                               {p.name} <span className="text-zinc-500">· {p.key}</span>
                             </button>
                             <button className="text-zinc-500 hover:text-zinc-900" title={hidden ? 'Mostrar pieza' : 'Ocultar pieza'} onClick={() => togglePieceHidden(it.id, p.key)}>
@@ -104,7 +104,7 @@ export default function LeftPanel() {
               );
             })}
           </div>
-        </Section>
+        </WRGJSection>
       </div>
       <div className="border-t border-line px-3 py-2 text-[10px] leading-relaxed text-zinc-500">
         Clic: seleccionar pieza · Supr: eliminar · Ctrl+D: duplicar · Ctrl+Z/Y: deshacer/rehacer · Ctrl+S: guardar

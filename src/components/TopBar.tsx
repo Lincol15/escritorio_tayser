@@ -6,16 +6,16 @@
  */
 import { Box, Calculator, Grid3x3, FileDown, FilePlus2, FileSpreadsheet, FolderOpen, Image as ImageIcon, Maximize, Presentation, Redo2, Save, SaveAll, Scissors, Undo2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import type { AppMode } from '../core/types';
-import { UNITS } from '../core/units';
-import { Btn, cx } from './ui';
-import { buildCutList } from '../core/cutlist';
-import { optimizeAll } from '../core/optimizer';
-import { exportCsv, exportPdf } from '../core/export';
-import { openProjectFile, saveProjectFile } from '../core/persistence';
-import { toggleFullscreen } from './ViewerOverlay';
+import type { WRGJAppMode } from '../core/types';
+import { WRGJ_UNITS } from '../core/units';
+import { WRGJBtn, wrgjCx } from './ui';
+import { wrgjBuildCutList } from '../core/cutlist';
+import { wrgjOptimizeAll } from '../core/optimizer';
+import { wrgjExportCsv, wrgjExportPdf } from '../core/export';
+import { wrgjOpenProjectFile, wrgjSaveProjectFile } from '../core/persistence';
+import { wrgjToggleFullscreen } from './ViewerOverlay';
 
-const MODES: { id: AppMode; label: string; icon: typeof Box }[] = [
+const WRGJ_MODES: { id: WRGJAppMode; label: string; icon: typeof Box }[] = [
   { id: 'build', label: 'Build 3D', icon: Box },
   { id: 'room', label: 'Foto del ambiente', icon: ImageIcon },
   { id: 'cutlist', label: 'Despiece y cortes', icon: Scissors },
@@ -24,10 +24,10 @@ const MODES: { id: AppMode; label: string; icon: typeof Box }[] = [
   { id: 'client', label: 'Vista cliente', icon: Presentation },
 ];
 
-export async function saveProject(saveAs = false) {
+export async function wrgjSaveProject(saveAs = false) {
   const st = useStore.getState();
   try {
-    const path = await saveProjectFile(st.project, st.filePath, saveAs);
+    const path = await wrgjSaveProjectFile(st.project, st.filePath, saveAs);
     if (path) {
       st.markSaved(window.tayser?.isElectron ? path : st.filePath);
       st.notify(`Proyecto guardado: ${path}`);
@@ -37,11 +37,11 @@ export async function saveProject(saveAs = false) {
   }
 }
 
-export async function openProject() {
+export async function wrgjOpenProject() {
   const st = useStore.getState();
   if (st.dirty && !window.confirm('Hay cambios sin guardar. ¿Abrir otro proyecto de todos modos?')) return;
   try {
-    const r = await openProjectFile();
+    const r = await wrgjOpenProjectFile();
     if (r) {
       st.loadProject(r.project, r.filePath);
       st.notify(`Proyecto abierto: ${r.project.name}`);
@@ -51,7 +51,7 @@ export async function openProject() {
   }
 }
 
-export default function TopBar() {
+export default function WRGJTopBar() {
   const mode = useStore((s) => s.mode);
   const unit = useStore((s) => s.unit);
   const name = useStore((s) => s.project.name);
@@ -62,8 +62,8 @@ export default function TopBar() {
 
   const exp = async (kind: 'pdf' | 'csv') => {
     const p = useStore.getState().project;
-    const cut = buildCutList(p);
-    const r = kind === 'pdf' ? await exportPdf(p, cut, optimizeAll(cut, p.sheet), unit) : await exportCsv(p, cut, unit);
+    const cut = wrgjBuildCutList(p);
+    const r = kind === 'pdf' ? await wrgjExportPdf(p, cut, wrgjOptimizeAll(cut, p.sheet), unit) : await wrgjExportCsv(p, cut, unit);
     if (r) st.notify(`${kind.toUpperCase()} exportado: ${r}`);
   };
 
@@ -80,35 +80,35 @@ export default function TopBar() {
         </div>
       </div>
       <nav className="flex rounded-lg border border-line bg-panel p-0.5">
-        {MODES.map((m) => (
+        {WRGJ_MODES.map((m) => (
           <button
             key={m.id}
             onClick={() => st.setMode(m.id)}
-            className={cx('flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium', mode === m.id ? 'bg-accent text-white' : 'text-zinc-700 hover:bg-line/60')}
+            className={wrgjCx('flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium', mode === m.id ? 'bg-accent text-white' : 'text-zinc-700 hover:bg-line/60')}
           >
             <m.icon size={14} /> {m.label}
           </button>
         ))}
       </nav>
       <div className="flex rounded-lg border border-line bg-panel p-0.5">
-        {UNITS.map((u) => (
-          <button key={u} onClick={() => st.setUnit(u)} className={cx('rounded-md px-2.5 py-1 font-mono text-xs', unit === u ? 'bg-zinc-800 text-white' : 'text-zinc-700 hover:bg-line/60')}>
+        {WRGJ_UNITS.map((u) => (
+          <button key={u} onClick={() => st.setUnit(u)} className={wrgjCx('rounded-md px-2.5 py-1 font-mono text-xs', unit === u ? 'bg-zinc-800 text-white' : 'text-zinc-700 hover:bg-line/60')}>
             {u}
           </button>
         ))}
       </div>
       <div className="ml-auto flex items-center gap-1">
-        <Btn size="sm" variant="ghost" disabled={!canUndo} onClick={st.undo} title="Deshacer (Ctrl+Z)"><Undo2 size={15} /></Btn>
-        <Btn size="sm" variant="ghost" disabled={!canRedo} onClick={st.redo} title="Rehacer (Ctrl+Y)"><Redo2 size={15} /></Btn>
+        <WRGJBtn size="sm" variant="ghost" disabled={!canUndo} onClick={st.undo} title="Deshacer (Ctrl+Z)"><Undo2 size={15} /></WRGJBtn>
+        <WRGJBtn size="sm" variant="ghost" disabled={!canRedo} onClick={st.redo} title="Rehacer (Ctrl+Y)"><Redo2 size={15} /></WRGJBtn>
         <span className="mx-1 h-5 w-px bg-line" />
-        <Btn size="sm" variant="ghost" title="Nuevo proyecto" onClick={() => { if (!dirty || window.confirm('¿Descartar los cambios y crear un proyecto nuevo?')) st.newProject(); }}><FilePlus2 size={15} /> Nuevo</Btn>
-        <Btn size="sm" variant="ghost" title="Abrir .tayser" onClick={openProject}><FolderOpen size={15} /> Abrir</Btn>
-        <Btn size="sm" variant="ghost" title="Guardar (Ctrl+S)" onClick={() => saveProject(false)}><Save size={15} /> Guardar</Btn>
-        <Btn size="sm" variant="ghost" title="Guardar como…" onClick={() => saveProject(true)}><SaveAll size={15} /></Btn>
+        <WRGJBtn size="sm" variant="ghost" title="Nuevo proyecto" onClick={() => { if (!dirty || window.confirm('¿Descartar los cambios y crear un proyecto nuevo?')) st.newProject(); }}><FilePlus2 size={15} /> Nuevo</WRGJBtn>
+        <WRGJBtn size="sm" variant="ghost" title="Abrir .tayser" onClick={wrgjOpenProject}><FolderOpen size={15} /> Abrir</WRGJBtn>
+        <WRGJBtn size="sm" variant="ghost" title="Guardar (Ctrl+S)" onClick={() => wrgjSaveProject(false)}><Save size={15} /> Guardar</WRGJBtn>
+        <WRGJBtn size="sm" variant="ghost" title="Guardar como…" onClick={() => wrgjSaveProject(true)}><SaveAll size={15} /></WRGJBtn>
         <span className="mx-1 h-5 w-px bg-line" />
-        <Btn size="sm" variant="primary" onClick={() => exp('pdf')}><FileDown size={15} /> PDF</Btn>
-        <Btn size="sm" onClick={() => exp('csv')}><FileSpreadsheet size={15} /> CSV</Btn>
-        <Btn size="sm" variant="ghost" title="Pantalla completa" onClick={() => toggleFullscreen()}><Maximize size={15} /></Btn>
+        <WRGJBtn size="sm" variant="primary" onClick={() => exp('pdf')}><FileDown size={15} /> PDF</WRGJBtn>
+        <WRGJBtn size="sm" onClick={() => exp('csv')}><FileSpreadsheet size={15} /> CSV</WRGJBtn>
+        <WRGJBtn size="sm" variant="ghost" title="Pantalla completa" onClick={() => wrgjToggleFullscreen()}><Maximize size={15} /></WRGJBtn>
       </div>
     </header>
   );

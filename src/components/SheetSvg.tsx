@@ -4,12 +4,12 @@
  * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Dibujo de cada tablero con sus piezas.
  */
-import type { GroupOptimization, PackedSheet } from '../core/optimizer';
-import { colorForCode } from '../core/export';
-import { fmtLen } from '../core/units';
-import type { Unit } from '../core/types';
+import type { WRGJGroupOptimization, WRGJPackedSheet } from '../core/optimizer';
+import { wrgjColorForCode } from '../core/export';
+import { wrgjFmtLen } from '../core/units';
+import type { WRGJUnit } from '../core/types';
 
-export default function SheetSvg({ opt, sheet, index, unit }: { opt: GroupOptimization; sheet: PackedSheet; index: number; unit: Unit }) {
+export default function WRGJSheetSvg({ opt, sheet, index, unit }: { opt: WRGJGroupOptimization; sheet: WRGJPackedSheet; index: number; unit: WRGJUnit }) {
   const L = opt.sheetLength;
   const W = opt.sheetWidth;
   const pad = 60;
@@ -20,7 +20,7 @@ export default function SheetSvg({ opt, sheet, index, unit }: { opt: GroupOptimi
         <span className="font-semibold text-zinc-800">
           Tablero {index + 1}/{opt.sheets.length}
           <span className="ml-2 font-normal text-zinc-500">
-            {fmtLen(L, unit)} × {fmtLen(W, unit)} · {sheet.placements.length} piezas
+            {wrgjFmtLen(L, unit)} × {wrgjFmtLen(W, unit)} · {sheet.placements.length} piezas
           </span>
         </span>
         <span className={sheet.utilization > 0.75 ? 'text-emerald-700' : sheet.utilization > 0.5 ? 'text-amber-700' : 'text-red-700'}>
@@ -36,7 +36,7 @@ export default function SheetSvg({ opt, sheet, index, unit }: { opt: GroupOptimi
         <rect x={0} y={0} width={L} height={W} fill={`url(#waste-${opt.key}-${index})`} stroke="#5c635d" strokeWidth={4} />
         <rect x={opt.trim} y={opt.trim} width={L - 2 * opt.trim} height={W - 2 * opt.trim} fill="none" stroke="#8a908a" strokeDasharray="20 12" strokeWidth={2} />
         {sheet.placements.map((p) => {
-          const [r, g, b] = colorForCode(p.code);
+          const [r, g, b] = wrgjColorForCode(p.code);
           const small = Math.min(p.w, p.h);
           const f = Math.min(fs * 1.3, small / 3.2);
           return (
@@ -51,13 +51,13 @@ export default function SheetSvg({ opt, sheet, index, unit }: { opt: GroupOptimi
                     {p.code}
                   </text>
                   <text x={p.x + p.w / 2} y={p.y + p.h / 2 + f * 1.05} fontSize={f * 0.72} textAnchor="middle" fill="#27272a">
-                    {fmtLen(p.w, unit, false)} × {fmtLen(p.h, unit, false)}
+                    {wrgjFmtLen(p.w, unit, false)} × {wrgjFmtLen(p.h, unit, false)}
                     {p.rotated ? ' ⟲' : ''}
                   </text>
                 </>
               )}
               <title>
-                {p.code} · {p.name} · {fmtLen(p.w, unit)} × {fmtLen(p.h, unit)}
+                {p.code} · {p.name} · {wrgjFmtLen(p.w, unit)} × {wrgjFmtLen(p.h, unit)}
                 {p.grain ? ' · con veta' : ''}
                 {p.rotated ? ' · rotada 90°' : ''}
               </title>
@@ -65,10 +65,10 @@ export default function SheetSvg({ opt, sheet, index, unit }: { opt: GroupOptimi
           );
         })}
         <text x={L / 2} y={-pad / 3} fontSize={fs * 1.2} textAnchor="middle" fill="#5c635d">
-          {fmtLen(L, unit)} — veta del tablero ⟷
+          {wrgjFmtLen(L, unit)} — veta del tablero ⟷
         </text>
         <text x={-pad / 2.5} y={W / 2} fontSize={fs * 1.2} textAnchor="middle" fill="#5c635d" transform={`rotate(-90 ${-pad / 2.5} ${W / 2})`}>
-          {fmtLen(W, unit)}
+          {wrgjFmtLen(W, unit)}
         </text>
       </svg>
     </div>

@@ -5,28 +5,28 @@
  * Descripción: Guardado de archivos .tayser y respaldo en IndexedDB.
  */
 // Persistencia local: archivos .tayser (IPC) + IndexedDB (respaldo)
-import type { Project } from './types';
+import type { WRGJProject } from './types';
 
-const DB_NAME = 'tayser';
-const STORE = 'autosave';
+const WRGJ_DB_NAME = 'tayser';
+const WRGJ_STORE = 'autosave';
 
-function openDb(): Promise<IDBDatabase> {
+function wrgjOpenDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 1);
+    const req = indexedDB.open(WRGJ_DB_NAME, 1);
     req.onupgradeneeded = () => {
-      if (!req.result.objectStoreNames.contains(STORE)) req.result.createObjectStore(STORE);
+      if (!req.result.objectStoreNames.contains(WRGJ_STORE)) req.result.createObjectStore(WRGJ_STORE);
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
   });
 }
 
-export async function idbSave(key: string, value: unknown): Promise<void> {
+export async function wrgjIdbSave(key: string, value: unknown): Promise<void> {
   try {
-    const db = await openDb();
+    const db = await wrgjOpenDb();
     await new Promise<void>((resolve, reject) => {
-      const tx = db.transaction(STORE, 'readwrite');
-      tx.objectStore(STORE).put(value, key);
+      const tx = db.transaction(WRGJ_STORE, 'readwrite');
+      tx.objectStore(WRGJ_STORE).put(value, key);
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
@@ -36,12 +36,12 @@ export async function idbSave(key: string, value: unknown): Promise<void> {
   }
 }
 
-export async function idbLoad<T>(key: string): Promise<T | null> {
+export async function wrgjIdbLoad<T>(key: string): Promise<T | null> {
   try {
-    const db = await openDb();
+    const db = await wrgjOpenDb();
     const v = await new Promise<T | null>((resolve, reject) => {
-      const tx = db.transaction(STORE, 'readonly');
-      const r = tx.objectStore(STORE).get(key);
+      const tx = db.transaction(WRGJ_STORE, 'readonly');
+      const r = tx.objectStore(WRGJ_STORE).get(key);
       r.onsuccess = () => resolve((r.result as T) ?? null);
       r.onerror = () => reject(r.error);
     });
@@ -52,21 +52,21 @@ export async function idbLoad<T>(key: string): Promise<T | null> {
   }
 }
 
-export function serializeProject(p: Project): string {
+export function wrgjSerializeProject(p: WRGJProject): string {
   return JSON.stringify({ ...p, updatedAt: new Date().toISOString() }, null, 2);
 }
 
-export function parseProject(text: string): Project {
+export function wrgjParseProject(text: string): WRGJProject {
   const data = JSON.parse(text);
   if (!data || data.format !== 'tayser' || !Array.isArray(data.items)) throw new Error('El archivo no es un proyecto Tayser válido.');
   return {
     ...data,
     sheet: { length: 2440, width: 1220, kerf: 4, trim: 10, algorithm: 'auto', ...(data.sheet ?? {}) },
     settings: { discountEdges: false, edgeWastePct: 10, ...(data.settings ?? {}) },
-  } as Project;
+  } as WRGJProject;
 }
 
-function downloadBlob(name: string, blob: Blob) {
+function wrgjDownloadBlob(name: string, blob: Blob) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -77,26 +77,26 @@ function downloadBlob(name: string, blob: Blob) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
-export async function saveProjectFile(p: Project, filePath: string | null, saveAs: boolean): Promise<string | null> {
-  const content = serializeProject(p);
+export async function wrgjSaveProjectFile(p: WRGJProject, filePath: string | null, saveAs: boolean): Promise<string | null> {
+  const content = wrgjSerializeProject(p);
   const defaultName = `${p.name.replace(/[\\/:*?"<>|]+/g, '_') || 'proyecto'}.tayser`;
   if (window.tayser?.isElectron) return window.tayser.saveProject({ content, filePath, saveAs, defaultName });
-  downloadBlob(defaultName, new Blob([content], { type: 'application/json' }));
+  wrgjDownloadBlob(defaultName, new Blob([content], { type: 'application/json' }));
   return defaultName;
 }
 
-export async function openProjectFile(): Promise<{ project: Project; filePath: string | null } | null> {
+export async function wrgjOpenProjectFile(): Promise<{ project: WRGJProject; filePath: string | null } | null> {
   if (window.tayser?.isElectron) {
     const res = await window.tayser.openProject();
     if (!res) return null;
-    return { project: parseProject(res.content), filePath: res.filePath };
+    return { project: wrgjParseProject(res.content), filePath: res.filePath };
   }
-  const file = await pickFile('.tayser,.json');
+  const file = await wrgjPickFile('.tayser,.json');
   if (!file) return null;
-  return { project: parseProject(await file.text()), filePath: null };
+  return { project: wrgjParseProject(await file.text()), filePath: null };
 }
 
-export function pickFile(accept: string): Promise<File | null> {
+export function wrgjPickFile(accept: string): Promise<File | null> {
   return new Promise((resolve) => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -107,16 +107,16 @@ export function pickFile(accept: string): Promise<File | null> {
   });
 }
 
-export async function saveBinaryFile(
+export async function wrgjSaveBinaryFile(
   defaultName: string, data: Uint8Array | string, mime: string, filters: { name: string; extensions: string[] }[],
 ): Promise<string | null> {
   if (window.tayser?.isElectron) return window.tayser.saveFile({ defaultName, data, filters });
   const part: BlobPart = typeof data === 'string' ? data : new Uint8Array(data);
-  downloadBlob(defaultName, new Blob([part], { type: mime }));
+  wrgjDownloadBlob(defaultName, new Blob([part], { type: mime }));
   return defaultName;
 }
 
-export function dataUrlToBytes(dataUrl: string): Uint8Array {
+export function wrgjDataUrlToBytes(dataUrl: string): Uint8Array {
   const b64 = dataUrl.split(',')[1] ?? '';
   const bin = atob(b64);
   const out = new Uint8Array(bin.length);

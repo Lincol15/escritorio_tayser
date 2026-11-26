@@ -9,18 +9,18 @@ const { app, BrowserWindow, ipcMain, dialog, session } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs/promises');
 
-const DEV_URL = process.env.VITE_DEV_SERVER_URL || null;
-let win = null;
+const WRGJ_DEV_URL = process.env.VITE_DEV_SERVER_URL || null;
+let wrgjWin = null;
 
-function isAllowed(url) {
+function wrgjIsAllowed(url) {
   if (url.startsWith('file://') || url.startsWith('devtools://') || url.startsWith('data:') || url.startsWith('blob:')) return true;
   if (url.startsWith('chrome-extension://') || url.startsWith('chrome://')) return true;
-  if (DEV_URL && (url.startsWith('http://127.0.0.1:5173') || url.startsWith('ws://127.0.0.1:5173'))) return true;
+  if (WRGJ_DEV_URL && (url.startsWith('http://127.0.0.1:5173') || url.startsWith('ws://127.0.0.1:5173'))) return true;
   return false;
 }
 
-function createWindow() {
-  win = new BrowserWindow({
+function wrgjCreateWindow() {
+  wrgjWin = new BrowserWindow({
     width: 1600,
     height: 950,
     minWidth: 1100,
@@ -37,63 +37,63 @@ function createWindow() {
     },
   });
 
-  win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-  win.webContents.on('will-navigate', (e, url) => {
-    if (!isAllowed(url)) e.preventDefault();
+  wrgjWin.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  wrgjWin.webContents.on('will-navigate', (e, url) => {
+    if (!wrgjIsAllowed(url)) e.preventDefault();
   });
 
-  if (DEV_URL) win.loadURL(DEV_URL);
-  else win.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
+  if (WRGJ_DEV_URL) wrgjWin.loadURL(WRGJ_DEV_URL);
+  else wrgjWin.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
 }
 
 app.whenReady().then(() => {
   // Bloqueo de red: se cancela cualquier URL externa
   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
-    callback({ cancel: !isAllowed(details.url) });
+    callback({ cancel: !wrgjIsAllowed(details.url) });
   });
 
-  ipcMain.handle('tayser:save-project', async (_e, args) => {
-    let filePath = args && args.filePath;
-    if (!filePath || args.saveAs) {
-      const res = await dialog.showSaveDialog(win, {
+  ipcMain.handle('tayser:save-project', async (_e, wrgjArgs) => {
+    let wrgjFilePath = wrgjArgs && wrgjArgs.filePath;
+    if (!wrgjFilePath || wrgjArgs.saveAs) {
+      const wrgjRes = await dialog.showSaveDialog(wrgjWin, {
         title: 'Guardar proyecto Tayser',
-        defaultPath: (args && args.defaultName) || 'proyecto.tayser',
+        defaultPath: (wrgjArgs && wrgjArgs.defaultName) || 'proyecto.tayser',
         filters: [{ name: 'Proyecto Tayser', extensions: ['tayser'] }],
       });
-      if (res.canceled || !res.filePath) return null;
-      filePath = res.filePath;
+      if (wrgjRes.canceled || !wrgjRes.filePath) return null;
+      wrgjFilePath = wrgjRes.filePath;
     }
-    await fs.writeFile(filePath, args.content, 'utf8');
-    return filePath;
+    await fs.writeFile(wrgjFilePath, wrgjArgs.content, 'utf8');
+    return wrgjFilePath;
   });
 
   ipcMain.handle('tayser:open-project', async () => {
-    const res = await dialog.showOpenDialog(win, {
+    const wrgjRes = await dialog.showOpenDialog(wrgjWin, {
       title: 'Abrir proyecto Tayser',
       properties: ['openFile'],
       filters: [{ name: 'Proyecto Tayser', extensions: ['tayser', 'json'] }],
     });
-    if (res.canceled || !res.filePaths.length) return null;
-    const filePath = res.filePaths[0];
-    const content = await fs.readFile(filePath, 'utf8');
-    return { filePath, content };
+    if (wrgjRes.canceled || !wrgjRes.filePaths.length) return null;
+    const wrgjFilePath = wrgjRes.filePaths[0];
+    const wrgjContent = await fs.readFile(wrgjFilePath, 'utf8');
+    return { filePath: wrgjFilePath, content: wrgjContent };
   });
 
-  ipcMain.handle('tayser:save-file', async (_e, args) => {
-    const res = await dialog.showSaveDialog(win, {
+  ipcMain.handle('tayser:save-file', async (_e, wrgjArgs) => {
+    const wrgjRes = await dialog.showSaveDialog(wrgjWin, {
       title: 'Exportar',
-      defaultPath: args.defaultName,
-      filters: args.filters || [{ name: 'Todos', extensions: ['*'] }],
+      defaultPath: wrgjArgs.defaultName,
+      filters: wrgjArgs.filters || [{ name: 'Todos', extensions: ['*'] }],
     });
-    if (res.canceled || !res.filePath) return null;
-    const data = typeof args.data === 'string' ? Buffer.from(args.data, 'utf8') : Buffer.from(args.data);
-    await fs.writeFile(res.filePath, data);
-    return res.filePath;
+    if (wrgjRes.canceled || !wrgjRes.filePath) return null;
+    const wrgjData = typeof wrgjArgs.data === 'string' ? Buffer.from(wrgjArgs.data, 'utf8') : Buffer.from(wrgjArgs.data);
+    await fs.writeFile(wrgjRes.filePath, wrgjData);
+    return wrgjRes.filePath;
   });
 
-  createWindow();
+  wrgjCreateWindow();
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) wrgjCreateWindow();
   });
 });
 

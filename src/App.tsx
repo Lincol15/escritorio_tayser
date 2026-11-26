@@ -6,34 +6,34 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from './store/useStore';
-import TopBar, { saveProject } from './components/TopBar';
-import LeftPanel from './components/LeftPanel';
-import Inspector from './components/Inspector';
-import Viewer3D from './components/Viewer3D';
-import ViewerOverlay from './components/ViewerOverlay';
-import CutListView from './components/CutListView';
-import CalculatorsView from './components/CalculatorsView';
-import QuickOptimizerView from './components/QuickOptimizerView';
-import ClientView from './components/ClientView';
-import RoomPlanner from './components/RoomPlanner';
-import { idbLoad, idbSave, parseProject } from './core/persistence';
-import type { Project } from './core/types';
+import WRGJTopBar, { wrgjSaveProject } from './components/TopBar';
+import WRGJLeftPanel from './components/LeftPanel';
+import WRGJInspector from './components/Inspector';
+import WRGJViewer3D from './components/Viewer3D';
+import WRGJViewerOverlay from './components/ViewerOverlay';
+import WRGJCutListView from './components/CutListView';
+import WRGJCalculatorsView from './components/CalculatorsView';
+import WRGJQuickOptimizerView from './components/QuickOptimizerView';
+import WRGJClientView from './components/ClientView';
+import WRGJRoomPlanner from './components/RoomPlanner';
+import { wrgjIdbLoad, wrgjIdbSave, wrgjParseProject } from './core/persistence';
+import type { WRGJProject } from './core/types';
 
-const AUTOSAVE_KEY = 'current-project';
+const WRGJ_AUTOSAVE_KEY = 'current-project';
 
-export default function App() {
+export default function WRGJApp() {
   const mode = useStore((s) => s.mode);
   const toast = useStore((s) => s.toast);
-  const lrjgViewerRef = useRef<HTMLDivElement>(null);
+  const viewerRef = useRef<HTMLDivElement>(null);
   const [toastVisible, setToastVisible] = useState(false);
   const [restored, setRestored] = useState(false);
 
   // Restaurar respaldo de IndexedDB al iniciar
   useEffect(() => {
-    idbLoad<string>(AUTOSAVE_KEY).then((txt) => {
+    wrgjIdbLoad<string>(WRGJ_AUTOSAVE_KEY).then((txt) => {
       if (txt) {
         try {
-          const p: Project = parseProject(txt);
+          const p: WRGJProject = wrgjParseProject(txt);
           useStore.getState().loadProject(p, null);
           useStore.getState().notify('Se restauró el último proyecto (respaldo local).');
         } catch {
@@ -51,7 +51,7 @@ export default function App() {
     const unsub = useStore.subscribe((s, prev) => {
       if (s.project === prev.project) return;
       clearTimeout(timer);
-      timer = setTimeout(() => idbSave(AUTOSAVE_KEY, JSON.stringify(useStore.getState().project)), 800);
+      timer = setTimeout(() => wrgjIdbSave(WRGJ_AUTOSAVE_KEY, JSON.stringify(useStore.getState().project)), 800);
     });
     return () => {
       unsub();
@@ -67,7 +67,7 @@ export default function App() {
       const st = useStore.getState();
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
-        saveProject(e.shiftKey);
+        wrgjSaveProject(e.shiftKey);
         return;
       }
       if (typing) return;
@@ -108,23 +108,23 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col">
-      <TopBar />
+      <WRGJTopBar />
       <main className="relative flex min-h-0 flex-1">
         {mode === 'build' && (
           <>
-            <LeftPanel />
-            <div ref={lrjgViewerRef} className="relative min-w-0 flex-1">
-              <Viewer3D />
-              <ViewerOverlay container={lrjgViewerRef.current} />
+            <WRGJLeftPanel />
+            <div ref={viewerRef} className="relative min-w-0 flex-1">
+              <WRGJViewer3D />
+              <WRGJViewerOverlay container={viewerRef.current} />
             </div>
-            <Inspector />
+            <WRGJInspector />
           </>
         )}
-        {mode === 'cutlist' && <div className="min-w-0 flex-1"><CutListView /></div>}
-        {mode === 'optimize' && <div className="min-w-0 flex-1"><QuickOptimizerView /></div>}
-        {mode === 'calc' && <div className="min-w-0 flex-1"><CalculatorsView /></div>}
-        {mode === 'client' && <div className="min-w-0 flex-1"><ClientView /></div>}
-        {mode === 'room' && <div className="min-w-0 flex-1"><RoomPlanner /></div>}
+        {mode === 'cutlist' && <div className="min-w-0 flex-1"><WRGJCutListView /></div>}
+        {mode === 'optimize' && <div className="min-w-0 flex-1"><WRGJQuickOptimizerView /></div>}
+        {mode === 'calc' && <div className="min-w-0 flex-1"><WRGJCalculatorsView /></div>}
+        {mode === 'client' && <div className="min-w-0 flex-1"><WRGJClientView /></div>}
+        {mode === 'room' && <div className="min-w-0 flex-1"><WRGJRoomPlanner /></div>}
       </main>
       {toast && toastVisible && (
         <div className="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-line bg-panel2 px-4 py-2 text-sm text-zinc-900 shadow-xl">{toast.text}</div>

@@ -5,9 +5,9 @@
  * Descripción: Calculadoras de taller.
  */
 // Calculadoras de taller (funciones puras, medidas en mm)
-import { toFraction } from './units';
+import { wrgjToFraction } from './units';
 
-export interface CutPart {
+export interface WRGJCutPart {
   name: string;
   qty: number;
   length: number;
@@ -17,7 +17,7 @@ export interface CutPart {
 }
 
 // 1. Gavetas / cajones
-export interface DrawerInput {
+export interface WRGJDrawerInput {
   openingWidth: number;
   depth: number;
   boxHeight: number;
@@ -30,25 +30,25 @@ export interface DrawerInput {
   rearClearance: number;
 }
 
-export interface DrawerResult {
+export interface WRGJDrawerResult {
   slideLength: number;
   outerWidth: number;
   innerWidth: number;
   totalDiscount: number;
-  parts: CutPart[];
+  parts: WRGJCutPart[];
   notes: string[];
 }
 
-export const SLIDE_LENGTHS = [250, 300, 350, 400, 450, 500, 550, 600, 650, 700];
+export const WRGJ_SLIDE_LENGTHS = [250, 300, 350, 400, 450, 500, 550, 600, 650, 700];
 
-export function calcDrawer(i: DrawerInput): DrawerResult {
+export function wrgjCalcDrawer(i: WRGJDrawerInput): WRGJDrawerResult {
   const usable = i.depth - i.rearClearance;
-  const fit = SLIDE_LENGTHS.filter((l) => l <= usable);
+  const fit = WRGJ_SLIDE_LENGTHS.filter((l) => l <= usable);
   const slideLength = fit.length ? fit[fit.length - 1] : Math.max(100, Math.floor(usable / 10) * 10);
   const totalDiscount = 2 * i.slideClearance;
   const outerWidth = i.openingWidth - totalDiscount;
   const innerWidth = outerWidth - 2 * i.sideThickness;
-  const parts: CutPart[] = [
+  const parts: WRGJCutPart[] = [
     { name: 'Lateral de gaveta', qty: 2, length: slideLength, width: i.boxHeight, thickness: i.sideThickness },
   ];
   const notes: string[] = [
@@ -79,7 +79,7 @@ export function calcDrawer(i: DrawerInput): DrawerResult {
 }
 
 // 2. Distribución de repisas
-export interface ShelvesInput {
+export interface WRGJShelvesInput {
   innerHeight: number;
   spaces: number;
   shelfThickness: number;
@@ -87,7 +87,7 @@ export interface ShelvesInput {
   firstHole: number;
 }
 
-export interface ShelfPos {
+export interface WRGJShelfPos {
   index: number;
   bottom: number;
   center: number;
@@ -95,7 +95,7 @@ export interface ShelfPos {
   hole?: number;
 }
 
-export function calcShelves(i: ShelvesInput): { gap: number; shelves: ShelfPos[]; holes: number[] } {
+export function wrgjCalcShelves(i: WRGJShelvesInput): { gap: number; shelves: WRGJShelfPos[]; holes: number[] } {
   const spaces = Math.max(1, Math.round(i.spaces));
   const t = i.shelfThickness;
   const gap = (i.innerHeight - (spaces - 1) * t) / spaces;
@@ -103,10 +103,10 @@ export function calcShelves(i: ShelvesInput): { gap: number; shelves: ShelfPos[]
   if (i.system32) {
     for (let h = i.firstHole; h <= i.innerHeight - i.firstHole + 0.01; h += 32) holes.push(h);
   }
-  const shelves: ShelfPos[] = [];
+  const shelves: WRGJShelfPos[] = [];
   for (let k = 1; k < spaces; k++) {
     const bottom = k * gap + (k - 1) * t;
-    const s: ShelfPos = { index: k, bottom, center: bottom + t / 2, top: bottom + t };
+    const s: WRGJShelfPos = { index: k, bottom, center: bottom + t / 2, top: bottom + t };
     if (holes.length) {
       const target = bottom - 5;
       s.hole = holes.reduce((best, h) => (Math.abs(h - target) < Math.abs(best - target) ? h : best), holes[0]);
@@ -117,7 +117,7 @@ export function calcShelves(i: ShelvesInput): { gap: number; shelves: ShelfPos[]
 }
 
 // 3. Frentes de cajones
-export interface FrontsInput {
+export interface WRGJFrontsInput {
   totalHeight: number;
   totalWidth: number;
   count: number;
@@ -129,7 +129,7 @@ export interface FrontsInput {
   ratio: number;
 }
 
-export interface FrontPiece {
+export interface WRGJFrontPiece {
   index: number;
   height: number;
   width: number;
@@ -137,7 +137,7 @@ export interface FrontPiece {
   y: number;
 }
 
-export function calcDrawerFronts(i: FrontsInput): { fronts: FrontPiece[]; available: number } {
+export function wrgjCalcDrawerFronts(i: WRGJFrontsInput): { fronts: WRGJFrontPiece[]; available: number } {
   const count = Math.max(1, Math.round(i.count));
   const available = i.totalHeight - i.topGap - i.bottomGap - i.gap * (count - 1);
   const weights = Array.from({ length: count }, (_, k) => (i.mode === 'progresivo' ? Math.pow(Math.max(1, i.ratio), count - 1 - k) : 1));
@@ -145,7 +145,7 @@ export function calcDrawerFronts(i: FrontsInput): { fronts: FrontPiece[]; availa
   let y = i.bottomGap;
   const fronts = weights.map((w, k) => {
     const h = (available * w) / sum;
-    const f: FrontPiece = { index: k + 1, height: h, width: i.totalWidth - 2 * i.sideGap, y };
+    const f: WRGJFrontPiece = { index: k + 1, height: h, width: i.totalWidth - 2 * i.sideGap, y };
     y += h + i.gap;
     return f;
   });
@@ -153,19 +153,19 @@ export function calcDrawerFronts(i: FrontsInput): { fronts: FrontPiece[]; availa
 }
 
 // 4. Posición de manijas / tiradores
-export type HandlePosition = 'centro' | 'superior' | 'inferior' | 'izquierda' | 'derecha' | 'sup-izq' | 'sup-der' | 'inf-izq' | 'inf-der';
+export type WRGJHandlePosition = 'centro' | 'superior' | 'inferior' | 'izquierda' | 'derecha' | 'sup-izq' | 'sup-der' | 'inf-izq' | 'inf-der';
 
-export interface HandleInput {
+export interface WRGJHandleInput {
   frontWidth: number;
   frontHeight: number;
   /** distancia entre centros (0 = pomo de un solo agujero) */
   centers: number;
-  position: HandlePosition;
+  position: WRGJHandlePosition;
   orientation: 'horizontal' | 'vertical';
   edgeOffset: number;
 }
 
-export function calcHandle(i: HandleInput): { holes: { x: number; y: number }[]; warnings: string[] } {
+export function wrgjCalcHandle(i: WRGJHandleInput): { holes: { x: number; y: number }[]; warnings: string[] } {
   const c = Math.max(0, i.centers);
   const W = i.frontWidth;
   const H = i.frontHeight;
@@ -190,7 +190,7 @@ export function calcHandle(i: HandleInput): { holes: { x: number; y: number }[];
 }
 
 // 5. Perforación de bisagras
-export interface HingeInput {
+export interface WRGJHingeInput {
   doorHeight: number;
   doorWidth: number;
   weight: number;
@@ -201,14 +201,14 @@ export interface HingeInput {
   cupDepth: number;
 }
 
-export interface HingeResult {
+export interface WRGJHingeResult {
   count: number;
   positions: number[];
   cupCenterX: number;
   reasons: string[];
 }
 
-export function calcHinges(i: HingeInput): HingeResult {
+export function wrgjCalcHinges(i: WRGJHingeInput): WRGJHingeResult {
   const H = i.doorHeight;
   const byHeight = H <= 900 ? 2 : H <= 1600 ? 3 : H <= 2000 ? 4 : H <= 2400 ? 5 : 6;
   const w = i.weight;
@@ -232,7 +232,7 @@ export function calcHinges(i: HingeInput): HingeResult {
 }
 
 // 6. Conversor de unidades
-export function convertLength(value: number, from: 'mm' | 'cm' | 'in') {
+export function wrgjConvertLength(value: number, from: 'mm' | 'cm' | 'in') {
   const mm = from === 'mm' ? value : from === 'cm' ? value * 10 : value * 25.4;
   const inches = mm / 25.4;
   return {
@@ -241,8 +241,8 @@ export function convertLength(value: number, from: 'mm' | 'cm' | 'in') {
     m: mm / 1000,
     in: inches,
     ft: inches / 12,
-    frac16: toFraction(inches, 16),
-    frac32: toFraction(inches, 32),
-    frac64: toFraction(inches, 64),
+    frac16: wrgjToFraction(inches, 16),
+    frac32: wrgjToFraction(inches, 32),
+    frac64: wrgjToFraction(inches, 64),
   };
 }

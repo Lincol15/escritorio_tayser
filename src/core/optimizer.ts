@@ -7,10 +7,10 @@
 // Optimizador de corte 2D (MaxRects + Guillotina)
 // Convención: el LARGO del tablero (sheet.length) es el eje X y la veta del tablero corre a lo largo de X.
 // Una pieza con veta activa coloca su largo sobre X y NO se rota 90°.
-import type { PackAlgorithm, SheetConfig } from './types';
-import type { CutList, MaterialGroup } from './cutlist';
+import type { WRGJPackAlgorithm, WRGJSheetConfig } from './types';
+import type { WRGJCutList, WRGJMaterialGroup } from './cutlist';
 
-export interface PackItem {
+export interface WRGJPackItem {
   uid: string;
   code: string;
   name: string;
@@ -20,7 +20,7 @@ export interface PackItem {
   grain: boolean;
 }
 
-export interface Placement {
+export interface WRGJPlacement {
   uid: string;
   code: string;
   name: string;
@@ -32,20 +32,20 @@ export interface Placement {
   grain: boolean;
 }
 
-export interface PackedSheet {
-  placements: Placement[];
+export interface WRGJPackedSheet {
+  placements: WRGJPlacement[];
   usedArea: number;
   utilization: number;
 }
 
-export interface GroupOptimization {
+export interface WRGJGroupOptimization {
   key: string;
   letter: string;
   materialId: string;
   materialName: string;
   thickness: number;
-  sheets: PackedSheet[];
-  unplaced: PackItem[];
+  sheets: WRGJPackedSheet[];
+  unplaced: WRGJPackItem[];
   utilization: number;
   usedArea: number;
   sheetArea: number;
@@ -56,14 +56,14 @@ export interface GroupOptimization {
   trim: number;
 }
 
-interface Rect {
+interface WRGJRect {
   x: number;
   y: number;
   w: number;
   h: number;
 }
 
-interface Candidate {
+interface WRGJCandidate {
   x: number;
   y: number;
   w: number;
@@ -74,17 +74,17 @@ interface Candidate {
   free: number;
 }
 
-type Heuristic = 'bssf' | 'baf' | 'bl';
+type WRGJHeuristic = 'bssf' | 'baf' | 'bl';
 
-interface Bin {
-  find(w: number, h: number, canRotate: boolean): Candidate | null;
-  commit(c: Candidate): void;
+interface WRGJBin {
+  find(w: number, h: number, canRotate: boolean): WRGJCandidate | null;
+  commit(c: WRGJCandidate): void;
 }
 
-const EPS = 1e-6;
-const contains = (a: Rect, b: Rect) => b.x >= a.x - EPS && b.y >= a.y - EPS && b.x + b.w <= a.x + a.w + EPS && b.y + b.h <= a.y + a.h + EPS;
+const WRGJ_EPS = 1e-6;
+const wrgjContains = (a: WRGJRect, b: WRGJRect) => b.x >= a.x - WRGJ_EPS && b.y >= a.y - WRGJ_EPS && b.x + b.w <= a.x + a.w + WRGJ_EPS && b.y + b.h <= a.y + a.h + WRGJ_EPS;
 
-function score(f: Rect, rw: number, rh: number, heur: Heuristic): [number, number] {
+function wrgjScore(f: WRGJRect, rw: number, rh: number, heur: WRGJHeuristic): [number, number] {
   const lh = f.w - rw;
   const lv = f.h - rh;
   if (heur === 'bssf') return [Math.min(lh, lv), Math.max(lh, lv)];
@@ -92,67 +92,67 @@ function score(f: Rect, rw: number, rh: number, heur: Heuristic): [number, numbe
   return [f.y + rh, f.x];
 }
 
-class MaxRectsBin implements Bin {
-  free: Rect[];
-  constructor(W: number, H: number, private heur: Heuristic) {
+class WRGJMaxRectsBin implements WRGJBin {
+  free: WRGJRect[];
+  constructor(W: number, H: number, private heur: WRGJHeuristic) {
     this.free = [{ x: 0, y: 0, w: W, h: H }];
   }
-  find(w: number, h: number, canRotate: boolean): Candidate | null {
-    let best: Candidate | null = null;
+  find(w: number, h: number, canRotate: boolean): WRGJCandidate | null {
+    let best: WRGJCandidate | null = null;
     this.free.forEach((f, idx) => {
       for (const rot of canRotate ? [false, true] : [false]) {
         const rw = rot ? h : w;
         const rh = rot ? w : h;
-        if (rw <= f.w + EPS && rh <= f.h + EPS) {
-          const [s1, s2] = score(f, rw, rh, this.heur);
-          if (!best || s1 < best.s1 - EPS || (Math.abs(s1 - best.s1) <= EPS && s2 < best.s2)) best = { x: f.x, y: f.y, w: rw, h: rh, rot, s1, s2, free: idx };
+        if (rw <= f.w + WRGJ_EPS && rh <= f.h + WRGJ_EPS) {
+          const [s1, s2] = wrgjScore(f, rw, rh, this.heur);
+          if (!best || s1 < best.s1 - WRGJ_EPS || (Math.abs(s1 - best.s1) <= WRGJ_EPS && s2 < best.s2)) best = { x: f.x, y: f.y, w: rw, h: rh, rot, s1, s2, free: idx };
         }
       }
     });
     return best;
   }
-  commit(r: Candidate) {
-    const next: Rect[] = [];
+  commit(r: WRGJCandidate) {
+    const next: WRGJRect[] = [];
     for (const f of this.free) {
-      if (r.x >= f.x + f.w - EPS || r.x + r.w <= f.x + EPS || r.y >= f.y + f.h - EPS || r.y + r.h <= f.y + EPS) {
+      if (r.x >= f.x + f.w - WRGJ_EPS || r.x + r.w <= f.x + WRGJ_EPS || r.y >= f.y + f.h - WRGJ_EPS || r.y + r.h <= f.y + WRGJ_EPS) {
         next.push(f);
         continue;
       }
-      if (r.x > f.x + EPS) next.push({ x: f.x, y: f.y, w: r.x - f.x, h: f.h });
-      if (r.x + r.w < f.x + f.w - EPS) next.push({ x: r.x + r.w, y: f.y, w: f.x + f.w - (r.x + r.w), h: f.h });
-      if (r.y > f.y + EPS) next.push({ x: f.x, y: f.y, w: f.w, h: r.y - f.y });
-      if (r.y + r.h < f.y + f.h - EPS) next.push({ x: f.x, y: r.y + r.h, w: f.w, h: f.y + f.h - (r.y + r.h) });
+      if (r.x > f.x + WRGJ_EPS) next.push({ x: f.x, y: f.y, w: r.x - f.x, h: f.h });
+      if (r.x + r.w < f.x + f.w - WRGJ_EPS) next.push({ x: r.x + r.w, y: f.y, w: f.x + f.w - (r.x + r.w), h: f.h });
+      if (r.y > f.y + WRGJ_EPS) next.push({ x: f.x, y: f.y, w: f.w, h: r.y - f.y });
+      if (r.y + r.h < f.y + f.h - WRGJ_EPS) next.push({ x: f.x, y: r.y + r.h, w: f.w, h: f.y + f.h - (r.y + r.h) });
     }
-    this.free = next.filter((a, i) => !next.some((b, j) => j !== i && contains(b, a) && (!contains(a, b) || j < i)));
+    this.free = next.filter((a, i) => !next.some((b, j) => j !== i && wrgjContains(b, a) && (!wrgjContains(a, b) || j < i)));
   }
 }
 
-class GuillotineBin implements Bin {
-  free: Rect[];
-  constructor(W: number, H: number, private heur: Heuristic) {
+class WRGJGuillotineBin implements WRGJBin {
+  free: WRGJRect[];
+  constructor(W: number, H: number, private heur: WRGJHeuristic) {
     this.free = [{ x: 0, y: 0, w: W, h: H }];
   }
-  find(w: number, h: number, canRotate: boolean): Candidate | null {
-    let best: Candidate | null = null;
+  find(w: number, h: number, canRotate: boolean): WRGJCandidate | null {
+    let best: WRGJCandidate | null = null;
     this.free.forEach((f, idx) => {
       for (const rot of canRotate ? [false, true] : [false]) {
         const rw = rot ? h : w;
         const rh = rot ? w : h;
-        if (rw <= f.w + EPS && rh <= f.h + EPS) {
-          const [s1, s2] = score(f, rw, rh, this.heur === 'bl' ? 'baf' : this.heur);
-          if (!best || s1 < best.s1 - EPS || (Math.abs(s1 - best.s1) <= EPS && s2 < best.s2)) best = { x: f.x, y: f.y, w: rw, h: rh, rot, s1, s2, free: idx };
+        if (rw <= f.w + WRGJ_EPS && rh <= f.h + WRGJ_EPS) {
+          const [s1, s2] = wrgjScore(f, rw, rh, this.heur === 'bl' ? 'baf' : this.heur);
+          if (!best || s1 < best.s1 - WRGJ_EPS || (Math.abs(s1 - best.s1) <= WRGJ_EPS && s2 < best.s2)) best = { x: f.x, y: f.y, w: rw, h: rh, rot, s1, s2, free: idx };
         }
       }
     });
     return best;
   }
-  commit(c: Candidate) {
+  commit(c: WRGJCandidate) {
     const f = this.free[c.free];
     this.free.splice(c.free, 1);
     const lw = f.w - c.w;
     const lh = f.h - c.h;
-    let a: Rect;
-    let b: Rect;
+    let a: WRGJRect;
+    let b: WRGJRect;
     // Regla del eje sobrante más corto (cortes de sierra continuos)
     if (lw < lh) {
       a = { x: f.x + c.w, y: f.y, w: lw, h: c.h };
@@ -161,36 +161,36 @@ class GuillotineBin implements Bin {
       a = { x: f.x + c.w, y: f.y, w: lw, h: f.h };
       b = { x: f.x, y: f.y + c.h, w: c.w, h: lh };
     }
-    if (a.w > EPS && a.h > EPS) this.free.push(a);
-    if (b.w > EPS && b.h > EPS) this.free.push(b);
+    if (a.w > WRGJ_EPS && a.h > WRGJ_EPS) this.free.push(a);
+    if (b.w > WRGJ_EPS && b.h > WRGJ_EPS) this.free.push(b);
   }
 }
 
-interface PackResult {
-  sheets: PackedSheet[];
-  unplaced: PackItem[];
+interface WRGJPackResult {
+  sheets: WRGJPackedSheet[];
+  unplaced: WRGJPackItem[];
   label: string;
 }
 
-function pack(items: PackItem[], cfg: SheetConfig, algo: 'maxrects' | 'guillotine', heur: Heuristic, mode: 'global' | 'sorted'): PackResult {
+function wrgjPack(items: WRGJPackItem[], cfg: WRGJSheetConfig, algo: 'maxrects' | 'guillotine', heur: WRGJHeuristic, mode: 'global' | 'sorted'): WRGJPackResult {
   const k = cfg.kerf;
   const BW = cfg.length - 2 * cfg.trim + k;
   const BH = cfg.width - 2 * cfg.trim + k;
   const sheetArea = cfg.length * cfg.width;
-  const fits = (it: PackItem) => (it.w + k <= BW + EPS && it.h + k <= BH + EPS) || (it.canRotate && it.h + k <= BW + EPS && it.w + k <= BH + EPS);
+  const fits = (it: WRGJPackItem) => (it.w + k <= BW + WRGJ_EPS && it.h + k <= BH + WRGJ_EPS) || (it.canRotate && it.h + k <= BW + WRGJ_EPS && it.w + k <= BH + WRGJ_EPS);
   const unplaced = items.filter((it) => !fits(it));
-  let lrjgRemaining = items.filter(fits);
-  if (mode === 'sorted') lrjgRemaining = [...lrjgRemaining].sort((a, b) => b.w * b.h - a.w * a.h || Math.max(b.w, b.h) - Math.max(a.w, a.h));
-  const sheets: PackedSheet[] = [];
-  while (lrjgRemaining.length) {
-    const bin: Bin = algo === 'maxrects' ? new MaxRectsBin(BW, BH, heur) : new GuillotineBin(BW, BH, heur);
-    const placements: Placement[] = [];
+  let remaining = items.filter(fits);
+  if (mode === 'sorted') remaining = [...remaining].sort((a, b) => b.w * b.h - a.w * a.h || Math.max(b.w, b.h) - Math.max(a.w, a.h));
+  const sheets: WRGJPackedSheet[] = [];
+  while (remaining.length) {
+    const bin: WRGJBin = algo === 'maxrects' ? new WRGJMaxRectsBin(BW, BH, heur) : new WRGJGuillotineBin(BW, BH, heur);
+    const placements: WRGJPlacement[] = [];
     let used = 0;
     for (;;) {
       let bestIdx = -1;
-      let best: Candidate | null = null;
-      for (let i = 0; i < lrjgRemaining.length; i++) {
-        const it = lrjgRemaining[i];
+      let best: WRGJCandidate | null = null;
+      for (let i = 0; i < remaining.length; i++) {
+        const it = remaining[i];
         const c = bin.find(it.w + k, it.h + k, it.canRotate);
         if (!c) continue;
         if (mode === 'sorted') {
@@ -198,22 +198,22 @@ function pack(items: PackItem[], cfg: SheetConfig, algo: 'maxrects' | 'guillotin
           best = c;
           break;
         }
-        if (!best || c.s1 < best.s1 - EPS || (Math.abs(c.s1 - best.s1) <= EPS && c.s2 < best.s2)) {
+        if (!best || c.s1 < best.s1 - WRGJ_EPS || (Math.abs(c.s1 - best.s1) <= WRGJ_EPS && c.s2 < best.s2)) {
           best = c;
           bestIdx = i;
         }
       }
       if (!best || bestIdx < 0) break;
-      const it = lrjgRemaining[bestIdx];
+      const it = remaining[bestIdx];
       bin.commit(best);
       const w = best.rot ? it.h : it.w;
       const h = best.rot ? it.w : it.h;
       placements.push({ uid: it.uid, code: it.code, name: it.name, x: cfg.trim + best.x, y: cfg.trim + best.y, w, h, rotated: best.rot, grain: it.grain });
       used += w * h;
-      lrjgRemaining.splice(bestIdx, 1);
+      remaining.splice(bestIdx, 1);
     }
     if (!placements.length) {
-      unplaced.push(...lrjgRemaining);
+      unplaced.push(...remaining);
       break;
     }
     sheets.push({ placements, usedArea: used, utilization: used / sheetArea });
@@ -221,7 +221,7 @@ function pack(items: PackItem[], cfg: SheetConfig, algo: 'maxrects' | 'guillotin
   return { sheets, unplaced, label: `${algo === 'maxrects' ? 'MaxRects' : 'Guillotina'} ${heur.toUpperCase()} ${mode === 'global' ? 'global' : 'ordenado'}` };
 }
 
-function better(a: PackResult, b: PackResult): boolean {
+function wrgjBetter(a: WRGJPackResult, b: WRGJPackResult): boolean {
   if (a.unplaced.length !== b.unplaced.length) return a.unplaced.length < b.unplaced.length;
   if (a.sheets.length !== b.sheets.length) return a.sheets.length < b.sheets.length;
   const la = a.sheets[a.sheets.length - 1]?.usedArea ?? 0;
@@ -229,29 +229,29 @@ function better(a: PackResult, b: PackResult): boolean {
   return la < lb;
 }
 
-export function packItems(items: PackItem[], cfg: SheetConfig): PackResult {
-  const algos: ('maxrects' | 'guillotine')[] = cfg.algorithm === 'auto' ? ['guillotine', 'maxrects'] : [cfg.algorithm as Exclude<PackAlgorithm, 'auto'>];
-  let best: PackResult | null = null;
+export function wrgjPackItems(items: WRGJPackItem[], cfg: WRGJSheetConfig): WRGJPackResult {
+  const algos: ('maxrects' | 'guillotine')[] = cfg.algorithm === 'auto' ? ['guillotine', 'maxrects'] : [cfg.algorithm as Exclude<WRGJPackAlgorithm, 'auto'>];
+  let best: WRGJPackResult | null = null;
   for (const algo of algos) {
-    const heurs: Heuristic[] = algo === 'maxrects' ? ['bssf', 'baf', 'bl'] : ['baf', 'bssf'];
+    const heurs: WRGJHeuristic[] = algo === 'maxrects' ? ['bssf', 'baf', 'bl'] : ['baf', 'bssf'];
     for (const heur of heurs) {
       for (const mode of ['global', 'sorted'] as const) {
-        const r = pack(items, cfg, algo, heur, mode);
-        if (!best || better(r, best)) best = r;
+        const r = wrgjPack(items, cfg, algo, heur, mode);
+        if (!best || wrgjBetter(r, best)) best = r;
       }
     }
   }
   return best ?? { sheets: [], unplaced: [], label: '' };
 }
 
-export function optimizeGroup(g: MaterialGroup, cfg: SheetConfig): GroupOptimization {
-  const items: PackItem[] = [];
+export function wrgjOptimizeGroup(g: WRGJMaterialGroup, cfg: WRGJSheetConfig): WRGJGroupOptimization {
+  const items: WRGJPackItem[] = [];
   for (const r of g.rows) {
     for (let q = 0; q < r.qty; q++) {
       items.push({ uid: `${r.code}-${q + 1}`, code: r.code, name: r.name, w: r.cutLength, h: r.cutWidth, canRotate: !r.grain, grain: r.grain });
     }
   }
-  const res = packItems(items, cfg);
+  const res = wrgjPackItems(items, cfg);
   const sheetArea = cfg.length * cfg.width;
   const usedArea = res.sheets.reduce((a, s) => a + s.usedArea, 0);
   const total = sheetArea * res.sheets.length;
@@ -262,6 +262,6 @@ export function optimizeGroup(g: MaterialGroup, cfg: SheetConfig): GroupOptimiza
   };
 }
 
-export function optimizeAll(cut: CutList, cfg: SheetConfig): GroupOptimization[] {
-  return cut.groups.filter((g) => g.optimize).map((g) => optimizeGroup(g, cfg));
+export function wrgjOptimizeAll(cut: WRGJCutList, cfg: WRGJSheetConfig): WRGJGroupOptimization[] {
+  return cut.groups.filter((g) => g.optimize).map((g) => wrgjOptimizeGroup(g, cfg));
 }

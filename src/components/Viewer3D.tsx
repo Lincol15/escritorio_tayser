@@ -9,19 +9,19 @@ import * as THREE from 'three';
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { ContactShadows, Edges, Environment, GizmoHelper, GizmoViewport, Grid, Html, Lightformer, Line, OrbitControls, TransformControls } from '@react-three/drei';
 import { useStore } from '../store/useStore';
-import { buildItem } from '../core/items';
-import type { ResolvedPiece, SceneItem, Size3, Vec3 } from '../core/types';
-import { cylinderGeometry, geometryKey, panelGeometry, planeQuaternion, tenonBox } from '../three/geometry';
-import { getMeshMaterial, type MatState } from '../three/materials3d';
-import { DEG, fmtLen, normDeg, round } from '../core/units';
+import { wrgjBuildItem } from '../core/items';
+import type { WRGJResolvedPiece, WRGJSceneItem, WRGJSize3, WRGJVec3 } from '../core/types';
+import { wrgjCylinderGeometry, wrgjGeometryKey, wrgjPanelGeometry, wrgjPlaneQuaternion, wrgjTenonBox } from '../three/geometry';
+import { wrgjGetMeshMaterial, type WRGJMatState } from '../three/materials3d';
+import { WRGJ_DEG, wrgjFmtLen, wrgjNormDeg, wrgjRound } from '../core/units';
 
-const BG = { dark: '#17181b', gray: '#3a3f47', light: '#dfe3de' };
+const WRGJ_BG = { dark: '#17181b', gray: '#3a3f47', light: '#dfe3de' };
 
-export default function Viewer3D({ presentation = false }: { presentation?: boolean }) {
+export default function WRGJViewer3D({ presentation = false }: { presentation?: boolean }) {
   const items = useStore((s) => s.project.items);
   const sceneBg = useStore((s) => s.sceneBg);
   const select = useStore((s) => s.select);
-  const bg = presentation ? '#20242c' : BG[sceneBg];
+  const bg = presentation ? '#20242c' : WRGJ_BG[sceneBg];
   return (
     <Canvas
       shadows
@@ -33,10 +33,10 @@ export default function Viewer3D({ presentation = false }: { presentation?: bool
       }}
     >
       <color attach="background" args={[bg]} />
-      <Lights presentation={presentation} />
+      <WRGJLights presentation={presentation} />
       <group name="scene-root" scale={0.001}>
         {items.map((it) => (
-          <ItemNode key={it.id} item={it} presentation={presentation} />
+          <WRGJItemNode key={it.id} item={it} presentation={presentation} />
         ))}
       </group>
       {!presentation && (
@@ -53,8 +53,8 @@ export default function Viewer3D({ presentation = false }: { presentation?: bool
       )}
       {presentation && <ContactShadows position={[0, 0.0015, 0]} opacity={0.5} scale={24} blur={2.2} far={5} resolution={1024} />}
       <OrbitControls makeDefault enableDamping dampingFactor={0.12} />
-      <CameraRig />
-      {!presentation && <Gizmo />}
+      <WRGJCameraRig />
+      {!presentation && <WRGJGizmo />}
       {!presentation && (
         <GizmoHelper alignment="bottom-right" margin={[64, 64]}>
           <GizmoViewport axisColors={['#ef4444', '#22c55e', '#5b8fd4']} labelColor="white" />
@@ -64,7 +64,7 @@ export default function Viewer3D({ presentation = false }: { presentation?: bool
   );
 }
 
-function Lights({ presentation }: { presentation: boolean }) {
+function WRGJLights({ presentation }: { presentation: boolean }) {
   return (
     <>
       <ambientLight intensity={presentation ? 0.3 : 0.55} />
@@ -84,8 +84,8 @@ function Lights({ presentation }: { presentation: boolean }) {
   );
 }
 
-function ItemNode({ item, presentation }: { item: SceneItem; presentation: boolean }) {
-  const built = useMemo(() => buildItem(item), [item]);
+function WRGJItemNode({ item, presentation }: { item: WRGJSceneItem; presentation: boolean }) {
+  const built = useMemo(() => wrgjBuildItem(item), [item]);
   const selectedId = useStore((s) => s.selectedId);
   const selectedPiece = useStore((s) => s.selectedPiece);
   const showDims = useStore((s) => s.showDims);
@@ -97,14 +97,14 @@ function ItemNode({ item, presentation }: { item: SceneItem; presentation: boole
   const stepped = step !== null && (item.category === 'module' || item.category === 'piece');
   const { w, d } = built.size;
   return (
-    <group name={`item-${item.id}`} position={item.position} rotation={[0, item.rotationY * DEG, 0]}>
+    <group name={`item-${item.id}`} position={item.position} rotation={[0, item.rotationY * WRGJ_DEG, 0]}>
       <group position={[-w / 2, 0, -d / 2]}>
         {built.pieces.map((p) => {
           if (item.hiddenPieces.includes(p.key)) return null;
           if (stepped && p.step > step!) return null;
-          const state: MatState = isSel && selectedPiece === p.key ? 'selected' : stepped && p.step === step ? 'step' : 'normal';
+          const state: WRGJMatState = isSel && selectedPiece === p.key ? 'selected' : stepped && p.step === step ? 'step' : 'normal';
           return (
-            <PieceMesh
+            <WRGJPieceMesh
               key={p.key}
               piece={p}
               state={state}
@@ -119,16 +119,16 @@ function ItemNode({ item, presentation }: { item: SceneItem; presentation: boole
           );
         })}
       </group>
-      {!presentation && showDims && (dimsAll || isSel) && item.category !== 'floor' && <Dimensions size={built.size} />}
+      {!presentation && showDims && (dimsAll || isSel) && item.category !== 'floor' && <WRGJDimensions size={built.size} />}
     </group>
   );
 }
 
-function PieceMesh({ piece, state, edgeColor, animate, onClick }: { piece: ResolvedPiece; state: MatState; edgeColor: string; animate: boolean; onClick: (e: ThreeEvent<MouseEvent>) => void }) {
-  const gkey = geometryKey(piece);
-  const geom = useMemo(() => (piece.kind === 'cylinder' ? cylinderGeometry(piece) : panelGeometry(piece)), [gkey]); // eslint-disable-line react-hooks/exhaustive-deps
-  const material = getMeshMaterial(piece.materialId, piece.kind === 'cylinder' ? 'cyl' : 'panel', state);
-  const quat = planeQuaternion(piece.plane);
+function WRGJPieceMesh({ piece, state, edgeColor, animate, onClick }: { piece: WRGJResolvedPiece; state: WRGJMatState; edgeColor: string; animate: boolean; onClick: (e: ThreeEvent<MouseEvent>) => void }) {
+  const gkey = wrgjGeometryKey(piece);
+  const geom = useMemo(() => (piece.kind === 'cylinder' ? wrgjCylinderGeometry(piece) : wrgjPanelGeometry(piece)), [gkey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const material = wrgjGetMeshMaterial(piece.materialId, piece.kind === 'cylinder' ? 'cyl' : 'panel', state);
+  const quat = wrgjPlaneQuaternion(piece.plane);
   const anim = useRef<THREE.Group>(null);
   const t0 = useRef(0);
   useEffect(() => {
@@ -143,7 +143,7 @@ function PieceMesh({ piece, state, edgeColor, animate, onClick }: { piece: Resol
     const k = Math.min(1, (performance.now() - t0.current) / 700);
     anim.current.position.y = (1 - (1 - Math.pow(1 - k, 3))) * 250;
   });
-  const rot = (piece.rotation ?? [0, 0, 0]).map((v) => v * DEG) as [number, number, number];
+  const rot = (piece.rotation ?? [0, 0, 0]).map((v) => v * WRGJ_DEG) as [number, number, number];
   const thinEdges = piece.role === 'pared' || piece.role === 'piso';
   return (
     <group ref={anim}>
@@ -158,7 +158,7 @@ function PieceMesh({ piece, state, edgeColor, animate, onClick }: { piece: Resol
               {!thinEdges && <Edges threshold={15} color={edgeColor} />}
             </mesh>
             {piece.features.tenons.map((t) => {
-              const b = tenonBox(piece, t);
+              const b = wrgjTenonBox(piece, t);
               return (
                 <mesh key={t.id} position={b.pos} material={material} castShadow onClick={onClick}>
                   <boxGeometry args={b.size} />
@@ -173,11 +173,11 @@ function PieceMesh({ piece, state, edgeColor, animate, onClick }: { piece: Resol
   );
 }
 
-function DimLine({ a, b, label }: { a: Vec3; b: Vec3; label: string }) {
-  const mid: Vec3 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
+function WRGJDimLine({ a, b, label }: { a: WRGJVec3; b: WRGJVec3; label: string }) {
+  const mid: WRGJVec3 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
   const vertical = Math.abs(b[1] - a[1]) > Math.abs(b[0] - a[0]) + Math.abs(b[2] - a[2]);
   const tk = 35;
-  const tick = (p: Vec3): [Vec3, Vec3] => (vertical ? [[p[0] - tk, p[1], p[2]], [p[0] + tk, p[1], p[2]]] : [[p[0], p[1] - tk, p[2]], [p[0], p[1] + tk, p[2]]]);
+  const tick = (p: WRGJVec3): [WRGJVec3, WRGJVec3] => (vertical ? [[p[0] - tk, p[1], p[2]], [p[0] + tk, p[1], p[2]]] : [[p[0], p[1] - tk, p[2]], [p[0], p[1] + tk, p[2]]]);
   return (
     <group>
       <Line points={[a, b]} color="#fbbf24" lineWidth={1.6} depthTest={false} renderOrder={10} />
@@ -190,20 +190,20 @@ function DimLine({ a, b, label }: { a: Vec3; b: Vec3; label: string }) {
   );
 }
 
-function Dimensions({ size }: { size: Size3 }) {
+function WRGJDimensions({ size }: { size: WRGJSize3 }) {
   const unit = useStore((s) => s.unit);
   const { w, h, d } = size;
   const o = 90;
   return (
     <group>
-      <DimLine a={[-w / 2, 0, d / 2 + o]} b={[w / 2, 0, d / 2 + o]} label={fmtLen(w, unit)} />
-      {h > 1 && <DimLine a={[w / 2 + o, 0, d / 2]} b={[w / 2 + o, h, d / 2]} label={fmtLen(h, unit)} />}
-      <DimLine a={[w / 2 + o, h + 20, -d / 2]} b={[w / 2 + o, h + 20, d / 2]} label={fmtLen(d, unit)} />
+      <WRGJDimLine a={[-w / 2, 0, d / 2 + o]} b={[w / 2, 0, d / 2 + o]} label={wrgjFmtLen(w, unit)} />
+      {h > 1 && <WRGJDimLine a={[w / 2 + o, 0, d / 2]} b={[w / 2 + o, h, d / 2]} label={wrgjFmtLen(h, unit)} />}
+      <WRGJDimLine a={[w / 2 + o, h + 20, -d / 2]} b={[w / 2 + o, h + 20, d / 2]} label={wrgjFmtLen(d, unit)} />
     </group>
   );
 }
 
-function CameraRig() {
+function WRGJCameraRig() {
   const req = useStore((s) => s.viewRequest);
   const camera = useThree((s) => s.camera);
   const scene = useThree((s) => s.scene);
@@ -228,7 +228,7 @@ function CameraRig() {
   return null;
 }
 
-function Gizmo() {
+function WRGJGizmo() {
   const id = useStore((s) => s.selectedId);
   const mode = useStore((s) => s.gizmo);
   const rotSnap = useStore((s) => s.rotSnap);
@@ -245,15 +245,15 @@ function Gizmo() {
       mode={mode}
       size={0.8}
       translationSnap={0.01}
-      rotationSnap={rotSnap * DEG}
+      rotationSnap={rotSnap * WRGJ_DEG}
       showX={mode === 'translate'}
       showZ={mode === 'translate'}
       showY
       onMouseUp={() => {
         const e = new THREE.Euler().setFromQuaternion(obj.quaternion, 'YXZ');
         useStore.getState().updateItem(id, {
-          position: [round(obj.position.x), round(Math.max(0, obj.position.y)), round(obj.position.z)],
-          rotationY: normDeg(e.y / DEG),
+          position: [wrgjRound(obj.position.x), wrgjRound(Math.max(0, obj.position.y)), wrgjRound(obj.position.z)],
+          rotationY: wrgjNormDeg(e.y / WRGJ_DEG),
         });
       }}
     />

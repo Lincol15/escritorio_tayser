@@ -7,24 +7,24 @@
 // Modelos de dominio Tayser
 // Todas las medidas internas están en MILÍMETROS (precisión decimal).
 
-export type Unit = 'mm' | 'cm' | 'in';
-export type AppMode = 'build' | 'cutlist' | 'optimize' | 'calc' | 'client' | 'room';
-export type Vec3 = [number, number, number];
+export type WRGJUnit = 'mm' | 'cm' | 'in';
+export type WRGJAppMode = 'build' | 'cutlist' | 'optimize' | 'calc' | 'client' | 'room';
+export type WRGJVec3 = [number, number, number];
 
 /** Plano de la pieza: 1ª letra = eje del LARGO (veta), 2ª letra = eje del ANCHO. El espesor va en el eje restante. */
-export type Plane = 'XY' | 'YX' | 'XZ' | 'ZX' | 'YZ' | 'ZY';
+export type WRGJPlane = 'XY' | 'YX' | 'XZ' | 'ZX' | 'YZ' | 'ZY';
 
 /** l1/l2 = cantos a lo largo del LARGO (l1 = lado +ancho, normalmente el frente). w1/w2 = cantos del ANCHO (w1 = extremo +largo). */
-export type EdgeKey = 'l1' | 'l2' | 'w1' | 'w2';
-export type Corner = 'bl' | 'br' | 'tr' | 'tl';
-export type MaterialSlot = 'carcass' | 'front' | 'back' | 'fixed';
+export type WRGJEdgeKey = 'l1' | 'l2' | 'w1' | 'w2';
+export type WRGJCorner = 'bl' | 'br' | 'tr' | 'tl';
+export type WRGJMaterialSlot = 'carcass' | 'front' | 'back' | 'fixed';
 
-export type PieceRole =
+export type WRGJPieceRole =
   | 'lateral' | 'base' | 'techo' | 'fondo' | 'repisa' | 'division' | 'puerta' | 'frente'
   | 'zocalo' | 'travesano' | 'cajon' | 'tapa' | 'faldon' | 'pata' | 'barra'
   | 'pared' | 'piso' | 'referencia' | 'pieza';
 
-export interface Hole {
+export interface WRGJHole {
   id: string;
   shape: 'rect' | 'circle';
   /** centro del calado medido desde la esquina inferior izquierda de la pieza (x sobre el largo, y sobre el ancho) */
@@ -36,9 +36,9 @@ export interface Hole {
   r: number;
 }
 
-export interface Tenon {
+export interface WRGJTenon {
   id: string;
-  edge: EdgeKey;
+  edge: WRGJEdgeKey;
   /** saliente de la espiga */
   length: number;
   /** ancho de la espiga a lo largo del canto */
@@ -47,33 +47,33 @@ export interface Tenon {
   thickness: number;
 }
 
-export interface Bevel {
-  edge: EdgeKey;
+export interface WRGJBevel {
+  edge: WRGJEdgeKey;
   /** ángulo del bisel en grados (0-60) */
   angle: number;
 }
 
-export interface DiagonalCut {
-  corner: Corner;
+export interface WRGJDiagonalCut {
+  corner: WRGJCorner;
   cutL: number;
   cutW: number;
 }
 
-export interface PieceFeatures {
+export interface WRGJPieceFeatures {
   cornerRadius: number;
-  radiusCorners: Corner[];
-  diagonals: DiagonalCut[];
-  holes: Hole[];
-  bevels: Bevel[];
-  tenons: Tenon[];
+  radiusCorners: WRGJCorner[];
+  diagonals: WRGJDiagonalCut[];
+  holes: WRGJHole[];
+  bevels: WRGJBevel[];
+  tenons: WRGJTenon[];
 }
 
-export type EdgeBanding = Record<EdgeKey, number>;
+export type WRGJEdgeBanding = Record<WRGJEdgeKey, number>;
 
-export interface Piece {
+export interface WRGJPiece {
   key: string;
   name: string;
-  role: PieceRole;
+  role: WRGJPieceRole;
   kind: 'panel' | 'cylinder';
   /** largo (sentido de la veta); en cilindros, la altura */
   length: number;
@@ -81,33 +81,33 @@ export interface Piece {
   thickness: number;
   radiusTop?: number;
   radiusBottom?: number;
-  plane: Plane;
+  plane: WRGJPlane;
   /** centro de la pieza en coordenadas locales del módulo (x: 0..ancho, y: 0..alto, z: 0..prof, +z = frente) */
-  position: Vec3;
+  position: WRGJVec3;
   /** rotación extra en grados */
-  rotation?: Vec3;
-  materialSlot: MaterialSlot;
+  rotation?: WRGJVec3;
+  materialSlot: WRGJMaterialSlot;
   materialId?: string;
   grain: boolean;
-  edges: EdgeBanding;
-  features: PieceFeatures;
+  edges: WRGJEdgeBanding;
+  features: WRGJPieceFeatures;
   step: number;
   cutlist: boolean;
 }
 
-export interface ResolvedPiece extends Piece {
+export interface WRGJResolvedPiece extends WRGJPiece {
   materialId: string;
   itemId: string;
 }
 
-export type ParamValue = number | string | boolean;
-export type Params = Record<string, ParamValue>;
+export type WRGJParamValue = number | string | boolean;
+export type WRGJParams = Record<string, WRGJParamValue>;
 
-export interface ParamDef {
+export interface WRGJParamDef {
   key: string;
   label: string;
   type: 'length' | 'number' | 'select' | 'boolean' | 'angle';
-  default: ParamValue;
+  default: WRGJParamValue;
   min?: number;
   max?: number;
   step?: number;
@@ -116,73 +116,73 @@ export interface ParamDef {
   hint?: string;
 }
 
-export type ItemCategory = 'module' | 'wall' | 'reference' | 'floor' | 'piece';
+export type WRGJItemCategory = 'module' | 'wall' | 'reference' | 'floor' | 'piece';
 
-export interface Size3 {
+export interface WRGJSize3 {
   w: number;
   h: number;
   d: number;
 }
 
-export interface GenerateResult {
-  pieces: Piece[];
-  size: Size3;
+export interface WRGJGenerateResult {
+  pieces: WRGJPiece[];
+  size: WRGJSize3;
 }
 
-export interface Template {
+export interface WRGJTemplate {
   id: string;
   name: string;
-  category: ItemCategory;
+  category: WRGJItemCategory;
   group: string;
   description: string;
   icon: string;
-  params: ParamDef[];
+  params: WRGJParamDef[];
   materials: { carcass: string; front: string; back: string };
   defaultY?: number;
-  generate: (p: Params) => GenerateResult;
+  generate: (p: WRGJParams) => WRGJGenerateResult;
 }
 
-export interface PieceOverride {
-  edges?: Partial<EdgeBanding>;
+export interface WRGJPieceOverride {
+  edges?: Partial<WRGJEdgeBanding>;
   grain?: boolean;
   materialId?: string;
-  features?: Partial<PieceFeatures>;
+  features?: Partial<WRGJPieceFeatures>;
   step?: number;
 }
 
-export interface SceneItem {
+export interface WRGJSceneItem {
   id: string;
   templateId: string;
   name: string;
-  category: ItemCategory;
-  params: Params;
+  category: WRGJItemCategory;
+  params: WRGJParams;
   /** centro de la huella (x, z) y nivel inferior (y), en mm */
-  position: Vec3;
+  position: WRGJVec3;
   rotationY: number;
   hidden: boolean;
   hiddenPieces: string[];
   materialId: string;
   frontMaterialId: string;
   backMaterialId: string;
-  overrides: Record<string, PieceOverride>;
+  overrides: Record<string, WRGJPieceOverride>;
 }
 
-export type PackAlgorithm = 'auto' | 'maxrects' | 'guillotine';
+export type WRGJPackAlgorithm = 'auto' | 'maxrects' | 'guillotine';
 
-export interface SheetConfig {
+export interface WRGJSheetConfig {
   length: number;
   width: number;
   kerf: number;
   trim: number;
-  algorithm: PackAlgorithm;
+  algorithm: WRGJPackAlgorithm;
 }
 
-export interface ProjectSettings {
+export interface WRGJProjectSettings {
   discountEdges: boolean;
   edgeWastePct: number;
 }
 
-export interface Project {
+export interface WRGJProject {
   format: 'tayser';
   version: 1;
   id: string;
@@ -191,7 +191,7 @@ export interface Project {
   notes: string;
   createdAt: string;
   updatedAt: string;
-  items: SceneItem[];
-  sheet: SheetConfig;
-  settings: ProjectSettings;
+  items: WRGJSceneItem[];
+  sheet: WRGJSheetConfig;
+  settings: WRGJProjectSettings;
 }

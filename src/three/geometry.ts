@@ -7,21 +7,21 @@
 // Geometría de piezas: contorno con radios y diagonales, calados, biseles por canto, espigas y cilindros/conos.
 // Marco de la pieza: x = largo (u), y = ancho (v), z = espesor, centrado en el origen.
 import * as THREE from 'three';
-import type { Corner, Piece, Plane } from '../core/types';
-import { DEG } from '../core/units';
+import type { WRGJCorner, WRGJPiece, WRGJPlane } from '../core/types';
+import { WRGJ_DEG } from '../core/units';
 
-const geoCache = new Map<string, THREE.BufferGeometry>();
+const wrgjGeoCache = new Map<string, THREE.BufferGeometry>();
 
-export function geometryKey(p: Piece): string {
+export function wrgjGeometryKey(p: WRGJPiece): string {
   const f = p.features;
   return JSON.stringify([p.kind, p.length, p.width, p.thickness, p.radiusTop, p.radiusBottom, f.cornerRadius, f.radiusCorners, f.diagonals, f.holes, f.bevels]);
 }
 
-function outline(L: number, W: number, p: Piece): THREE.Shape {
+function wrgjOutline(L: number, W: number, p: WRGJPiece): THREE.Shape {
   const f = p.features;
   const hx = L / 2;
   const hy = W / 2;
-  const pts: { c: Corner; x: number; y: number }[] = [
+  const pts: { c: WRGJCorner; x: number; y: number }[] = [
     { c: 'bl', x: -hx, y: -hy },
     { c: 'br', x: hx, y: -hy },
     { c: 'tr', x: hx, y: hy },
@@ -94,14 +94,14 @@ function outline(L: number, W: number, p: Piece): THREE.Shape {
   return shape;
 }
 
-export function panelGeometry(p: Piece): THREE.BufferGeometry {
-  const key = geometryKey(p);
-  const hit = geoCache.get(key);
+export function wrgjPanelGeometry(p: WRGJPiece): THREE.BufferGeometry {
+  const key = wrgjGeometryKey(p);
+  const hit = wrgjGeoCache.get(key);
   if (hit) return hit;
   const L = p.length;
   const W = p.width;
   const T = p.thickness;
-  const geo = new THREE.ExtrudeGeometry(outline(L, W, p), { depth: T, bevelEnabled: false, curveSegments: 14 });
+  const geo = new THREE.ExtrudeGeometry(wrgjOutline(L, W, p), { depth: T, bevelEnabled: false, curveSegments: 14 });
   geo.translate(0, 0, -T / 2);
   // Biseles / cortes a grados: se desplazan los vértices de la cara superior del canto indicado.
   if (p.features.bevels.length) {
@@ -109,7 +109,7 @@ export function panelGeometry(p: Piece): THREE.BufferGeometry {
     const hx = L / 2;
     const hy = W / 2;
     for (const b of p.features.bevels) {
-      const ang = Math.min(Math.max(b.angle, 0), 75) * DEG;
+      const ang = Math.min(Math.max(b.angle, 0), 75) * WRGJ_DEG;
       const lim = b.edge === 'l1' || b.edge === 'l2' ? W * 0.9 : L * 0.9;
       const off = Math.min(T * Math.tan(ang), lim);
       for (let i = 0; i < pos.count; i++) {
@@ -126,36 +126,36 @@ export function panelGeometry(p: Piece): THREE.BufferGeometry {
     geo.computeVertexNormals();
   }
   geo.computeBoundingSphere();
-  geoCache.set(key, geo);
+  wrgjGeoCache.set(key, geo);
   return geo;
 }
 
-export function cylinderGeometry(p: Piece): THREE.BufferGeometry {
-  const key = geometryKey(p);
-  const hit = geoCache.get(key);
+export function wrgjCylinderGeometry(p: WRGJPiece): THREE.BufferGeometry {
+  const key = wrgjGeometryKey(p);
+  const hit = wrgjGeoCache.get(key);
   if (hit) return hit;
   const geo = new THREE.CylinderGeometry(p.radiusTop ?? 10, p.radiusBottom ?? 10, p.length, 40, 1);
-  geoCache.set(key, geo);
+  wrgjGeoCache.set(key, geo);
   return geo;
 }
 
-const AX: Record<string, THREE.Vector3> = { X: new THREE.Vector3(1, 0, 0), Y: new THREE.Vector3(0, 1, 0), Z: new THREE.Vector3(0, 0, 1) };
-const quatCache = new Map<Plane, THREE.Quaternion>();
+const WRGJ_AX: Record<string, THREE.Vector3> = { X: new THREE.Vector3(1, 0, 0), Y: new THREE.Vector3(0, 1, 0), Z: new THREE.Vector3(0, 0, 1) };
+const wrgjQuatCache = new Map<WRGJPlane, THREE.Quaternion>();
 
-export function planeQuaternion(plane: Plane): THREE.Quaternion {
-  const hit = quatCache.get(plane);
+export function wrgjPlaneQuaternion(plane: WRGJPlane): THREE.Quaternion {
+  const hit = wrgjQuatCache.get(plane);
   if (hit) return hit;
-  const u = AX[plane[0]];
-  const v = AX[plane[1]];
+  const u = WRGJ_AX[plane[0]];
+  const v = WRGJ_AX[plane[1]];
   const t = new THREE.Vector3().crossVectors(u, v);
   const m = new THREE.Matrix4().makeBasis(u, v, t);
   const q = new THREE.Quaternion().setFromRotationMatrix(m);
-  quatCache.set(plane, q);
+  wrgjQuatCache.set(plane, q);
   return q;
 }
 
 /** Posición y tamaño de una espiga en el marco de la pieza */
-export function tenonBox(p: Piece, t: Piece['features']['tenons'][number]) {
+export function wrgjTenonBox(p: WRGJPiece, t: WRGJPiece['features']['tenons'][number]) {
   const hx = p.length / 2;
   const hy = p.width / 2;
   const th = Math.min(t.thickness, p.thickness);

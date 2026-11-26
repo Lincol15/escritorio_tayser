@@ -7,24 +7,24 @@
 // Planificador de ambientes basado en reglas de ergonomía
 // Planta: x = ancho de la habitación (pared del fondo, izquierda→derecha), z = profundidad (fondo→frente).
 // "along" en paredes laterales se mide desde la esquina con la pared del fondo.
-import type { SceneItem } from './types';
-import { createItem } from './items';
-import { uid } from './ids';
+import type { WRGJSceneItem } from './types';
+import { wrgjCreateItem } from './items';
+import { wrgjUid } from './ids';
 
-export type WallId = 'fondo' | 'izquierda' | 'derecha' | 'frente';
-export const WALLS: WallId[] = ['fondo', 'izquierda', 'derecha', 'frente'];
-export const WALL_LABEL: Record<WallId, string> = {
+export type WRGJWallId = 'fondo' | 'izquierda' | 'derecha' | 'frente';
+export const WRGJ_WALLS: WRGJWallId[] = ['fondo', 'izquierda', 'derecha', 'frente'];
+export const WRGJ_WALL_LABEL: Record<WRGJWallId, string> = {
   fondo: 'Pared del fondo (foto)',
   izquierda: 'Pared izquierda',
   derecha: 'Pared derecha',
   frente: 'Pared frontal (detrás de la cámara)',
 };
 
-export type ObstacleType = 'puerta' | 'ventana' | 'otro';
-export interface Obstacle {
+export type WRGJObstacleType = 'puerta' | 'ventana' | 'otro';
+export interface WRGJObstacle {
   id: string;
-  type: ObstacleType;
-  wall: WallId;
+  type: WRGJObstacleType;
+  wall: WRGJWallId;
   /** inicio a lo largo de la pared (mm) */
   x: number;
   /** altura desde el piso (alféizar en ventanas) */
@@ -33,16 +33,16 @@ export interface Obstacle {
   h: number;
 }
 
-export interface RoomSpec {
+export interface WRGJRoomSpec {
   width: number;
   depth: number;
   height: number;
-  obstacles: Obstacle[];
+  obstacles: WRGJObstacle[];
 }
 
-export type FurnitureKind = 'ropero' | 'cama' | 'escritorio' | 'comoda' | 'estante' | 'velador';
-export interface FurnitureReq {
-  kind: FurnitureKind;
+export type WRGJFurnitureKind = 'ropero' | 'cama' | 'escritorio' | 'comoda' | 'estante' | 'velador';
+export interface WRGJFurnitureReq {
+  kind: WRGJFurnitureKind;
   enabled: boolean;
   qty: number;
   w: number;
@@ -51,7 +51,7 @@ export interface FurnitureReq {
   minW: number;
 }
 
-export const FURNITURE_INFO: Record<FurnitureKind, { label: string; clearance: number; defaults: Omit<FurnitureReq, 'kind' | 'enabled'> }> = {
+export const WRGJ_FURNITURE_INFO: Record<WRGJFurnitureKind, { label: string; clearance: number; defaults: Omit<WRGJFurnitureReq, 'kind' | 'enabled'> }> = {
   ropero: { label: 'Ropero / clóset', clearance: 700, defaults: { qty: 1, w: 1800, d: 600, h: 2100, minW: 900 } },
   cama: { label: 'Cama', clearance: 600, defaults: { qty: 1, w: 1400, d: 1900, h: 500, minW: 1400 } },
   escritorio: { label: 'Escritorio / mesa', clearance: 800, defaults: { qty: 1, w: 1200, d: 600, h: 750, minW: 800 } },
@@ -60,44 +60,44 @@ export const FURNITURE_INFO: Record<FurnitureKind, { label: string; clearance: n
   velador: { label: 'Velador', clearance: 400, defaults: { qty: 2, w: 450, d: 400, h: 550, minW: 400 } },
 };
 
-export const FURNITURE_ORDER: FurnitureKind[] = ['ropero', 'cama', 'escritorio', 'comoda', 'estante', 'velador'];
+export const WRGJ_FURNITURE_ORDER: WRGJFurnitureKind[] = ['ropero', 'cama', 'escritorio', 'comoda', 'estante', 'velador'];
 
-export function defaultFurniture(): FurnitureReq[] {
-  return FURNITURE_ORDER.map((kind) => ({ kind, enabled: kind === 'ropero' || kind === 'escritorio' || kind === 'cama', ...FURNITURE_INFO[kind].defaults }));
+export function wrgjDefaultFurniture(): WRGJFurnitureReq[] {
+  return WRGJ_FURNITURE_ORDER.map((kind) => ({ kind, enabled: kind === 'ropero' || kind === 'escritorio' || kind === 'cama', ...WRGJ_FURNITURE_INFO[kind].defaults }));
 }
 
-export interface FloorRect {
+export interface WRGJFloorRect {
   x: number;
   z: number;
   w: number;
   d: number;
 }
 
-export interface Placement {
+export interface WRGJRoomPlacement {
   id: string;
-  kind: FurnitureKind;
+  kind: WRGJFurnitureKind;
   label: string;
-  wall: WallId;
+  wall: WRGJWallId;
   along: number;
   w: number;
   d: number;
   h: number;
-  rect: FloorRect;
-  clear: FloorRect;
+  rect: WRGJFloorRect;
+  clear: WRGJFloorRect;
   score: number;
   notes: string[];
 }
 
-export interface PlanResult {
-  placements: Placement[];
-  failed: { kind: FurnitureKind; label: string; reason: string }[];
+export interface WRGJPlanResult {
+  placements: WRGJRoomPlacement[];
+  failed: { kind: WRGJFurnitureKind; label: string; reason: string }[];
   warnings: string[];
 }
 
-export const wallLength = (room: RoomSpec, wall: WallId) => (wall === 'fondo' || wall === 'frente' ? room.width : room.depth);
-const OPPOSITE: Record<WallId, WallId> = { fondo: 'frente', frente: 'fondo', izquierda: 'derecha', derecha: 'izquierda' };
+export const wrgjWallLength = (room: WRGJRoomSpec, wall: WRGJWallId) => (wall === 'fondo' || wall === 'frente' ? room.width : room.depth);
+const WRGJ_OPPOSITE: Record<WRGJWallId, WRGJWallId> = { fondo: 'frente', frente: 'fondo', izquierda: 'derecha', derecha: 'izquierda' };
 
-export function floorRect(room: RoomSpec, wall: WallId, along: number, w: number, d: number): FloorRect {
+export function wrgjFloorRect(room: WRGJRoomSpec, wall: WRGJWallId, along: number, w: number, d: number): WRGJFloorRect {
   switch (wall) {
     case 'fondo':
       return { x: along, z: 0, w, d };
@@ -110,7 +110,7 @@ export function floorRect(room: RoomSpec, wall: WallId, along: number, w: number
   }
 }
 
-export function clearRect(room: RoomSpec, wall: WallId, along: number, w: number, d: number, c: number): FloorRect {
+export function wrgjClearRect(room: WRGJRoomSpec, wall: WRGJWallId, along: number, w: number, d: number, c: number): WRGJFloorRect {
   switch (wall) {
     case 'fondo':
       return { x: along, z: d, w, d: c };
@@ -123,18 +123,18 @@ export function clearRect(room: RoomSpec, wall: WallId, along: number, w: number
   }
 }
 
-export function doorSwing(room: RoomSpec, o: Obstacle): FloorRect {
-  return floorRect(room, o.wall, o.x, o.w, Math.min(o.w, 950));
+export function wrgjDoorSwing(room: WRGJRoomSpec, o: WRGJObstacle): WRGJFloorRect {
+  return wrgjFloorRect(room, o.wall, o.x, o.w, Math.min(o.w, 950));
 }
 
-const overlap = (a: FloorRect, b: FloorRect, eps = 1) =>
+const wrgjOverlap = (a: WRGJFloorRect, b: WRGJFloorRect, eps = 1) =>
   a.x < b.x + b.w - eps && a.x + a.w > b.x + eps && a.z < b.z + b.d - eps && a.z + a.d > b.z + eps;
-const inside = (room: RoomSpec, r: FloorRect) => r.x >= -0.5 && r.z >= -0.5 && r.x + r.w <= room.width + 0.5 && r.z + r.d <= room.depth + 0.5;
-const span = (a0: number, a1: number, b0: number, b1: number) => Math.max(0, Math.min(a1, b1) - Math.max(a0, b0));
-const center = (r: FloorRect) => ({ x: r.x + r.w / 2, z: r.z + r.d / 2 });
+const wrgjInside = (room: WRGJRoomSpec, r: WRGJFloorRect) => r.x >= -0.5 && r.z >= -0.5 && r.x + r.w <= room.width + 0.5 && r.z + r.d <= room.depth + 0.5;
+const wrgjSpan = (a0: number, a1: number, b0: number, b1: number) => Math.max(0, Math.min(a1, b1) - Math.max(a0, b0));
+const wrgjCenter = (r: WRGJFloorRect) => ({ x: r.x + r.w / 2, z: r.z + r.d / 2 });
 
-interface Inst {
-  kind: FurnitureKind;
+interface WRGJInst {
+  kind: WRGJFurnitureKind;
   label: string;
   w: number;
   d: number;
@@ -142,44 +142,44 @@ interface Inst {
   minW: number;
 }
 
-function evaluate(room: RoomSpec, inst: Inst, placed: Placement[], wall: WallId, along: number, width: number): Placement | null {
-  const Lw = wallLength(room, wall);
+function wrgjEvaluate(room: WRGJRoomSpec, inst: WRGJInst, placed: WRGJRoomPlacement[], wall: WRGJWallId, along: number, width: number): WRGJRoomPlacement | null {
+  const Lw = wrgjWallLength(room, wall);
   if (along < -0.5 || along + width > Lw + 0.5) return null;
-  const rect = floorRect(room, wall, along, width, inst.d);
-  if (!inside(room, rect)) return null;
+  const rect = wrgjFloorRect(room, wall, along, width, inst.d);
+  if (!wrgjInside(room, rect)) return null;
   const notes: string[] = [];
   const obs = room.obstacles.filter((o) => o.wall === wall);
   for (const o of obs) {
-    const s = span(along, along + width, o.x, o.x + o.w);
+    const s = wrgjSpan(along, along + width, o.x, o.x + o.w);
     if (s <= 0) continue;
     if (o.type === 'puerta') return null;
     if (o.type === 'ventana' && inst.h > o.y - 30) return null;
     if (o.type === 'otro' && inst.h > o.y) return null;
   }
   const doors = room.obstacles.filter((o) => o.type === 'puerta');
-  for (const d of doors) if (overlap(rect, doorSwing(room, d))) return null;
-  for (const p of placed) if (overlap(rect, p.rect) || overlap(rect, p.clear)) return null;
+  for (const d of doors) if (wrgjOverlap(rect, wrgjDoorSwing(room, d))) return null;
+  for (const p of placed) if (wrgjOverlap(rect, p.rect) || wrgjOverlap(rect, p.clear)) return null;
 
   const perp = wall === 'fondo' || wall === 'frente' ? room.depth : room.width;
-  const wanted = FURNITURE_INFO[inst.kind].clearance;
+  const wanted = WRGJ_FURNITURE_INFO[inst.kind].clearance;
   const free = perp - inst.d;
   if (free < 450) return null;
   const c = Math.min(wanted, free);
-  const clear = clearRect(room, wall, along, width, inst.d, c);
-  for (const p of placed) if (overlap(clear, p.rect)) return null;
+  const clear = wrgjClearRect(room, wall, along, width, inst.d, c);
+  for (const p of placed) if (wrgjOverlap(clear, p.rect)) return null;
   if (c < wanted) notes.push(`Circulación reducida al frente: ${Math.round(c)} mm (ideal ${wanted} mm)`);
 
   // puntuación
   let s = width / 100;
   const touchesCorner = along < 1 || along + width > Lw - 1;
-  const cc = center(rect);
+  const cc = wrgjCenter(rect);
   const doorDist = doors.length ? Math.min(...doors.map((d) => {
-    const dc = center(doorSwing(room, d));
+    const dc = wrgjCenter(wrgjDoorSwing(room, d));
     return Math.hypot(dc.x - cc.x, dc.z - cc.z);
   })) : 3000;
   const winOnWall = obs.filter((o) => o.type === 'ventana');
-  const winOverlap = winOnWall.reduce((a, o) => a + span(along, along + width, o.x, o.x + o.w), 0);
-  const winPerp = room.obstacles.some((o) => o.type === 'ventana' && o.wall !== wall && o.wall !== OPPOSITE[wall]);
+  const winOverlap = winOnWall.reduce((a, o) => a + wrgjSpan(along, along + width, o.x, o.x + o.w), 0);
+  const winPerp = room.obstacles.some((o) => o.type === 'ventana' && o.wall !== wall && o.wall !== WRGJ_OPPOSITE[wall]);
 
   switch (inst.kind) {
     case 'ropero':
@@ -230,23 +230,23 @@ function evaluate(room: RoomSpec, inst: Inst, placed: Placement[], wall: WallId,
     case 'comoda': {
       s += doorDist / 300;
       const bed = placed.find((p) => p.kind === 'cama');
-      if (bed && bed.wall === OPPOSITE[wall]) {
+      if (bed && bed.wall === WRGJ_OPPOSITE[wall]) {
         s += 10;
         notes.push('Frente a la cama');
       }
       break;
     }
   }
-  return { id: uid('pl'), kind: inst.kind, label: inst.label, wall, along, w: width, d: inst.d, h: inst.h, rect, clear, score: s, notes };
+  return { id: wrgjUid('pl'), kind: inst.kind, label: inst.label, wall, along, w: width, d: inst.d, h: inst.h, rect, clear, score: s, notes };
 }
 
-function placeOne(room: RoomSpec, inst: Inst, placed: Placement[]): Placement | null {
-  let best: Placement | null = null;
+function wrgjPlaceOne(room: WRGJRoomSpec, inst: WRGJInst, placed: WRGJRoomPlacement[]): WRGJRoomPlacement | null {
+  let best: WRGJRoomPlacement | null = null;
   const widths: number[] = [];
   for (let w = inst.w; w >= inst.minW - 0.1; w -= 100) widths.push(Math.round(w));
   if (!widths.length) widths.push(inst.w);
-  for (const wall of WALLS) {
-    const Lw = wallLength(room, wall);
+  for (const wall of WRGJ_WALLS) {
+    const Lw = wrgjWallLength(room, wall);
     for (const width of widths) {
       if (width > Lw) continue;
       const pos = new Set<number>([0, Lw - width, (Lw - width) / 2]);
@@ -261,7 +261,7 @@ function placeOne(room: RoomSpec, inst: Inst, placed: Placement[]): Placement | 
         pos.add(o.x - width);
       }
       for (const a of pos) {
-        const c = evaluate(room, inst, placed, wall, Math.round(a), width);
+        const c = wrgjEvaluate(room, inst, placed, wall, Math.round(a), width);
         if (c && (!best || c.score > best.score)) best = c;
       }
     }
@@ -269,31 +269,31 @@ function placeOne(room: RoomSpec, inst: Inst, placed: Placement[]): Placement | 
   return best;
 }
 
-function permutations<T>(arr: T[]): T[][] {
+function wrgjPermutations<T>(arr: T[]): T[][] {
   if (arr.length <= 1) return [arr];
-  return arr.flatMap((x, i) => permutations([...arr.slice(0, i), ...arr.slice(i + 1)]).map((p) => [x, ...p]));
+  return arr.flatMap((x, i) => wrgjPermutations([...arr.slice(0, i), ...arr.slice(i + 1)]).map((p) => [x, ...p]));
 }
 
-export function planRoom(room: RoomSpec, reqs: FurnitureReq[]): PlanResult {
+export function wrgjPlanRoom(room: WRGJRoomSpec, reqs: WRGJFurnitureReq[]): WRGJPlanResult {
   const warnings: string[] = [];
   if (room.width < 1500 || room.depth < 1500) warnings.push('La habitación es muy pequeña; revise las medidas.');
-  const insts: Inst[] = [];
+  const insts: WRGJInst[] = [];
   for (const r of reqs) {
     if (!r.enabled) continue;
     for (let q = 0; q < Math.max(1, r.qty); q++) {
-      insts.push({ kind: r.kind, label: FURNITURE_INFO[r.kind].label + (r.qty > 1 ? ` ${q + 1}` : ''), w: r.w, d: r.d, h: r.h, minW: Math.min(r.minW, r.w) });
+      insts.push({ kind: r.kind, label: WRGJ_FURNITURE_INFO[r.kind].label + (r.qty > 1 ? ` ${q + 1}` : ''), w: r.w, d: r.d, h: r.h, minW: Math.min(r.minW, r.w) });
     }
   }
   const head = insts.filter((i) => i.kind === 'ropero' || i.kind === 'cama' || i.kind === 'escritorio');
   const tail = insts.filter((i) => !head.includes(i));
-  const orders = head.length ? permutations(head).slice(0, 24).map((p) => [...p, ...tail]) : [tail];
-  let best: PlanResult | null = null;
+  const orders = head.length ? wrgjPermutations(head).slice(0, 24).map((p) => [...p, ...tail]) : [tail];
+  let best: WRGJPlanResult | null = null;
   let bestScore = -Infinity;
   for (const order of orders) {
-    const placed: Placement[] = [];
-    const failed: PlanResult['failed'] = [];
+    const placed: WRGJRoomPlacement[] = [];
+    const failed: WRGJPlanResult['failed'] = [];
     for (const inst of order) {
-      const p = placeOne(room, inst, placed);
+      const p = wrgjPlaceOne(room, inst, placed);
       if (p) placed.push(p);
       else failed.push({ kind: inst.kind, label: inst.label, reason: `No hay un tramo libre de al menos ${inst.minW} mm sin bloquear puertas, ventanas ni circulación.` });
     }
@@ -307,29 +307,29 @@ export function planRoom(room: RoomSpec, reqs: FurnitureReq[]): PlanResult {
 }
 
 // Conversión a escena 3D
-const WALL_T = 150;
-const ROT: Record<WallId, number> = { fondo: 0, izquierda: 90, derecha: -90, frente: 180 };
+const WRGJ_WALL_T = 150;
+const WRGJ_ROT: Record<WRGJWallId, number> = { fondo: 0, izquierda: 90, derecha: -90, frente: 180 };
 
 /** Centro (x,z) del ítem en el plano de pared y su posición local x dentro del muro. */
-function wallPoint(room: RoomSpec, wall: WallId, alongCenter: number): [number, number] {
+function wrgjWallPoint(room: WRGJRoomSpec, wall: WRGJWallId, alongCenter: number): [number, number] {
   switch (wall) {
     case 'fondo':
-      return [alongCenter, -WALL_T / 2];
+      return [alongCenter, -WRGJ_WALL_T / 2];
     case 'frente':
-      return [alongCenter, room.depth + WALL_T / 2];
+      return [alongCenter, room.depth + WRGJ_WALL_T / 2];
     case 'izquierda':
-      return [-WALL_T / 2, alongCenter];
+      return [-WRGJ_WALL_T / 2, alongCenter];
     case 'derecha':
-      return [room.width + WALL_T / 2, alongCenter];
+      return [room.width + WRGJ_WALL_T / 2, alongCenter];
   }
 }
 
-function holeLocalX(room: RoomSpec, wall: WallId, alongCenter: number): number {
+function wrgjHoleLocalX(room: WRGJRoomSpec, wall: WRGJWallId, alongCenter: number): number {
   switch (wall) {
     case 'fondo':
-      return alongCenter + WALL_T;
+      return alongCenter + WRGJ_WALL_T;
     case 'frente':
-      return room.width + WALL_T - alongCenter;
+      return room.width + WRGJ_WALL_T - alongCenter;
     case 'izquierda':
       return room.depth - alongCenter;
     case 'derecha':
@@ -337,64 +337,64 @@ function holeLocalX(room: RoomSpec, wall: WallId, alongCenter: number): number {
   }
 }
 
-export function roomToScene(room: RoomSpec, placements: Placement[]): SceneItem[] {
+export function wrgjRoomToScene(room: WRGJRoomSpec, placements: WRGJRoomPlacement[]): WRGJSceneItem[] {
   const W = room.width;
   const D = room.depth;
   const H = room.height;
-  const items: SceneItem[] = [];
-  items.push(createItem('floor', { name: 'Piso', params: { ancho: W, profundidad: D }, position: [W / 2, 0, D / 2], materialId: 'piso-madera' }));
-  for (const wall of WALLS) {
+  const items: WRGJSceneItem[] = [];
+  items.push(wrgjCreateItem('floor', { name: 'Piso', params: { ancho: W, profundidad: D }, position: [W / 2, 0, D / 2], materialId: 'piso-madera' }));
+  for (const wall of WRGJ_WALLS) {
     const long = wall === 'fondo' || wall === 'frente';
-    const len = long ? W + 2 * WALL_T : D;
-    const [cx, cz] = long ? [W / 2, wall === 'fondo' ? -WALL_T / 2 : D + WALL_T / 2] : [wall === 'izquierda' ? -WALL_T / 2 : W + WALL_T / 2, D / 2];
+    const len = long ? W + 2 * WRGJ_WALL_T : D;
+    const [cx, cz] = long ? [W / 2, wall === 'fondo' ? -WRGJ_WALL_T / 2 : D + WRGJ_WALL_T / 2] : [wall === 'izquierda' ? -WRGJ_WALL_T / 2 : W + WRGJ_WALL_T / 2, D / 2];
     const holes = room.obstacles
       .filter((o) => o.wall === wall && o.type !== 'otro')
       .map((o) => {
         const isDoor = o.type === 'puerta';
         const h = Math.min(o.h, H - 20);
         const y0 = isDoor ? 2 : o.y;
-        return { id: o.id, shape: 'rect' as const, x: holeLocalX(room, wall, o.x + o.w / 2), y: y0 + h / 2, w: o.w, h, r: 0 };
+        return { id: o.id, shape: 'rect' as const, x: wrgjHoleLocalX(room, wall, o.x + o.w / 2), y: y0 + h / 2, w: o.w, h, r: 0 };
       });
     items.push(
-      createItem('wall', {
-        name: WALL_LABEL[wall].replace(' (foto)', '').replace(' (detrás de la cámara)', ''),
-        params: { largo: len, alto: H, grosor: WALL_T, vanoTipo: 'ninguno' },
+      wrgjCreateItem('wall', {
+        name: WRGJ_WALL_LABEL[wall].replace(' (foto)', '').replace(' (detrás de la cámara)', ''),
+        params: { largo: len, alto: H, grosor: WRGJ_WALL_T, vanoTipo: 'ninguno' },
         position: [cx, 0, cz],
-        rotationY: ROT[wall],
+        rotationY: WRGJ_ROT[wall],
         hidden: wall === 'frente',
         overrides: holes.length ? { muro: { features: { holes } } } : {},
       }),
     );
   }
   for (const o of room.obstacles) {
-    const [x, z] = wallPoint(room, o.wall, o.x + o.w / 2);
+    const [x, z] = wrgjWallPoint(room, o.wall, o.x + o.w / 2);
     if (o.type === 'ventana') {
-      items.push(createItem('reference', { name: 'Ventana', params: { tipo: 'ventana', ancho: o.w, alto: o.h, profundidad: 10 }, position: [x, o.y, z], rotationY: ROT[o.wall] }));
+      items.push(wrgjCreateItem('reference', { name: 'Ventana', params: { tipo: 'ventana', ancho: o.w, alto: o.h, profundidad: 10 }, position: [x, o.y, z], rotationY: WRGJ_ROT[o.wall] }));
     } else if (o.type === 'puerta') {
-      items.push(createItem('reference', { name: 'Puerta', params: { tipo: 'puerta', ancho: o.w - 10, alto: o.h - 5, profundidad: 40 }, position: [x, 0, z], rotationY: ROT[o.wall] }));
+      items.push(wrgjCreateItem('reference', { name: 'Puerta', params: { tipo: 'puerta', ancho: o.w - 10, alto: o.h - 5, profundidad: 40 }, position: [x, 0, z], rotationY: WRGJ_ROT[o.wall] }));
     }
   }
   for (const p of placements) {
-    const c = center(p.rect);
-    const base = { position: [c.x, 0, c.z] as [number, number, number], rotationY: ROT[p.wall], name: p.label };
+    const c = wrgjCenter(p.rect);
+    const base = { position: [c.x, 0, c.z] as [number, number, number], rotationY: WRGJ_ROT[p.wall], name: p.label };
     switch (p.kind) {
       case 'ropero':
-        items.push(createItem('closet', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d - 18, puertas: p.w >= 2100 ? 3 : p.w < 700 ? 1 : 2 } }));
+        items.push(wrgjCreateItem('closet', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d - 18, puertas: p.w >= 2100 ? 3 : p.w < 700 ? 1 : 2 } }));
         break;
       case 'escritorio':
-        items.push(createItem('desk', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d } }));
+        items.push(wrgjCreateItem('desk', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d } }));
         break;
       case 'cama':
-        items.push(createItem('reference', { ...base, params: { tipo: 'cama', ancho: p.w, alto: p.h, profundidad: p.d } }));
+        items.push(wrgjCreateItem('reference', { ...base, params: { tipo: 'cama', ancho: p.w, alto: p.h, profundidad: p.d } }));
         break;
       case 'velador':
-        items.push(createItem('drawer-unit', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d - 18, gavetas: '2', zocalo: 40 } }));
+        items.push(wrgjCreateItem('drawer-unit', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d - 18, gavetas: '2', zocalo: 40 } }));
         break;
       case 'comoda':
-        items.push(createItem('drawer-unit', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d - 18, gavetas: '4', zocalo: 60 } }));
+        items.push(wrgjCreateItem('drawer-unit', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d - 18, gavetas: '4', zocalo: 60 } }));
         break;
       case 'estante':
-        items.push(createItem('shelf', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d } }));
+        items.push(wrgjCreateItem('shelf', { ...base, params: { ancho: p.w, alto: p.h, profundidad: p.d } }));
         break;
     }
   }

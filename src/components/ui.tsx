@@ -6,17 +6,17 @@
  */
 import { useEffect, useState, type ReactNode, type ButtonHTMLAttributes } from 'react';
 import { useStore } from '../store/useStore';
-import { fromUnit, parseExpression, toUnit, trimNum, UNIT_DECIMALS } from '../core/units';
+import { wrgjFromUnit, wrgjParseExpression, wrgjToUnit, wrgjTrimNum, WRGJ_UNIT_DECIMALS } from '../core/units';
 
-export function cx(...c: (string | false | null | undefined)[]) {
+export function wrgjCx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(' ');
 }
 
-export function Btn({ className, variant = 'default', size = 'md', ...p }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'default' | 'primary' | 'ghost' | 'danger' | 'accent'; size?: 'sm' | 'md' }) {
+export function WRGJBtn({ className, variant = 'default', size = 'md', ...p }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'default' | 'primary' | 'ghost' | 'danger' | 'accent'; size?: 'sm' | 'md' }) {
   return (
     <button
       {...p}
-      className={cx(
+      className={wrgjCx(
         'inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed select-none',
         size === 'sm' ? 'h-7 px-2 text-xs' : 'h-8 px-3 text-sm',
         variant === 'default' && 'bg-panel2 border border-line hover:bg-line/60 text-zinc-800',
@@ -30,7 +30,7 @@ export function Btn({ className, variant = 'default', size = 'md', ...p }: Butto
   );
 }
 
-export function Section({ title, children, right, defaultOpen = true }: { title: string; children: ReactNode; right?: ReactNode; defaultOpen?: boolean }) {
+export function WRGJSection({ title, children, right, defaultOpen = true }: { title: string; children: ReactNode; right?: ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="border-b border-line">
@@ -46,7 +46,7 @@ export function Section({ title, children, right, defaultOpen = true }: { title:
   );
 }
 
-export function Row({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
+export function WRGJRow({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
     <label className="grid grid-cols-[1fr_1.15fr] items-center gap-2 text-xs" title={hint}>
       <span className="text-zinc-600 truncate">{label}</span>
@@ -55,9 +55,9 @@ export function Row({ label, children, hint }: { label: string; children: ReactN
   );
 }
 
-export function Select({ value, onChange, options, className }: { value: string; onChange: (v: string) => void; options: { value: string; label: string }[]; className?: string }) {
+export function WRGJSelect({ value, onChange, options, className }: { value: string; onChange: (v: string) => void; options: { value: string; label: string }[]; className?: string }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className={cx('field w-full', className)}>
+    <select value={value} onChange={(e) => onChange(e.target.value)} className={wrgjCx('field w-full', className)}>
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {o.label}
@@ -67,18 +67,18 @@ export function Select({ value, onChange, options, className }: { value: string;
   );
 }
 
-export function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label?: string }) {
+export function WRGJToggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label?: string }) {
   return (
     <button type="button" onClick={() => onChange(!value)} className="inline-flex items-center gap-2 text-xs text-zinc-700">
-      <span className={cx('relative h-4 w-7 rounded-full transition-colors', value ? 'bg-accent' : 'bg-line')}>
-        <span className={cx('absolute top-0.5 h-3 w-3 rounded-full bg-white transition-all', value ? 'left-3.5' : 'left-0.5')} />
+      <span className={wrgjCx('relative h-4 w-7 rounded-full transition-colors', value ? 'bg-accent' : 'bg-line')}>
+        <span className={wrgjCx('absolute top-0.5 h-3 w-3 rounded-full bg-white transition-all', value ? 'left-3.5' : 'left-0.5')} />
       </span>
       {label}
     </button>
   );
 }
 
-export function TextField({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
+export function WRGJTextField({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
   return <input className="field w-full" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
 }
 
@@ -86,39 +86,39 @@ export function TextField({ value, onChange, placeholder }: { value: string; onC
  * Campo numérico. Si `length` es true el valor es mm y se muestra/edita en la unidad activa.
  * Acepta expresiones: 1220/2-18, 23 1/2, 3/4.
  */
-export function NumberField({
+export function WRGJNumberField({
   value, onChange, length = true, min, max, step, suffix, className, disabled,
 }: {
   value: number; onChange: (v: number) => void; length?: boolean; min?: number; max?: number; step?: number; suffix?: string; className?: string; disabled?: boolean;
 }) {
   const unit = useStore((s) => s.unit);
-  const shown = length ? toUnit(value, unit) : value;
-  const dec = length ? UNIT_DECIMALS[unit] : 2;
-  const [text, setText] = useState(trimNum(shown, dec));
+  const shown = length ? wrgjToUnit(value, unit) : value;
+  const dec = length ? WRGJ_UNIT_DECIMALS[unit] : 2;
+  const [text, setText] = useState(wrgjTrimNum(shown, dec));
   const [focus, setFocus] = useState(false);
   useEffect(() => {
-    if (!focus) setText(trimNum(shown, dec));
+    if (!focus) setText(wrgjTrimNum(shown, dec));
   }, [shown, dec, focus]);
 
   const commit = (raw: string) => {
-    const v = parseExpression(raw);
+    const v = wrgjParseExpression(raw);
     if (v === null) {
-      setText(trimNum(shown, dec));
+      setText(wrgjTrimNum(shown, dec));
       return;
     }
-    let mm = length ? fromUnit(v, unit) : v;
+    let mm = length ? wrgjFromUnit(v, unit) : v;
     if (min !== undefined) mm = Math.max(min, mm);
     if (max !== undefined) mm = Math.min(max, mm);
     onChange(mm);
-    setText(trimNum(length ? toUnit(mm, unit) : mm, dec));
+    setText(wrgjTrimNum(length ? wrgjToUnit(mm, unit) : mm, dec));
   };
   const inc = (dir: number) => {
     const st = step ?? (length ? (unit === 'mm' ? 1 : unit === 'cm' ? 0.1 : 1 / 16) : 1);
-    const v = (length ? toUnit(value, unit) : value) + dir * st;
+    const v = (length ? wrgjToUnit(value, unit) : value) + dir * st;
     commit(String(v));
   };
   return (
-    <div className={cx('relative flex items-center', className)}>
+    <div className={wrgjCx('relative flex items-center', className)}>
       <input
         disabled={disabled}
         className="field w-full pr-8 font-mono"
@@ -146,11 +146,11 @@ export function NumberField({
   );
 }
 
-export function Stat({ label, value, sub, tone = 'default' }: { label: string; value: string; sub?: string; tone?: 'default' | 'good' | 'warn' }) {
+export function WRGJStat({ label, value, sub, tone = 'default' }: { label: string; value: string; sub?: string; tone?: 'default' | 'good' | 'warn' }) {
   return (
     <div className="rounded-lg border border-line bg-panel2 px-3 py-2">
       <div className="text-[11px] font-medium text-zinc-500">{label}</div>
-      <div className={cx('text-xl font-semibold font-mono', tone === 'good' && 'text-emerald-700', tone === 'warn' && 'text-amber-700', tone === 'default' && 'text-zinc-900')}>{value}</div>
+      <div className={wrgjCx('text-xl font-semibold font-mono', tone === 'good' && 'text-emerald-700', tone === 'warn' && 'text-amber-700', tone === 'default' && 'text-zinc-900')}>{value}</div>
       {sub && <div className="text-[11px] text-zinc-500">{sub}</div>}
     </div>
   );

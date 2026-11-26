@@ -4,28 +4,28 @@
  * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Conversión entre mm, cm y pulgadas, fracciones y evaluador de expresiones.
  */
-import type { Unit } from './types';
+import type { WRGJUnit } from './types';
 
-export const MM_PER: Record<Unit, number> = { mm: 1, cm: 10, in: 25.4 };
-export const UNIT_DECIMALS: Record<Unit, number> = { mm: 1, cm: 2, in: 3 };
-export const UNITS: Unit[] = ['mm', 'cm', 'in'];
+export const WRGJ_MM_PER: Record<WRGJUnit, number> = { mm: 1, cm: 10, in: 25.4 };
+export const WRGJ_UNIT_DECIMALS: Record<WRGJUnit, number> = { mm: 1, cm: 2, in: 3 };
+export const WRGJ_UNITS: WRGJUnit[] = ['mm', 'cm', 'in'];
 
-export const toUnit = (mm: number, u: Unit): number => mm / MM_PER[u];
-export const fromUnit = (v: number, u: Unit): number => v * MM_PER[u];
+export const wrgjToUnit = (mm: number, u: WRGJUnit): number => mm / WRGJ_MM_PER[u];
+export const wrgjFromUnit = (v: number, u: WRGJUnit): number => v * WRGJ_MM_PER[u];
 
-export function trimNum(v: number, decimals = 1): string {
+export function wrgjTrimNum(v: number, decimals = 1): string {
   if (!Number.isFinite(v)) return '—';
   const s = v.toFixed(decimals);
   return s.includes('.') ? s.replace(/\.?0+$/, '') : s;
 }
 
-export function fmtLen(mm: number, u: Unit, suffix = true): string {
-  const s = trimNum(toUnit(mm, u), UNIT_DECIMALS[u]);
+export function wrgjFmtLen(mm: number, u: WRGJUnit, suffix = true): string {
+  const s = wrgjTrimNum(wrgjToUnit(mm, u), WRGJ_UNIT_DECIMALS[u]);
   return suffix ? `${s} ${u}` : s;
 }
 
 /** Pulgadas a fracción (1/16, 1/32 ...) simplificada. */
-export function toFraction(inches: number, denom = 16): string {
+export function wrgjToFraction(inches: number, denom = 16): string {
   const sign = inches < 0 ? '-' : '';
   const v = Math.abs(inches);
   let whole = Math.floor(v);
@@ -47,7 +47,7 @@ export function toFraction(inches: number, denom = 16): string {
  * Evaluador seguro (sin eval) de expresiones: "1220/2-18", "23 1/2", "3/4", "600,5".
  * Devuelve null si la entrada no es válida.
  */
-export function parseExpression(raw: string): number | null {
+export function wrgjParseExpression(raw: string): number | null {
   const s = raw.trim().replace(/,/g, '.').replace(/["”″]/g, '').replace(/(mm|cm|in)\s*$/i, '').trim();
   if (!s) return null;
   const mixed = s.match(/^(-?\d+)\s+(\d+)\/(\d+)$/);
@@ -127,11 +127,11 @@ export function parseExpression(raw: string): number | null {
   }
 }
 
-export const DEG = Math.PI / 180;
-export const round = (v: number, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
-export const normDeg = (deg: number) => {
+export const WRGJ_DEG = Math.PI / 180;
+export const wrgjRound = (v: number, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
+export const wrgjNormDeg = (deg: number) => {
   let d = deg % 360;
   if (d > 180) d -= 360;
   if (d <= -180) d += 360;
-  return round(d, 2);
+  return wrgjRound(d, 2);
 };

@@ -7,31 +7,31 @@
 // Exportación local: PDF (jsPDF + autotable) y CSV
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { Project, Unit } from './types';
-import type { CutList, CutRow } from './cutlist';
-import type { GroupOptimization } from './optimizer';
-import { fmtLen, trimNum } from './units';
-import { saveBinaryFile } from './persistence';
+import type { WRGJProject, WRGJUnit } from './types';
+import type { WRGJCutList, WRGJCutRow } from './cutlist';
+import type { WRGJGroupOptimization } from './optimizer';
+import { wrgjFmtLen, wrgjTrimNum } from './units';
+import { wrgjSaveBinaryFile } from './persistence';
 
-const PALETTE: [number, number, number][] = [
+const WRGJ_PALETTE: [number, number, number][] = [
   [191, 219, 254], [187, 247, 208], [254, 240, 138], [254, 202, 202], [221, 214, 254], [165, 243, 252],
   [253, 230, 138], [251, 207, 232], [204, 251, 241], [226, 232, 240], [254, 215, 170], [217, 249, 157],
 ];
 
-export function colorForCode(code: string): [number, number, number] {
+export function wrgjColorForCode(code: string): [number, number, number] {
   let h = 0;
   for (let i = 0; i < code.length; i++) h = (h * 31 + code.charCodeAt(i)) >>> 0;
-  return PALETTE[h % PALETTE.length];
+  return WRGJ_PALETTE[h % WRGJ_PALETTE.length];
 }
 
-const edgeTxt = (v: number) => (v > 0 ? trimNum(v, 2) : '—');
-const safe = (s: string) => s.replace(/[^\w\-áéíóúñÁÉÍÓÚÑ ]+/g, '').trim().replace(/\s+/g, '_') || 'proyecto';
+const wrgjEdgeTxt = (v: number) => (v > 0 ? wrgjTrimNum(v, 2) : '—');
+const wrgjSafe = (s: string) => s.replace(/[^\w\-áéíóúñÁÉÍÓÚÑ ]+/g, '').trim().replace(/\s+/g, '_') || 'proyecto';
 
-export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization[], unit: Unit): ArrayBuffer {
+export function wrgjBuildPdf(project: WRGJProject, cut: WRGJCutList, opts: WRGJGroupOptimization[], unit: WRGJUnit): ArrayBuffer {
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
   const PW = doc.internal.pageSize.getWidth();
   const PH = doc.internal.pageSize.getHeight();
-  const L = (mm: number) => fmtLen(mm, unit, false);
+  const L = (mm: number) => wrgjFmtLen(mm, unit, false);
   const date = new Date().toLocaleString('es');
 
   const header = (title: string) => {
@@ -74,7 +74,7 @@ export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization
   autoTable(doc, {
     startY: lastY() + 6,
     head: [['Tapacanto', 'Metros netos', `Metros con ${project.settings.edgeWastePct}% merma`]],
-    body: cut.edgeTotals.length ? cut.edgeTotals.map((e) => [`${trimNum(e.thickness, 2)} mm`, e.meters.toFixed(2), e.withWaste.toFixed(2)]) : [['Sin tapacantos', '—', '—']],
+    body: cut.edgeTotals.length ? cut.edgeTotals.map((e) => [`${wrgjTrimNum(e.thickness, 2)} mm`, e.meters.toFixed(2), e.withWaste.toFixed(2)]) : [['Sin tapacantos', '—', '—']],
     styles: { fontSize: 9 },
     headStyles: { fillColor: [245, 158, 11] },
     margin: { left: 10 },
@@ -83,16 +83,16 @@ export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization
   autoTable(doc, {
     startY: lastY() + 6,
     head: [['Módulo', 'Tipo', 'Posición X/Y/Z', 'Rotación']],
-    body: modules.map((m) => [m.name, m.templateId, m.position.map((v) => L(v)).join(' / '), `${trimNum(m.rotationY)}°`]),
+    body: modules.map((m) => [m.name, m.templateId, m.position.map((v) => L(v)).join(' / '), `${wrgjTrimNum(m.rotationY)}°`]),
     styles: { fontSize: 8 },
     headStyles: { fillColor: [55, 65, 81] },
     margin: { left: 10, right: 10 },
   });
 
   // Despiece
-  const rowToCells = (r: CutRow) => [
+  const rowToCells = (r: WRGJCutRow) => [
     r.code, r.name, String(r.qty), L(r.length), L(r.width), L(r.thickness), L(r.cutLength), L(r.cutWidth),
-    edgeTxt(r.edges.l1), edgeTxt(r.edges.l2), edgeTxt(r.edges.w1), edgeTxt(r.edges.w2), r.grain ? 'Sí' : 'No', r.notes || '', r.modules.join(', '),
+    wrgjEdgeTxt(r.edges.l1), wrgjEdgeTxt(r.edges.l2), wrgjEdgeTxt(r.edges.w1), wrgjEdgeTxt(r.edges.w2), r.grain ? 'Sí' : 'No', r.notes || '', r.modules.join(', '),
   ];
   for (const g of cut.groups) {
     doc.addPage();
@@ -140,7 +140,7 @@ export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization
       doc.rect(ox + o.trim * sc, oy + o.trim * sc, (o.sheetLength - 2 * o.trim) * sc, (o.sheetWidth - 2 * o.trim) * sc, 'S');
       doc.setLineDashPattern([], 0);
       for (const p of s.placements) {
-        const [r, g, b] = colorForCode(p.code);
+        const [r, g, b] = wrgjColorForCode(p.code);
         doc.setFillColor(r, g, b);
         doc.setDrawColor(40, 40, 40);
         const x = ox + p.x * sc;
@@ -184,12 +184,12 @@ export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization
   return doc.output('arraybuffer');
 }
 
-export function buildCsv(project: Project, cut: CutList, unit: Unit): string {
+export function wrgjBuildCsv(project: WRGJProject, cut: WRGJCutList, unit: WRGJUnit): string {
   const q = (v: string | number) => {
     const s = String(v);
     return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
-  const L = (mm: number) => fmtLen(mm, unit, false);
+  const L = (mm: number) => wrgjFmtLen(mm, unit, false);
   const lines: string[] = [];
   lines.push(`Proyecto;${q(project.name)};Cliente;${q(project.client)};Unidades;${unit}`);
   lines.push(['Código', 'Pieza', 'Módulo(s)', 'Material', 'Cantidad', 'Largo', 'Ancho', 'Espesor', 'Largo corte', 'Ancho corte', 'Canto L1', 'Canto L2', 'Canto A1', 'Canto A2', 'Veta', 'Observaciones'].join(';'));
@@ -208,12 +208,12 @@ export function buildCsv(project: Project, cut: CutList, unit: Unit): string {
   return '﻿' + lines.join('\r\n');
 }
 
-export async function exportPdf(project: Project, cut: CutList, opts: GroupOptimization[], unit: Unit) {
-  const data = buildPdf(project, cut, opts, unit);
-  return saveBinaryFile(`${safe(project.name)}_despiece.pdf`, new Uint8Array(data), 'application/pdf', [{ name: 'PDF', extensions: ['pdf'] }]);
+export async function wrgjExportPdf(project: WRGJProject, cut: WRGJCutList, opts: WRGJGroupOptimization[], unit: WRGJUnit) {
+  const data = wrgjBuildPdf(project, cut, opts, unit);
+  return wrgjSaveBinaryFile(`${wrgjSafe(project.name)}_despiece.pdf`, new Uint8Array(data), 'application/pdf', [{ name: 'PDF', extensions: ['pdf'] }]);
 }
 
-export async function exportCsv(project: Project, cut: CutList, unit: Unit) {
-  const csv = buildCsv(project, cut, unit);
-  return saveBinaryFile(`${safe(project.name)}_despiece.csv`, csv, 'text/csv', [{ name: 'CSV', extensions: ['csv'] }]);
+export async function wrgjExportCsv(project: WRGJProject, cut: WRGJCutList, unit: WRGJUnit) {
+  const csv = wrgjBuildCsv(project, cut, unit);
+  return wrgjSaveBinaryFile(`${wrgjSafe(project.name)}_despiece.csv`, csv, 'text/csv', [{ name: 'CSV', extensions: ['csv'] }]);
 }

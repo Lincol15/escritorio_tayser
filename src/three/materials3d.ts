@@ -5,18 +5,18 @@
  * Descripción: Materiales de Three.js a partir del catálogo.
  */
 import * as THREE from 'three';
-import { getMaterial } from '../core/materials';
-import { getTexture } from './textures';
+import { wrgjGetMaterial } from '../core/materials';
+import { wrgjGetTexture } from './textures';
 
-export type MatState = 'normal' | 'selected' | 'step';
-const cache = new Map<string, THREE.MeshStandardMaterial>();
+export type WRGJMatState = 'normal' | 'selected' | 'step';
+const wrgjMatCache = new Map<string, THREE.MeshStandardMaterial>();
 
-export function getMeshMaterial(materialId: string, variant: 'panel' | 'cyl', state: MatState): THREE.MeshStandardMaterial {
+export function wrgjGetMeshMaterial(materialId: string, variant: 'panel' | 'cyl', state: WRGJMatState): THREE.MeshStandardMaterial {
   const key = `${materialId}|${variant}|${state}`;
-  const hit = cache.get(key);
+  const hit = wrgjMatCache.get(key);
   if (hit) return hit;
-  const def = getMaterial(materialId);
-  const tex = getTexture(def, variant);
+  const def = wrgjGetMaterial(materialId);
+  const tex = wrgjGetTexture(def, variant);
   const transparent = def.opacity !== undefined;
   const m = new THREE.MeshStandardMaterial({
     color: tex ? '#ffffff' : def.color,
@@ -35,6 +35,6 @@ export function getMeshMaterial(materialId: string, variant: 'panel' | 'cyl', st
     m.emissive = new THREE.Color('#f59e0b');
     m.emissiveIntensity = 0.4;
   }
-  cache.set(key, m);
+  wrgjMatCache.set(key, m);
   return m;
 }

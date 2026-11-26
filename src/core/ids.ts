@@ -4,8 +4,8 @@
  * Autores:     LWYC, RCO, GDMS, JDAP
  * Descripción: Generador de identificadores.
  */
-let lrjgCounter = 0;
-export function uid(prefix = ''): string {
-  lrjgCounter = (lrjgCounter + 1) % 1_000_000;
-  return `${prefix}${Date.now().toString(36)}${lrjgCounter.toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+let wrgjCounter = 0;
+export function wrgjUid(prefix = ''): string {
+  wrgjCounter = (wrgjCounter + 1) % 1_000_000;
+  return `${prefix}${Date.now().toString(36)}${wrgjCounter.toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 }
