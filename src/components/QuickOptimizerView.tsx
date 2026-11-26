@@ -129,7 +129,7 @@ export default function QuickOptimizerView() {
 
   return (
     <div className="flex h-full">
-      {/* ---------- Formulario ---------- */}
+      {/* Formulario */}
       <aside className="scroll-thin w-[460px] shrink-0 space-y-4 overflow-y-auto border-r border-line bg-panel p-4">
         <div>
           <h2 className="text-lg font-semibold">Optimizar plancha</h2>
@@ -228,7 +228,7 @@ export default function QuickOptimizerView() {
         </Btn>
       </aside>
 
-      {/* ---------- Resultado ---------- */}
+      {/* Resultado */}
       <section className="scroll-thin min-w-0 flex-1 overflow-y-auto p-4">
         {!result ? (
           <div className="flex h-full flex-col items-center justify-center text-center text-zinc-500">

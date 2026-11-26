@@ -1,4 +1,4 @@
-// ===================== Despiece (lista de corte) con tapacantos =====================
+// Despiece (lista de corte) con tapacantos
 import type { Corner, EdgeBanding, EdgeKey, Piece, Project } from './types';
 import { buildItem } from './items';
 import { getMaterial } from './materials';

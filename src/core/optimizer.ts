@@ -1,4 +1,4 @@
-// ===================== Optimizador de corte 2D (MaxRects + Guillotina) =====================
+// Optimizador de corte 2D (MaxRects + Guillotina)
 // Convención: el LARGO del tablero (sheet.length) es el eje X y la veta del tablero corre a lo largo de X.
 // Una pieza con veta activa coloca su largo sobre X y NO se rota 90°.
 import type { PackAlgorithm, SheetConfig } from './types';

@@ -1,4 +1,4 @@
-// ===================== Exportación local: PDF (jsPDF + autotable) y CSV =====================
+// Exportación local: PDF (jsPDF + autotable) y CSV
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { Project, Unit } from './types';
@@ -43,7 +43,7 @@ export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization
   };
   const lastY = () => (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? 30;
 
-  // ---------- Página 1: resumen ----------
+  // Página 1: resumen
   header('Resumen del proyecto');
   doc.setFontSize(10);
   doc.text(`Cliente: ${project.client || '—'}`, 10, 24);
@@ -83,7 +83,7 @@ export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization
     margin: { left: 10, right: 10 },
   });
 
-  // ---------- Despiece ----------
+  // Despiece
   const rowToCells = (r: CutRow) => [
     r.code, r.name, String(r.qty), L(r.length), L(r.width), L(r.thickness), L(r.cutLength), L(r.cutWidth),
     edgeTxt(r.edges.l1), edgeTxt(r.edges.l2), edgeTxt(r.edges.w1), edgeTxt(r.edges.w2), r.grain ? 'Sí' : 'No', r.notes || '', r.modules.join(', '),
@@ -114,7 +114,7 @@ export function buildPdf(project: Project, cut: CutList, opts: GroupOptimization
     });
   }
 
-  // ---------- Planos de corte ----------
+  // Planos de corte
   for (const o of opts) {
     o.sheets.forEach((s, si) => {
       doc.addPage();

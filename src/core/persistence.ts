@@ -1,4 +1,4 @@
-// ===================== Persistencia local: archivos .tayser (IPC) + IndexedDB (respaldo) =====================
+// Persistencia local: archivos .tayser (IPC) + IndexedDB (respaldo)
 import type { Project } from './types';
 
 const DB_NAME = 'tayser';

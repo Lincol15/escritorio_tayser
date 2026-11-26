@@ -87,7 +87,7 @@ function useL() {
   return (v: number) => fmtLen(v, unit);
 }
 
-// ---------- Gavetas ----------
+// Gavetas
 function DrawerCalc() {
   const L = useL();
   const [v, setV] = useState({ openingWidth: 564, depth: 540, boxHeight: 150, sideThickness: 15, bottomThickness: 5.5, slideClearance: 12.7, grooveDepth: 8, rearClearance: 10, bottomMode: 'clavado' as 'clavado' | 'ranura' });
@@ -125,7 +125,7 @@ function DrawerCalc() {
   );
 }
 
-// ---------- Repisas ----------
+// Repisas
 function ShelvesCalc() {
   const L = useL();
   const [v, setV] = useState({ innerHeight: 1764, spaces: 5, shelfThickness: 18, system32: true, firstHole: 37 });
@@ -170,7 +170,7 @@ function ShelvesCalc() {
   );
 }
 
-// ---------- Frentes ----------
+// Frentes
 function FrontsCalc() {
   const L = useL();
   const [v, setV] = useState({ totalHeight: 770, totalWidth: 600, count: 4, gap: 3, topGap: 1.5, bottomGap: 1.5, sideGap: 1.5, mode: 'iguales' as 'iguales' | 'progresivo', ratio: 1.25 });
@@ -217,7 +217,7 @@ function FrontsCalc() {
   );
 }
 
-// ---------- Manijas ----------
+// Manijas
 function HandleCalc() {
   const L = useL();
   const [v, setV] = useState({ frontWidth: 597, frontHeight: 180, centers: 128, position: 'centro' as HandlePosition, orientation: 'horizontal' as 'horizontal' | 'vertical', edgeOffset: 40 });
@@ -268,7 +268,7 @@ function HandleCalc() {
   );
 }
 
-// ---------- Bisagras ----------
+// Bisagras
 function HingeCalc() {
   const L = useL();
   const [v, setV] = useState({ doorHeight: 1800, doorWidth: 450, weight: 9, edgeDistance: 100, cupDiameter: 35, cupK: 4, cupDepth: 13 });
@@ -311,7 +311,7 @@ function HingeCalc() {
   );
 }
 
-// ---------- Conversor ----------
+// Conversor
 function UnitsCalc() {
   const [val, setVal] = useState(18);
   const [from, setFrom] = useState<'mm' | 'cm' | 'in'>('mm');

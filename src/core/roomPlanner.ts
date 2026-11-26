@@ -1,4 +1,4 @@
-// ===================== Planificador de ambientes (offline, basado en reglas de ergonomía) =====================
+// Planificador de ambientes basado en reglas de ergonomía
 // Planta: x = ancho de la habitación (pared del fondo, izquierda→derecha), z = profundidad (fondo→frente).
 // "along" en paredes laterales se mide desde la esquina con la pared del fondo.
 import type { SceneItem } from './types';
@@ -163,7 +163,7 @@ function evaluate(room: RoomSpec, inst: Inst, placed: Placement[], wall: WallId,
   for (const p of placed) if (overlap(clear, p.rect)) return null;
   if (c < wanted) notes.push(`Circulación reducida al frente: ${Math.round(c)} mm (ideal ${wanted} mm)`);
 
-  // ---------- puntuación ----------
+  // puntuación
   let s = width / 100;
   const touchesCorner = along < 1 || along + width > Lw - 1;
   const cc = center(rect);
@@ -300,7 +300,7 @@ export function planRoom(room: RoomSpec, reqs: FurnitureReq[]): PlanResult {
   return best ?? { placements: [], failed: [], warnings };
 }
 
-// ---------- Conversión a escena 3D ----------
+// Conversión a escena 3D
 const WALL_T = 150;
 const ROT: Record<WallId, number> = { fondo: 0, izquierda: 90, derecha: -90, frente: 180 };
 

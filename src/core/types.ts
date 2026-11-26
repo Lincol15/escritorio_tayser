@@ -1,4 +1,4 @@
-// ===================== Modelos de dominio Tayser =====================
+// Modelos de dominio Tayser
 // Todas las medidas internas están en MILÍMETROS (precisión decimal).
 
 export type Unit = 'mm' | 'cm' | 'in';
@@ -69,7 +69,7 @@ export interface Piece {
   name: string;
   role: PieceRole;
   kind: 'panel' | 'cylinder';
-  /** largo (sentido de la veta) — en cilindros: altura */
+  /** largo (sentido de la veta); en cilindros, la altura */
   length: number;
   width: number;
   thickness: number;

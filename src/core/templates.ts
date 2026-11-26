@@ -1,4 +1,4 @@
-// ===================== Catálogo paramétrico (generadores) =====================
+// Catálogo paramétrico (generadores)
 // Coordenadas locales del módulo: x 0..ancho (izq→der), y 0..alto (piso→arriba), z 0..prof (fondo→frente).
 import type {
   EdgeBanding, GenerateResult, MaterialSlot, ParamDef, Params, Piece, PieceFeatures, PieceRole, Plane, Template, Vec3,
@@ -59,7 +59,7 @@ const n = (p: Params, k: string): number => {
 };
 const b = (p: Params, k: string): boolean => p[k] === true || p[k] === 'si' || p[k] === 'true';
 
-// ---------- definiciones de parámetros reutilizables ----------
+// definiciones de parámetros reutilizables
 const L = (key: string, label: string, def: number, min = 0, max = 6000, group = 'Medidas', hint?: string): ParamDef => ({
   key, label, type: 'length', default: def, min, max, group, hint,
 });
@@ -78,7 +78,7 @@ const CANTO_CASCO = S('cantoCasco', 'Canto casco (frentes visibles)', '0.45', ED
 const CANTO_FRENTES = S('cantoFrentes', 'Canto puertas/frentes', '2', EDGE_OPTS, 'Tapacantos');
 const HOLGURA = L('holgura', 'Holgura entre frentes', 3, 0, 10, 'Holguras');
 
-// ---------- piezas comunes de casco ----------
+// piezas comunes de casco
 function carcassSides(W: number, H: number, D: number, t: number, cc: number): Piece[] {
   return [
     panel('lat-izq', 'Lateral', 'lateral', H, D, t, 'YZ', [t / 2, H / 2, D / 2], { edges: edges(cc, 0, cc, 0), step: 1 }),
@@ -113,7 +113,7 @@ function shelvesBetween(prefix: string, count: number, x0: number, x1: number, y
   );
 }
 
-// ---------- 1. Módulo bajo de cocina ----------
+// 1. Módulo bajo de cocina
 const baseCabinet: Template = {
   id: 'base-cabinet',
   name: 'Módulo bajo de cocina',
@@ -146,7 +146,7 @@ const baseCabinet: Template = {
   },
 };
 
-// ---------- 2. Módulo alto / alacena ----------
+// 2. Módulo alto / alacena
 const wallCabinet: Template = {
   id: 'wall-cabinet',
   name: 'Módulo alto / alacena',
@@ -177,7 +177,7 @@ const wallCabinet: Template = {
   },
 };
 
-// ---------- 3. Cajonera de cocina ----------
+// 3. Cajonera de cocina
 function drawerUnitGenerate(p: Params): GenerateResult {
   const W = n(p, 'ancho'), H = n(p, 'alto'), D = n(p, 'profundidad'), t = n(p, 'espesor'), tb = n(p, 'espesorFondo');
   const z = Math.max(0, n(p, 'zocalo')), g = n(p, 'holgura'), count = Math.max(1, Math.round(n(p, 'gavetas')));
@@ -240,7 +240,7 @@ const drawerUnit: Template = {
   generate: drawerUnitGenerate,
 };
 
-// ---------- 4. Clóset / ropero ----------
+// 4. Clóset / ropero
 const closet: Template = {
   id: 'closet',
   name: 'Clóset / ropero',
@@ -291,7 +291,7 @@ const closet: Template = {
   },
 };
 
-// ---------- 5. Escritorio ----------
+// 5. Escritorio
 const desk: Template = {
   id: 'desk',
   name: 'Escritorio / mesa',
@@ -358,7 +358,7 @@ const desk: Template = {
   },
 };
 
-// ---------- 6. Estante / librero ----------
+// 6. Estante / librero
 const shelf: Template = {
   id: 'shelf',
   name: 'Estante / librero',
@@ -390,7 +390,7 @@ const shelf: Template = {
   },
 };
 
-// ---------- 7. Pieza suelta (tablero / cilindro / cono) ----------
+// 7. Pieza suelta (tablero / cilindro / cono)
 const freePiece: Template = {
   id: 'free-piece',
   name: 'Pieza suelta',
@@ -426,7 +426,7 @@ const freePiece: Template = {
   },
 };
 
-// ---------- 8. Pared / muro ----------
+// 8. Pared / muro
 const wall: Template = {
   id: 'wall',
   name: 'Pared / muro',
@@ -459,7 +459,7 @@ const wall: Template = {
   },
 };
 
-// ---------- 9. Piso ----------
+// 9. Piso
 const floor: Template = {
   id: 'floor',
   name: 'Piso',
@@ -781,7 +781,7 @@ const shoeCabinet: Template = {
   generate: customGenerate,
 };
 
-// ---------- 10. Bloques de referencia ----------
+// 10. Bloques de referencia
 export const REF_MATERIAL: Record<string, string> = {
   refrigerador: 'acero-inox', cocina: 'acero-inox', lavadero: 'acero-inox', meson: 'granito', cama: 'madera-puerta',
   sofa: 'tela', ventana: 'vidrio', puerta: 'madera-puerta', generico: 'mdf-crudo',

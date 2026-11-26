@@ -1,4 +1,4 @@
-// Texturas 100% procedurales (CanvasTexture): sin archivos ni red.
+// Texturas procedurales (CanvasTexture), generadas sin archivos de imagen.
 import * as THREE from 'three';
 import type { Material } from '../core/materials';
 

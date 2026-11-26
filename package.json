@@ -2,7 +2,7 @@
   "name": "tayser",
   "productName": "Tayser",
   "version": "1.0.0",
-  "description": "Tayser - Diseño paramétrico 3D, despiece y optimización de tableros (100% offline)",
+  "description": "Diseño paramétrico 3D, despiece y optimización de tableros para carpintería",
   "private": true,
   "main": "electron/main.cjs",
   "type": "module",

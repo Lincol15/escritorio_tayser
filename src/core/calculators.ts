@@ -1,4 +1,4 @@
-// ===================== Suite de calculadoras de taller (funciones puras, mm) =====================
+// Calculadoras de taller (funciones puras, medidas en mm)
 import { toFraction } from './units';
 
 export interface CutPart {
@@ -10,7 +10,7 @@ export interface CutPart {
   note?: string;
 }
 
-// ---------- 1. Gavetas / cajones ----------
+// 1. Gavetas / cajones
 export interface DrawerInput {
   openingWidth: number;
   depth: number;
@@ -72,7 +72,7 @@ export function calcDrawer(i: DrawerInput): DrawerResult {
   return { slideLength, outerWidth, innerWidth, totalDiscount, parts, notes };
 }
 
-// ---------- 2. Distribución de repisas ----------
+// 2. Distribución de repisas
 export interface ShelvesInput {
   innerHeight: number;
   spaces: number;
@@ -110,7 +110,7 @@ export function calcShelves(i: ShelvesInput): { gap: number; shelves: ShelfPos[]
   return { gap, shelves, holes };
 }
 
-// ---------- 3. Frentes de cajones ----------
+// 3. Frentes de cajones
 export interface FrontsInput {
   totalHeight: number;
   totalWidth: number;
@@ -146,7 +146,7 @@ export function calcDrawerFronts(i: FrontsInput): { fronts: FrontPiece[]; availa
   return { fronts, available };
 }
 
-// ---------- 4. Posición de manijas / tiradores ----------
+// 4. Posición de manijas / tiradores
 export type HandlePosition = 'centro' | 'superior' | 'inferior' | 'izquierda' | 'derecha' | 'sup-izq' | 'sup-der' | 'inf-izq' | 'inf-der';
 
 export interface HandleInput {
@@ -183,7 +183,7 @@ export function calcHandle(i: HandleInput): { holes: { x: number; y: number }[];
   return { holes, warnings: Array.from(new Set(warnings)) };
 }
 
-// ---------- 5. Perforación de bisagras ----------
+// 5. Perforación de bisagras
 export interface HingeInput {
   doorHeight: number;
   doorWidth: number;
@@ -225,7 +225,7 @@ export function calcHinges(i: HingeInput): HingeResult {
   return { count, positions, cupCenterX, reasons };
 }
 
-// ---------- 6. Conversor de unidades ----------
+// 6. Conversor de unidades
 export function convertLength(value: number, from: 'mm' | 'cm' | 'in') {
   const mm = from === 'mm' ? value : from === 'cm' ? value * 10 : value * 25.4;
   const inches = mm / 25.4;

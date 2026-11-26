@@ -1,4 +1,4 @@
-// Tayser - proceso principal de Electron. 100% offline: bloquea toda petición de red externa.
+// Proceso principal de Electron. La aplicación trabaja sin conexión y bloquea las peticiones de red externas.
 const { app, BrowserWindow, ipcMain, dialog, session } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs/promises');
@@ -41,7 +41,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  // Bloqueo de red: cualquier URL externa se cancela (garantiza funcionamiento offline real)
+  // Bloqueo de red: se cancela cualquier URL externa
   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
     callback({ cancel: !isAllowed(details.url) });
   });
