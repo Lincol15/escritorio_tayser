@@ -24,7 +24,7 @@ const AUTOSAVE_KEY = 'current-project';
 export default function App() {
   const mode = useStore((s) => s.mode);
   const toast = useStore((s) => s.toast);
-  const viewerRef = useRef<HTMLDivElement>(null);
+  const lrjgViewerRef = useRef<HTMLDivElement>(null);
   const [toastVisible, setToastVisible] = useState(false);
   const [restored, setRestored] = useState(false);
 
@@ -113,9 +113,9 @@ export default function App() {
         {mode === 'build' && (
           <>
             <LeftPanel />
-            <div ref={viewerRef} className="relative min-w-0 flex-1">
+            <div ref={lrjgViewerRef} className="relative min-w-0 flex-1">
               <Viewer3D />
-              <ViewerOverlay container={viewerRef.current} />
+              <ViewerOverlay container={lrjgViewerRef.current} />
             </div>
             <Inspector />
           </>

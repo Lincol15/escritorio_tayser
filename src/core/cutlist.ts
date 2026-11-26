@@ -83,10 +83,10 @@ function tenonExtra(p: Piece) {
 }
 
 export function buildCutList(project: Project): CutList {
-  const panelMap = new Map<string, CutRow>();
+  const lrjgPanelMap = new Map<string, CutRow>();
   const turnedMap = new Map<string, CutRow>();
   const hwMap = new Map<string, CutRow>();
-  const discount = project.settings.discountEdges;
+  const lrjgDiscount = project.settings.discountEdges;
 
   for (const item of project.items) {
     const built = buildItem(item);
@@ -117,15 +117,15 @@ export function buildCutList(project: Project): CutList {
       }
       const te = tenonExtra(p);
       const e = p.edges;
-      const cutLength = p.length + te.l - (discount ? e.w1 + e.w2 : 0);
-      const cutWidth = p.width + te.w - (discount ? e.l1 + e.l2 : 0);
+      const cutLength = p.length + te.l - (lrjgDiscount ? e.w1 + e.w2 : 0);
+      const cutWidth = p.width + te.w - (lrjgDiscount ? e.l1 + e.l2 : 0);
       const key = [mat.id, p.thickness, p.name, p.length.toFixed(1), p.width.toFixed(1), e.l1, e.l2, e.w1, e.w2, p.grain, notes].join('|');
-      const row = panelMap.get(key);
+      const row = lrjgPanelMap.get(key);
       if (row) {
         row.qty++;
         if (!row.modules.includes(item.name)) row.modules.push(item.name);
       } else {
-        panelMap.set(key, {
+        lrjgPanelMap.set(key, {
           code: '', name: p.name, modules: [item.name], materialId: mat.id, materialName: mat.name, thickness: p.thickness,
           length: p.length, width: p.width, cutLength, cutWidth, qty: 1, edges: { ...e }, grain: p.grain, notes, kind: 'panel',
         });
@@ -134,7 +134,7 @@ export function buildCutList(project: Project): CutList {
   }
 
   const groupsMap = new Map<string, MaterialGroup>();
-  for (const row of panelMap.values()) {
+  for (const row of lrjgPanelMap.values()) {
     const key = `${row.materialId}|${row.thickness}`;
     let g = groupsMap.get(key);
     if (!g) {
@@ -157,11 +157,11 @@ export function buildCutList(project: Project): CutList {
   const hardware = [...hwMap.values()];
   hardware.forEach((r, i) => (r.code = `H${String(i + 1).padStart(2, '0')}`));
 
-  const edgeMap = new Map<number, number>();
+  const lrjgEdgeMap = new Map<number, number>();
   for (const g of groups) {
     for (const r of g.rows) {
       const add = (th: number, len: number) => {
-        if (th > 0) edgeMap.set(th, (edgeMap.get(th) ?? 0) + (r.qty * (len + 30)) / 1000);
+        if (th > 0) lrjgEdgeMap.set(th, (lrjgEdgeMap.get(th) ?? 0) + (r.qty * (len + 30)) / 1000);
       };
       add(r.edges.l1, r.length);
       add(r.edges.l2, r.length);
@@ -170,7 +170,7 @@ export function buildCutList(project: Project): CutList {
     }
   }
   const waste = 1 + project.settings.edgeWastePct / 100;
-  const edgeTotals = [...edgeMap.entries()].sort((a, b) => a[0] - b[0]).map(([thickness, meters]) => ({ thickness, meters, withWaste: meters * waste }));
+  const edgeTotals = [...lrjgEdgeMap.entries()].sort((a, b) => a[0] - b[0]).map(([thickness, meters]) => ({ thickness, meters, withWaste: meters * waste }));
   const totalPieces = groups.reduce((a, g) => a + g.totalQty, 0) + turned.reduce((a, r) => a + r.qty, 0) + hardware.reduce((a, r) => a + r.qty, 0);
   return { groups, turned, hardware, edgeTotals, totalPieces };
 }

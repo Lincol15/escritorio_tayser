@@ -179,18 +179,18 @@ function pack(items: PackItem[], cfg: SheetConfig, algo: 'maxrects' | 'guillotin
   const sheetArea = cfg.length * cfg.width;
   const fits = (it: PackItem) => (it.w + k <= BW + EPS && it.h + k <= BH + EPS) || (it.canRotate && it.h + k <= BW + EPS && it.w + k <= BH + EPS);
   const unplaced = items.filter((it) => !fits(it));
-  let remaining = items.filter(fits);
-  if (mode === 'sorted') remaining = [...remaining].sort((a, b) => b.w * b.h - a.w * a.h || Math.max(b.w, b.h) - Math.max(a.w, a.h));
+  let lrjgRemaining = items.filter(fits);
+  if (mode === 'sorted') lrjgRemaining = [...lrjgRemaining].sort((a, b) => b.w * b.h - a.w * a.h || Math.max(b.w, b.h) - Math.max(a.w, a.h));
   const sheets: PackedSheet[] = [];
-  while (remaining.length) {
+  while (lrjgRemaining.length) {
     const bin: Bin = algo === 'maxrects' ? new MaxRectsBin(BW, BH, heur) : new GuillotineBin(BW, BH, heur);
     const placements: Placement[] = [];
     let used = 0;
     for (;;) {
       let bestIdx = -1;
       let best: Candidate | null = null;
-      for (let i = 0; i < remaining.length; i++) {
-        const it = remaining[i];
+      for (let i = 0; i < lrjgRemaining.length; i++) {
+        const it = lrjgRemaining[i];
         const c = bin.find(it.w + k, it.h + k, it.canRotate);
         if (!c) continue;
         if (mode === 'sorted') {
@@ -204,16 +204,16 @@ function pack(items: PackItem[], cfg: SheetConfig, algo: 'maxrects' | 'guillotin
         }
       }
       if (!best || bestIdx < 0) break;
-      const it = remaining[bestIdx];
+      const it = lrjgRemaining[bestIdx];
       bin.commit(best);
       const w = best.rot ? it.h : it.w;
       const h = best.rot ? it.w : it.h;
       placements.push({ uid: it.uid, code: it.code, name: it.name, x: cfg.trim + best.x, y: cfg.trim + best.y, w, h, rotated: best.rot, grain: it.grain });
       used += w * h;
-      remaining.splice(bestIdx, 1);
+      lrjgRemaining.splice(bestIdx, 1);
     }
     if (!placements.length) {
-      unplaced.push(...remaining);
+      unplaced.push(...lrjgRemaining);
       break;
     }
     sheets.push({ placements, usedArea: used, utilization: used / sheetArea });
