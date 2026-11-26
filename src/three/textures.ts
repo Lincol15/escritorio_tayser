@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/three/textures.ts
+ * Autor:       LRGJ
+ * Descripción: Texturas generadas por código.
+ */
 // Texturas procedurales (CanvasTexture), generadas sin archivos de imagen.
 import * as THREE from 'three';
 import type { Material } from '../core/materials';

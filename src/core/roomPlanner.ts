@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/roomPlanner.ts
+ * Autor:       LRGJ
+ * Descripción: Propuesta de distribución de muebles en una habitación.
+ */
 // Planificador de ambientes basado en reglas de ergonomía
 // Planta: x = ancho de la habitación (pared del fondo, izquierda→derecha), z = profundidad (fondo→frente).
 // "along" en paredes laterales se mide desde la esquina con la pared del fondo.

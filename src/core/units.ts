@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/units.ts
+ * Autor:       LRGJ
+ * Descripción: Conversión entre mm, cm y pulgadas, fracciones y evaluador de expresiones.
+ */
 import type { Unit } from './types';
 
 export const MM_PER: Record<Unit, number> = { mm: 1, cm: 10, in: 25.4 };

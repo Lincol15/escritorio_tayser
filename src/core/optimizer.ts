@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/optimizer.ts
+ * Autor:       LRGJ
+ * Descripción: Optimizador de cortes MaxRects y Guillotina.
+ */
 // Optimizador de corte 2D (MaxRects + Guillotina)
 // Convención: el LARGO del tablero (sheet.length) es el eje X y la veta del tablero corre a lo largo de X.
 // Una pieza con veta activa coloca su largo sobre X y NO se rota 90°.

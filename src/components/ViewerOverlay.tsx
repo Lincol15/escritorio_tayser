@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/ViewerOverlay.tsx
+ * Autor:       LRGJ
+ * Descripción: Herramientas del visor: vistas, cotas, mover, rotar y pasos de armado.
+ */
 import { useEffect, useMemo, useState } from 'react';
 import { Box, Camera, Eye, Footprints, Maximize, Move3d, MousePointer2, Pause, Play, Rotate3d, Ruler, SkipBack, SkipForward, X } from 'lucide-react';
 import { useStore, type ViewName } from '../store/useStore';

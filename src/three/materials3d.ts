@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/three/materials3d.ts
+ * Autor:       LRGJ
+ * Descripción: Materiales de Three.js a partir del catálogo.
+ */
 import * as THREE from 'three';
 import { getMaterial } from '../core/materials';
 import { getTexture } from './textures';

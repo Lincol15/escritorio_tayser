@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/export.ts
+ * Autor:       LRGJ
+ * Descripción: Exportación a PDF y CSV.
+ */
 // Exportación local: PDF (jsPDF + autotable) y CSV
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';

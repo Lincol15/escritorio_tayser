@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/store/useStore.ts
+ * Autor:       LRGJ
+ * Descripción: Estado global con Zustand: escena, selección, deshacer y rehacer.
+ */
 import { create } from 'zustand';
 import type { AppMode, ParamValue, PieceOverride, Project, SceneItem, SheetConfig, ProjectSettings, Unit, Vec3 } from '../core/types';
 import { buildItem, createItem, itemAABB, itemAxes, type CreateOpts } from '../core/items';

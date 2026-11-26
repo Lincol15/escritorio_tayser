@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/RoomPlanner.tsx
+ * Autor:       LRGJ
+ * Descripción: Modo Foto del ambiente.
+ */
 import { useMemo, useRef, useState } from 'react';
 import { create } from 'zustand';
 import { Crosshair, DoorOpen, ImagePlus, MousePointerClick, Ruler, Send, Sparkles, SquareDashed, Trash2, AppWindow, RotateCcw, Plus } from 'lucide-react';

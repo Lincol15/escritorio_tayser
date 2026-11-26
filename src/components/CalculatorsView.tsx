@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/CalculatorsView.tsx
+ * Autor:       LRGJ
+ * Descripción: Modo Calculadoras.
+ */
 import { useState, type ReactNode } from 'react';
 import { ArrowLeftRight, Grip, Hand, Layers3, PanelsTopLeft, Rows3 } from 'lucide-react';
 import { useStore } from '../store/useStore';

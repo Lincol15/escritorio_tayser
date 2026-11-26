@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/calculators.ts
+ * Autor:       LRGJ
+ * Descripción: Calculadoras de taller.
+ */
 // Calculadoras de taller (funciones puras, medidas en mm)
 import { toFraction } from './units';
 

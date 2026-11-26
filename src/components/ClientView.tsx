@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/ClientView.tsx
+ * Autor:       LRGJ
+ * Descripción: Modo Vista cliente.
+ */
 import { useMemo, useRef, useState } from 'react';
 import { Camera, Maximize, Palette } from 'lucide-react';
 import { useStore, type ViewName } from '../store/useStore';

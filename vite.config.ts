@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     vite.config.ts
+ * Autor:       LRGJ
+ * Descripción: Configuración de Vite con React y Tailwind CSS.
+ */
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';

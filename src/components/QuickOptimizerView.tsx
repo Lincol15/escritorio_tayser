@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/QuickOptimizerView.tsx
+ * Autor:       LRGJ
+ * Descripción: Modo Optimizar plancha.
+ */
 import { useEffect, useState } from 'react';
 import { Copy, Play, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';

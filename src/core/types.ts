@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/types.ts
+ * Autor:       LRGJ
+ * Descripción: Modelos de datos. Todas las medidas internas están en milímetros.
+ */
 // Modelos de dominio Tayser
 // Todas las medidas internas están en MILÍMETROS (precisión decimal).
 

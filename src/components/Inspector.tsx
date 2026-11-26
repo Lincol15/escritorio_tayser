@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/Inspector.tsx
+ * Autor:       LRGJ
+ * Descripción: Panel derecho: propiedades del mueble o del proyecto.
+ */
 import { useMemo } from 'react';
 import { AlignVerticalJustifyStart, Copy, Eye, EyeOff, RotateCcw, RotateCw, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';

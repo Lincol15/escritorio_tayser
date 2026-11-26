@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/index.css
+ * Autor:       LRGJ
+ * Descripción: Colores del tema y estilos globales.
+ */
 @import "tailwindcss";
 
 @theme {

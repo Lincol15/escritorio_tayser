@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/three/geometry.ts
+ * Autor:       LRGJ
+ * Descripción: Geometría de las piezas con cortes especiales.
+ */
 // Geometría de piezas: contorno con radios y diagonales, calados, biseles por canto, espigas y cilindros/conos.
 // Marco de la pieza: x = largo (u), y = ancho (v), z = espesor, centrado en el origen.
 import * as THREE from 'three';

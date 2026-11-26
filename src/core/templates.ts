@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/templates.ts
+ * Autor:       LRGJ
+ * Descripción: Plantillas paramétricas de muebles y elementos del ambiente.
+ */
 // Catálogo paramétrico (generadores)
 // Coordenadas locales del módulo: x 0..ancho (izq→der), y 0..alto (piso→arriba), z 0..prof (fondo→frente).
 import type {

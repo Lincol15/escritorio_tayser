@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/presets.ts
+ * Autor:       LRGJ
+ * Descripción: Proyecto vacío y cocina de ejemplo.
+ */
 // Escenas prearmadas (offline)
 import type { Project, SceneItem } from './types';
 import { createItem } from './items';

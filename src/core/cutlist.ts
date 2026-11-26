@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/core/cutlist.ts
+ * Autor:       LRGJ
+ * Descripción: Despiece agrupado por material, con tapacantos.
+ */
 // Despiece (lista de corte) con tapacantos
 import type { Corner, EdgeBanding, EdgeKey, Piece, Project } from './types';
 import { buildItem } from './items';

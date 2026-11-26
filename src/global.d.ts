@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/global.d.ts
+ * Autor:       LRGJ
+ * Descripción: Tipos globales del puente window.tayser.
+ */
 export {};
 
 declare global {

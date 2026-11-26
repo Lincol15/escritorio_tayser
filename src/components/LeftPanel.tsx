@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/LeftPanel.tsx
+ * Autor:       LRGJ
+ * Descripción: Panel izquierdo: catálogo y lista del proyecto.
+ */
 import { useState } from 'react';
 import {
   Archive, BedDouble, Box, BrickWall, ChefHat, ChevronDown, ChevronRight, DoorClosed, Eye, EyeOff, Footprints, Grid2x2, Lamp, LayoutGrid, LibraryBig, PanelTop, Rows3, Rows4, Square, Table2, Tv, type LucideIcon,

@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/CutListView.tsx
+ * Autor:       LRGJ
+ * Descripción: Modo Despiece y cortes.
+ */
 import { useMemo, useState } from 'react';
 import { FileDown, FileSpreadsheet, Layers, ListOrdered, Settings2 } from 'lucide-react';
 import { useStore } from '../store/useStore';

@@ -1,3 +1,9 @@
+/*
+ * Proyecto:    Tayser 1.0.0
+ * Archivo:     src/components/PieceEditor.tsx
+ * Autor:       LRGJ
+ * Descripción: Editor de pieza: tapacantos, veta y cortes especiales.
+ */
 import { Plus, Trash2, Undo2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { buildItem } from '../core/items';
